@@ -513,3 +513,25 @@ body.mj-new[data-mj-layout="data-system"] #view .mj-head{
 @media(prefers-reduced-motion:reduce){
  body.mj-new #view .mj-metric,body.mj-new #view .mj-grid>.mj-tile{transition:none!important;transform:none!important}
 }
+
+/* Final grid and information-hierarchy alignment across legacy report builders. */
+body.mj-new #view .g12>.mj-zone-heading{
+ grid-column:1/-1;min-width:0;width:100%;margin:5px 0 -3px!important;
+}
+body.mj-new #view .g12>.cos{
+ grid-column:1/-1;min-width:0;width:100%;
+}
+body.mj-new #view .g12>.card.mj-insight-surface:not(.strip){
+ background:linear-gradient(155deg,var(--mj-zone-pale),var(--mj-surface) 72%)!important;
+ border-color:color-mix(in srgb,var(--mj-zone) 20%,var(--mj-border))!important;
+}
+body.mj-new #view .g12>.card.mj-data-surface:not(.strip){
+ background:var(--mj-surface)!important;border-left:5px solid var(--mj-zone)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-insight-surface:not(.strip),
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-data-surface:not(.strip){
+ background:#101014!important;border-color:#34343B!important;
+}
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-data-surface:not(.strip){
+ border-left-color:var(--mj-zone)!important;
+}
