@@ -140,8 +140,9 @@ body.mj-new #view .mj-btn.primary{background:var(--mj-accent)!important;border-c
 :root[data-theme="dark"] body.mj-new .win,
 :root[data-theme="dark"] body.mj-new .ct,
 :root[data-theme="dark"] body.mj-new #view{background:#000000!important;color:#F6F6F8!important}
-:root[data-theme="dark"] body.mj-new .side{background:radial-gradient(ellipse at 0% 0%,#39172960,transparent 56%),#060607!important;border-right:1px solid #29242A!important}
-:root[data-theme="dark"] body.mj-new .side:before{opacity:.055}
+/* Sidebar brand color remains the same in light and dark appearances. */
+:root[data-theme="dark"] body.mj-new .side{background:radial-gradient(ellipse at 100% 0%,#ffdcec28,transparent 46%),linear-gradient(155deg,#ae497e,#932c63 54%,#74244f)!important;border-right:1px solid #79244f!important}
+:root[data-theme="dark"] body.mj-new .side:before{opacity:.12}
 :root[data-theme="dark"] body.mj-new .tb{background:#050505!important;border-bottom:1px solid #28282E!important;color:#F1F1F3!important}
 :root[data-theme="dark"] body.mj-new #view .mj-intro,
 :root[data-theme="dark"] body.mj-new #view .mj-panel,
