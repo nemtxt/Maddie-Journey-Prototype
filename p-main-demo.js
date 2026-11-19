@@ -585,7 +585,7 @@ function renderSub(c,id){const s=(CAT_SECTIONS[c]||[]).find(x=>x.id===id);
  closeSide();ind();show(subPageHtml(c,id),()=>{scrollTo(0,0);const a=document.querySelector(".secnav a.on");if(a)a.scrollIntoView({inline:"center",block:"nearest"})});if(layer)closeLayer(true)}
 
 /* ---------- 3D office ---------- */
-const OC=["#f48fb1","#b9a6f2","#8fd3c0","#f6b98a","#9cc7f2","#f7a8d4","#c3dd9a","#ffcf8b","#a8d8e8","#e3c6a8"];
+const OC=["#79C9A5","#F26B4F","#183B63","#FFF1A8","#A83F73","#79C9A5","#F26B4F","#183B63","#FFF1A8","#A83F73"];
 const cube=(x,y,w,d,h,k,o={})=>`<i class="cb${o.c?" "+o.c:""}" style="left:${x}px;top:${y}px;width:${w}px;height:${d}px;--h:${h}px;--k:${k};--z:${o.z||0}px"><b class="t"></b><b class="a"></b><b class="b"></b><b class="c"></b><b class="d"></b></i>`;
 const OFFICE_ORDER=()=>[0,1,2,3,"L",4,5,6,7].filter(c=>c==="L"||c<D.length);
 function roomHtml(i,n){

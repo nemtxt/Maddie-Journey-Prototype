@@ -1,0 +1,64 @@
+/* Maddie Journey | visual token update only. No layout or behavior changes.
+   Reference palette: mint #79C9A5, coral #F26B4F, navy #183B63,
+   lemon #FFF1A8, plum #A83F73. */
+:root {
+  --mj-mint:#79C9A5; --mj-coral:#F26B4F; --mj-navy:#183B63;
+  --mj-lemon:#FFF1A8; --mj-plum:#A83F73;
+  --bg:#FFFDF4; --pn:#FFFFFF; --pn2:#FFF9E2;
+  --tx:#183B63; --mu:#596C7E;
+  --ln:rgba(24,59,99,.14); --sel:rgba(121,201,165,.20);
+  --blue:#183B63; --pink:#A83F73; --vio:#A83F73;
+  --grn:#79C9A5; --amb:#F26B4F; --red:#A83F73;
+  --glass:rgba(255,253,244,.94);
+  --ac:#183B63; --ac-t:#FFFFFF;
+  --hx-bg:#FFFDF4; --hx-tx:#183B63; --hx-tx2:#294C6F;
+  --hx-mu:#596C7E; --hx-mu2:#697C8D;
+  --hx-sf:rgba(121,201,165,.08); --hx-sf2:rgba(121,201,165,.16);
+  --hx-sf3:rgba(121,201,165,.24); --hx-ln:rgba(24,59,99,.14);
+  --hx-glass:rgba(255,253,244,.95); --hx-base:#FFFFFF; --hx-base2:#FFF9E2;
+  --hx-scrim:rgba(255,241,168,.26); --hx-vig:rgba(24,59,99,.06);
+  --gv1:rgba(255,255,255,.50); --gv2:rgba(255,241,168,.40);
+}
+/* Dark appearance uses deep navy, with the same five brand colors. */
+:root[data-theme="dark"] {
+  --bg:#102841; --pn:#183B63; --pn2:#24486D;
+  --tx:#FFF6CE; --mu:#D1E2E7;
+  --ln:rgba(255,241,168,.20); --sel:rgba(121,201,165,.17);
+  --blue:#FFF1A8; --pink:#F1AACB; --vio:#F1AACB;
+  --grn:#79C9A5; --amb:#F26B4F; --red:#F26B4F;
+  --glass:rgba(24,59,99,.94);
+  --ac:#79C9A5; --ac-t:#183B63;
+  --hx-bg:#102841; --hx-tx:#FFF6CE; --hx-tx2:#F2E8C9;
+  --hx-mu:#D1E2E7; --hx-mu2:#B8CED7;
+  --hx-sf:rgba(121,201,165,.09); --hx-sf2:rgba(121,201,165,.16);
+  --hx-sf3:rgba(121,201,165,.23); --hx-ln:rgba(255,241,168,.20);
+  --hx-glass:rgba(24,59,99,.95); --hx-base:#183B63; --hx-base2:#102841;
+  --hx-scrim:rgba(16,40,65,.68); --hx-vig:rgba(16,40,65,.85);
+  --gv1:rgba(24,59,99,.50); --gv2:rgba(16,40,65,.85);
+}
+@media (prefers-color-scheme:dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --bg:#102841; --pn:#183B63; --pn2:#24486D;
+    --tx:#FFF6CE; --mu:#D1E2E7;
+    --ln:rgba(255,241,168,.20); --sel:rgba(121,201,165,.17);
+    --blue:#FFF1A8; --pink:#F1AACB; --vio:#F1AACB;
+    --grn:#79C9A5; --amb:#F26B4F; --red:#F26B4F;
+    --glass:rgba(24,59,99,.94);
+    --ac:#79C9A5; --ac-t:#183B63;
+    --hx-bg:#102841; --hx-tx:#FFF6CE; --hx-tx2:#F2E8C9;
+    --hx-mu:#D1E2E7; --hx-mu2:#B8CED7;
+    --hx-sf:rgba(121,201,165,.09); --hx-sf2:rgba(121,201,165,.16);
+    --hx-sf3:rgba(121,201,165,.23); --hx-ln:rgba(255,241,168,.20);
+    --hx-glass:rgba(24,59,99,.95); --hx-base:#183B63; --hx-base2:#102841;
+    --hx-scrim:rgba(16,40,65,.68); --hx-vig:rgba(16,40,65,.85);
+    --gv1:rgba(24,59,99,.50); --gv2:rgba(16,40,65,.85);
+  }
+}
+/* Make alerts, status dots and chart highlights use the same palette. */
+.dot.g,.sd.live,.sd.g,.co.g { border-color:var(--mj-mint); }
+.dot.g,.sd.live { background:var(--mj-mint); }
+.dot.a,.sd.partial { background:var(--mj-coral); }
+.dot.r,.sd.none { background:var(--mj-plum); }
+.chip .dot.g,.chip .dot.a,.chip .dot.r { flex:none; }
+/* Keep the existing small logo size and navigation geometry. */
+.brand .logo { background:transparent; }

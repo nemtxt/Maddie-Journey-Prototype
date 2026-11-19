@@ -41,3 +41,8 @@ Open `preview-offline.html` for a single-file preview; or open `index.html` afte
 ### Verification
 
 The fictional model produced 51 employees, 51 synthetic personnel tracker rows, eight divisions and example records across all nine workspaces. All 86 section report builders were evaluated without exception, browser navigation to sample pages and an employee detail popup were tested, and no page-level horizontal overflow was found at 390, 820 and 1440 px. Full hardware/device testing and original Claude connector behavior were not validated.
+
+
+## Brand palette update (v5.3)
+
+The original dashboard layout, fictional records, and navigation are unchanged. The visible sidebar logo now reads **MADDIE JOURNEY** without the `| 2027` suffix. New `maddie-palette.css` provides consistent mint `#79C9A5`, coral `#F26B4F`, deep navy `#183B63`, lemon `#FFF1A8`, and plum `#A83F73` across light/dark views, navigation, statuses, chart accents and the office view. `preview-offline.html` embeds the same palette without requiring an external stylesheet.
