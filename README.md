@@ -1,0 +1,43 @@
+# Maddie Journey — P&C Fictional Demo (v5.2)
+
+## Open the prototype
+
+Unzip the archive. Open `index.html` (or `demo.html`) in a browser. It displays the **original initial prototype layout and navigation**, with your Madhouse Design Studio logo (the original full logo is stored in `logo.png`; the header uses a crop of its house-shaped mark), updated Maddie Journey name and chosen mint/coral/navy/lemon/plum palette.
+
+No account, passcode, internet connection, Claude subscription, external connector or billing is needed for sample data. This is **not a production or live employee database**.
+
+## Presentation data
+
+* 51 active fictional employee profiles in eight representative divisions, plus two fictional former-employee examples in Exit Records.
+* Fictional salaries, government requirements, 201 files, attendance, late/leave history, probation milestones, recruitment, interviews, workforce movement, cases, notices, performance development, surveys, recognition, training and operations examples.
+* Every original one of the nine workspaces and 86 subcategory screens remains accessible. Screens whose sources were originally absent are populated by clearly marked example records generated locally in `p-main-demo.js`. All 86 dashboard routes generate report content; some summaries are charts or timelines rather than data tables.
+* Existing screen summaries, charts, detail tables, employee popups, 3D office and executive navigation are preserved.
+* Sample dates refer to late 2026 and early 2027; data is fixed for a repeatable presentation.
+
+## Separation of demo and live
+
+* **`index.html`, `demo.html`**: local fictional prototype. Loads `demo-data.js`, `demo-runtime.js`, and `p-main-demo.js` instead of the protected boot process. Does not invoke any connector or request the passcode.
+* **`live-readonly.html`**: the original protected Claude-based entry point with its original `boot.js` and `p-main.js`. It is preserved only for integration comparison; it requires its original runtime and authorization to function.
+* `core.js` and `data.js` contain the original read-only model/adapter; only locally generated fictional records are passed to them in demo mode.
+
+**Important:** Do not publish the `live-readonly.html` version or related integration code as a public demo without reviewing its connector configuration and privacy safeguards. Prefer publishing only the fictional demo assets.
+
+## Files added for this update
+
+- `demo-data.js` — synthetic source-shaped fixture.
+- `p-main-demo.js` — demo-only section fallbacks for originally untracked content.
+- `demo-runtime.js` — disables passcode and live services, labels sample status, preserves presentation controls.
+- `demo.html` / `index.html` — fictional entry point.
+- `live-readonly.html` — untouched protected entry point from the previous ZIP.
+
+No existing app layout CSS was replaced and no production connector data was copied into the fictional dataset.
+
+The ZIP also contains `preview-offline.html`, a single-file demonstration that bundles the main CSS, JavaScript, logo and sample background image. Use it when presenting without a local web server.
+
+## Presenting the demo
+
+Open `preview-offline.html` for a single-file preview; or open `index.html` after extracting the ZIP (keep adjacent files together). Preview screenshots are in `previews/`. `Fictional_Data_HandOff.md` and `mock-data-manifest.json` document the sample route and data contracts for later Claude integration.
+
+### Verification
+
+The fictional model produced 51 employees, 51 synthetic personnel tracker rows, eight divisions and example records across all nine workspaces. All 86 section report builders were evaluated without exception, browser navigation to sample pages and an employee detail popup were tested, and no page-level horizontal overflow was found at 390, 820 and 1440 px. Full hardware/device testing and original Claude connector behavior were not validated.

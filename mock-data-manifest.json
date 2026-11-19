@@ -1,0 +1,595 @@
+{
+  "product": "Maddie Journey \u2014 People & Culture",
+  "version": "5.2",
+  "data_mode": "fictional offline demonstration",
+  "reference_date": "2026-11-20",
+  "people_count": 51,
+  "division_count": 8,
+  "workspaces": [
+    {
+      "id": "people",
+      "name": "People Directory",
+      "sections": [
+        {
+          "id": "masterlist",
+          "name": "Employee Masterlist",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "personal",
+          "name": "Personal Information",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "documents",
+          "name": "Employment Documents",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "government",
+          "name": "Government Requirements",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "movements",
+          "name": "Employment Movements",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "performance",
+          "name": "Performance Records",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "journey-records",
+          "name": "Maddie Journey Records",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "training",
+          "name": "Training Records",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "acknowledgements",
+          "name": "Acknowledgements",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "exits",
+          "name": "Exit Records",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 10
+    },
+    {
+      "id": "pay",
+      "name": "Pay & Benefits",
+      "sections": [
+        {
+          "id": "salary",
+          "name": "Salary Masterlist",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "comp-movement",
+          "name": "Compensation Movement",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "incentives",
+          "name": "Incentives & Bonuses",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "contributions",
+          "name": "Government Contributions",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "hmo",
+          "name": "HMO",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "insurance",
+          "name": "Employee Insurance",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "maddie-benefits",
+          "name": "Maddie Benefits",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "wellness",
+          "name": "Wellness Benefits",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "benefits-review",
+          "name": "Benefits Review",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 9
+    },
+    {
+      "id": "pulse",
+      "name": "Workforce Pulse",
+      "sections": [
+        {
+          "id": "daily",
+          "name": "Daily Attendance",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "monthly",
+          "name": "Monthly Attendance",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "overtime",
+          "name": "Overtime Summary",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "lates",
+          "name": "Lates and Absence Monitoring",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "division-att",
+          "name": "Division Attendance",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "att-reports",
+          "name": "Attendance Reports",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 6
+    },
+    {
+      "id": "journey",
+      "name": "Maddie Journey",
+      "sections": [
+        {
+          "id": "wellbeing",
+          "name": "Benefits & Well-being",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "belonging",
+          "name": "Culture & Belonging",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "purpose",
+          "name": "Purpose & Experience",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "profile",
+          "name": "Employee Journey Profile",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "level-gates",
+          "name": "Career Direction & Level Gates",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "onboarding",
+          "name": "Onboarding & Probation",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "report-cards",
+          "name": "Performance Report Cards",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "leadership",
+          "name": "Leadership Development",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "employee-movement",
+          "name": "Employee Movement",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 9
+    },
+    {
+      "id": "learning",
+      "name": "Maddie Learning Hub",
+      "sections": [
+        {
+          "id": "training-calendar",
+          "name": "Annual Training Calendar",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "universal",
+          "name": "Universal Training",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "specialized",
+          "name": "Specialized Training",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "training-team",
+          "name": "Training Team",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "programs",
+          "name": "Training Programs",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "training-attendance",
+          "name": "Training Attendance",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "assessments",
+          "name": "Training Assessments",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "competency",
+          "name": "Competency Development",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "partners",
+          "name": "External Partners",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "ld-leadership",
+          "name": "Leadership Development",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "evaluation",
+          "name": "Training Evaluation",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        }
+      ],
+      "count": 11
+    },
+    {
+      "id": "culture",
+      "name": "Culture & Community",
+      "sections": [
+        {
+          "id": "humans",
+          "name": "Humans of Madhouse",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "milestones",
+          "name": "Maddie Milestones",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "corporate-calendar",
+          "name": "Corporate Calendar",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "maddie-hour",
+          "name": "Maddie Hour",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "engagement",
+          "name": "Monthly Engagement",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "assembly",
+          "name": "General Assembly",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "events",
+          "name": "Company Events",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "recognition",
+          "name": "Employee Recognition",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "campaigns",
+          "name": "Culture Campaigns",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "feedback",
+          "name": "Employee Feedback",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "incentive-activities",
+          "name": "Incentive Activities",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        }
+      ],
+      "count": 11
+    },
+    {
+      "id": "talent",
+      "name": "Talent Acquisition",
+      "sections": [
+        {
+          "id": "manpower-plan",
+          "name": "Manpower Plan",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "requisition",
+          "name": "Manpower Requisition",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "pipeline",
+          "name": "Recruitment Pipeline",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "partner",
+          "name": "Hiring Partner",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "hiring-status",
+          "name": "Hiring Status",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "new-hire",
+          "name": "New Hire Onboarding",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "probationary",
+          "name": "Probationary Monitoring",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "workforce-movement",
+          "name": "Workforce Movement",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "vacancy-aging",
+          "name": "Vacancy Aging",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 9
+    },
+    {
+      "id": "governance",
+      "name": "People Governance",
+      "sections": [
+        {
+          "id": "concerns",
+          "name": "Employee Concerns",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "notices",
+          "name": "Notices & Memorandums",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "case-docs",
+          "name": "Case Documentation",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "gov-review",
+          "name": "Governance Review",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "case-status",
+          "name": "Case Status",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "grievances",
+          "name": "Employee Grievances",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "policy",
+          "name": "Policy Compliance",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "corrective",
+          "name": "Corrective Actions",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "closure",
+          "name": "Case Closure",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 9
+    },
+    {
+      "id": "scoreboard",
+      "name": "Executive Scoreboard",
+      "sections": [
+        {
+          "id": "monthly-scorecard",
+          "name": "Monthly P&C Scorecard",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "wig4",
+          "name": "WIG #4 Scorecard",
+          "original_source_state": "partial",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "headcount",
+          "name": "Headcount Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "comp-report",
+          "name": "Compensation Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "attendance-report",
+          "name": "Attendance Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "journey-report",
+          "name": "Maddie Journey Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "ld-report",
+          "name": "L&D Report",
+          "original_source_state": "none",
+          "sample_mode": "generated example"
+        },
+        {
+          "id": "culture-report",
+          "name": "Culture Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "recruitment-report",
+          "name": "Recruitment Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "er-report",
+          "name": "Employee Relations Report",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "risks",
+          "name": "Risks & Blockers",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        },
+        {
+          "id": "decisions",
+          "name": "Executive Decisions",
+          "original_source_state": "live",
+          "sample_mode": "fictional fixture"
+        }
+      ],
+      "count": 12
+    }
+  ],
+  "safety": {
+    "real_records_included": false,
+    "requires_claude": false,
+    "connectors_initialized": false,
+    "passcode_required": false
+  }
+}
