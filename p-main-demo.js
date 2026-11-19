@@ -72,7 +72,7 @@ const tlList=(items,empty)=>items.length?`<ul class="tl">${items.map(u=>`<li><a 
 function overview(){
  const dpt=D.map(([d,c],i)=>`<i style="--w:${c};--k:${i};--c:${P[i%5]};opacity:${i<5?1:.5}" data-tip="${esc(d)}|${c} people (${Math.round(c/M.n*100)}%)"></i>`).join("");
  const hq=MCD.OPS.HQ||{stats:{open:0,overdue:0},loaded:false};
- return`<header class="ph"><div><h1>Maddie Journey | 2027</h1><p>${DATE}. ${M.n} active people across ${D.length} departments, and ${EXC.length} ${EXC.length===1?"item needs":"items need"} attention.</p></div></header>
+ return`<header class="ph"><div><h1>Maddie Journey</h1><p>${DATE}. ${M.n} active people across ${D.length} departments, and ${EXC.length} ${EXC.length===1?"item needs":"items need"} attention.</p></div></header>
  <div class="g12">
  ${wsCards()}
  ${sec("c5","Workforce",`<div class="big"><b data-count="${M.n}">${M.n}</b><span>active people</span></div><p class="mu" style="margin:6px 0 0">${D.length} departments. ${M.prob} on probation, ${M.open} open ${M.open===1?"role":"roles"}. Baseline ${M.baseline} (${M.n-M.baseline>=0?"+":""}${M.n-M.baseline}).</p><div class="stack" role="img" aria-label="Headcount by department">${dpt}</div><ul class="lgd">${D.slice(0,5).map(([d,c],i)=>`<li><i class="sw" style="--c:${P[i]}"></i>${esc(MCD.SHORT[d]||d)} ${c}</li>`).join("")}${D.length>5?`<li>and ${D.length-5} more</li>`:""}</ul><div class="trend">${spark(HC,"Headcount over seven months")}<small>Headcount over seven months, from recorded hire and separation dates</small></div>`,"",["people","departments"])}
@@ -190,7 +190,7 @@ function divHtml(d){const i=D.findIndex(x=>x[0]===d),l=EMP.filter(e=>e.dept===d)
  ${sec("c8","Other divisions",`<div class="org">${D.filter(x=>x[0]!==d).map(([o,c])=>`<button data-go="${dvUrl(o)}"><b>${esc(o)}</b><small>${esc(dvNames(o))}</small><small>${c} ${c===1?"person":"people"}</small></button>`).join("")}</div>`,"",["people","departments"])}
  ${window.MC_WORKFORCE?MC_WORKFORCE.shell(d):""}
  </div><p class="foot">${SRC_NOTE}</p>`}
-/* ---------- Maddie Journey | 2027 implementation guide: nine categories, their sections, executive views, help ---------- */
+/* ---------- Maddie Journey implementation guide: nine categories, their sections, executive views, help ---------- */
 const XR=k=>(MDL().extra&&MDL().extra[k])||[];
 const XL=k=>!!(MDL().extra&&MDL().extra[k]);
 const empLinks=l=>(l||[]).map(p=>{const e=p.k&&EMP.find(x=>x.k===p.k);return e?`<button class="lnk" data-emp="${e.i}">${esc(p.name)}</button>`:esc(p.name)}).join(", ")||'<span class="mu">—</span>';
@@ -458,7 +458,7 @@ document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest
 /* ---------- main dashboard: the nine categories, each with its sections underneath ---------- */
 const CATKPI={people:()=>[M.n,"active people",`${M.noId} without ID · ${EMP.filter(e=>e.f<100).length} incomplete 201`],pay:()=>{const p=EMP.filter(e=>salaryOf(e)!=null),t=p.reduce((a,e)=>a+salaryOf(e),0);return[sens(pesoK(t)),"monthly basic payroll",`${EMP.filter(e=>e.status==="Regular").length} benefit-eligible`]},pulse:()=>[(MDL().attendance.last30||{}).late||0,"lates in 30 days",`${M.rep} repeat · ${(MDL().attendance.last30||{}).leave||0} leave`],journey:()=>[M.prob,"on probation",`${MDL().journey.upcoming.length} checkpoints in 60 days`],learning:()=>[evMatch(/train|orient|workshop|seminar|webinar|learn|onboard|coach|revalida/i).length,"learning sessions on the calendar","6 demo training programs"],culture:()=>[MDL().culture.anniversaries.length+MDL().culture.birthdays.length,"milestones coming up",`${MDL().culture.events.length} calendar events`],talent:()=>[MDL().talent.open,"open roles",`${M.cands} candidates · ${MDL().talent.interviews.total} interviews`],governance:()=>[MCD.CASES.filter(c=>caseTone(c.status)==="a").length,"open cases",`${MCD.CASES.length} on record · ${XR("helpdesk").length} concerns`],scoreboard:()=>[EXC.filter(x=>x.sev!=="Routine").length,"high-priority items",`${XR("wigs").length} WIGs · ${XR("kpis").length} KPIs`]};
 overview=function(){const hq=MCD.OPS.HQ||{stats:{open:0,overdue:0}},up=comingUp(14);
- return`<header class="ph"><div><h1>Maddie Journey | 2027</h1><p>${DATE}. People &amp; Culture workspace for Madhouse leadership. Pick a workspace below; every section is listed under it.</p><p class="pmeta"><span>${M.n} active people</span><span>${D.length} departments</span><span>${EXC.length} items need attention</span><span>Updated ${mf({month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(MDL().generatedAt))}</span></p></div></header>
+ return`<header class="ph"><div><h1>Maddie Journey</h1><p>${DATE}. People &amp; Culture workspace for Madhouse leadership. Pick a workspace below; every section is listed under it.</p><p class="pmeta"><span>${M.n} active people</span><span>${D.length} departments</span><span>${EXC.length} items need attention</span><span>Updated ${mf({month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}).format(new Date(MDL().generatedAt))}</span></p></div></header>
  <div class="g12">
  ${sec("c8","Needs attention",EXC.length?`<ul class="exl">${EXC.slice(0,6).map(x=>`<li><button class="ex" data-exc="${x.id}"><span class="sev ${x.sev}">${x.sev}</span><span><b>${esc(x.t)}</b><small>${esc(x.next)}</small></span><span class="go">Review ${ic("arrow")}</span></button></li>`).join("")}</ul>${EXC.length>6?`<p class="mu" style="margin:8px 0 0">+${EXC.length-6} more in the bell menu</p>`:""}`:'<p class="mu">Nothing in the live data needs attention right now.</p>',"",["people","attendance","development","positions","nte"].concat(HUBKEYS()))}
  ${sec("c4","Next 14 days",tlList(up.slice(0,6),"Nothing due in the next 14 days."),"",["people","calendar","holidays"])}
@@ -580,7 +580,7 @@ function subPageHtml(c,id){const L=CAT_SECTIONS[c]||[],i=L.findIndex(s=>s.id===i
  <nav class="secnav" aria-label="Sections of ${esc(CATNAME[c])}">${L.map(x=>`<a href="#${c}:${x.id}" class="${x.id===id?"on":""}"${x.id===id?' aria-current="page"':""}><i class="sd ${x.state}"></i>${esc(x.label)}</a>`).join("")}</nav>
  <div class="g12" id="pane">${callouts(c,s)}<section class="card c12 rv2 secc" id="sec-${s.id}"><div class="secb">${body}</div>${srcLine(s.src)}</section></div><p class="foot">${SRC_NOTE}</p>`}
 function renderSub(c,id){const s=(CAT_SECTIONS[c]||[]).find(x=>x.id===id);
- $("#crumbs").innerHTML=`<span>Maddie Journey | 2027</span><span><a href="#${c}" class="crl">${CATNO(c)} ${CATNAME[c]}</a></span><span><b>${esc(s.label)}</b></span>`;document.title=s.label+" | Maddie Journey 2027";
+ $("#crumbs").innerHTML=`<span>Maddie Journey</span><span><a href="#${c}" class="crl">${CATNO(c)} ${CATNAME[c]}</a></span><span><b>${esc(s.label)}</b></span>`;document.title=s.label+" | Maddie Journey 2027";
  $$(".nav a").forEach(a=>{const on=a.dataset.id===c||a.dataset.sub===c+":"+id;a.classList.toggle("on",on);on&&a.dataset.id?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current")});
  closeSide();ind();show(subPageHtml(c,id),()=>{scrollTo(0,0);const a=document.querySelector(".secnav a.on");if(a)a.scrollIntoView({inline:"center",block:"nearest"})});if(layer)closeLayer(true)}
 
@@ -673,7 +673,7 @@ function pageHtml(w){const cat=CATS.includes(w.id),tb=TAB[w.id]||(cat?"sec":"sum
 let PENDSEC=null;
 function route(){const h=location.hash.slice(1);if(window.MJ_APP?.special(h))return;
  if(h==="help"||h.startsWith("view/")){const v=h.slice(5),x=EXV.find(e=>e.id===v),lab=h==="help"?"How to use":x?x.n:"Executive view";
-  $("#crumbs").innerHTML=`<span>Maddie Journey | 2027</span><span>${h==="help"?"Help":"Executive views"}</span><span><b>${esc(lab)}</b></span>`;document.title=lab+" | Maddie Journey 2027";
+  $("#crumbs").innerHTML=`<span>Maddie Journey</span><span>${h==="help"?"Help":"Executive views"}</span><span><b>${esc(lab)}</b></span>`;document.title=lab+" | Maddie Journey 2027";
   $$(".nav a").forEach(a=>{const on=a.dataset.id===h;a.classList.toggle("on",on);on?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current")});closeSide();ind();
   show(h==="help"?helpHtml():execHtml(v),()=>scrollTo(0,0));if(layer)closeLayer(true);return}
  const m=/^([a-z]+):([a-z0-9-]+)$/.exec(h);
@@ -681,7 +681,7 @@ function route(){const h=location.hash.slice(1);if(window.MJ_APP?.special(h))ret
  route0();
  if(PENDSEC){const sid=PENDSEC;PENDSEC=null;setTimeout(()=>{const el=document.getElementById("sec-"+sid);if(el){el.open=true;el.scrollIntoView({behavior:RM.matches?"auto":"smooth",block:"start"})}},RM.matches?60:420)}}
 function route0(){let id=location.hash.slice(1)||"office",dv=null,off=false;if(id==="office"&&window.HUB&&document.body.classList.contains("mcws")){HUB.open();return}if(id==="office"){off=true;id="office"}else if(id.startsWith("division/")){dv=decodeURIComponent(id.slice(9));if(!D.some(x=>x[0]===dv)){location.replace("#divisions");return}id="divisions"}const w=off?null:WS.find(x=>x.id===id),cur=off?"office":w?w.id:"overview";
- $("#crumbs").innerHTML=`<span>Maddie Journey | 2027</span>${w?"<span>Workspaces</span>":""}${dv?`<span><a href="#divisions" class="crl">Divisions</a></span><span><b>${dv}</b></span>`:`<span><b>${off?"3D Office":w?(CATS.includes(w.id)?CATNO(w.id)+" "+CATNAME[w.id]:w.n):"Dashboard"}</b></span>`}`;
+ $("#crumbs").innerHTML=`<span>Maddie Journey</span>${w?"<span>Workspaces</span>":""}${dv?`<span><a href="#divisions" class="crl">Divisions</a></span><span><b>${dv}</b></span>`:`<span><b>${off?"3D Office":w?(CATS.includes(w.id)?CATNO(w.id)+" "+CATNAME[w.id]:w.n):"Dashboard"}</b></span>`}`;
  document.title=(dv?dv+" division":off?"3D Office":w?w.n:"Overview")+" | Maddie Journey 2027";
  $$(".nav a").forEach(a=>{const on=a.dataset.id===cur;a.classList.toggle("on",on);if(on)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
  $$(".tabs [data-t]").forEach(a=>a.classList.toggle("on",a.dataset.t===cur));$("#tmore").classList.toggle("on",!!w&&!["people","pulse"].includes(w.id));
