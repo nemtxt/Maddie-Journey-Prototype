@@ -46,3 +46,8 @@ The fictional model produced 51 employees, 51 synthetic personnel tracker rows, 
 ## Brand palette update (v5.3)
 
 The original dashboard layout, fictional records, and navigation are unchanged. The visible sidebar logo now reads **MADDIE JOURNEY** without the `| 2027` suffix. New `maddie-palette.css` provides consistent mint `#79C9A5`, coral `#F26B4F`, deep navy `#183B63`, lemon `#FFF1A8`, and plum `#A83F73` across light/dark views, navigation, statuses, chart accents and the office view. `preview-offline.html` embeds the same palette without requiring an external stylesheet.
+
+
+## Website-style presentation redesign
+
+`maddie-site.css` and `maddie-site.js` provide a compact reference-inspired sidebar, a simplified home page, focused workspace directories, summary-first report pages and report previews. `#settings` includes appearance, readability, motion, privacy-display and developer credit (NemDev). `#data-system` includes fictional employee records, source mapping, technical architecture and sample CSV export. No connected accounts are used. The original nine workspaces, 86 report routes, 51 fictional employee records and protected live entry remain intact.\n
