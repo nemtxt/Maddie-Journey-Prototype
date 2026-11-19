@@ -58,3 +58,7 @@ The original nine P&C workspace categories return as expandable sidebar destinat
 ## Sidebar consistency fixes (v5.6)
 
 Removed duplicate Settings links: the single **Settings & Data** sidebar destination opens `#settings`, with data tools accessible from there and `#data-system` deep links preserved. Pinned Settings & Data and Help outside the scrolling workspace list; added collapsible executive and organization groups, single-open workspace accordion, active-route highlighting, keyboard labels, compact and mobile states. Fixed the old navigation briefly rendering during startup. Updated the self-contained offline preview too. No fictional records or report routes changed.
+
+## UI consistency & true black/white themes (v5.7)
+
+Light mode uses a pure white page and white report surfaces. Dark mode uses a pure black page and a nearly black report/card surface; dark sidebar is black with pink active highlights. The compact sidebar now centers the logo and icons without empty invisible text. Nine workspace-specific accents are applied to relevant callouts, cards, report headers, and tables, while the existing reports, 51 fictional employees, 86 subcategories, and Settings & Data remain unchanged. Includes reduced-motion support. Both standard and standalone offline previews include the same styles.
