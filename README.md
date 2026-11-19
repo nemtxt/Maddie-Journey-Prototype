@@ -62,3 +62,7 @@ Removed duplicate Settings links: the single **Settings & Data** sidebar destina
 ## UI consistency & true black/white themes (v5.7)
 
 Light mode uses a pure white page and white report surfaces. Dark mode uses a pure black page and a nearly black report/card surface; dark sidebar is black with pink active highlights. The compact sidebar now centers the logo and icons without empty invisible text. Nine workspace-specific accents are applied to relevant callouts, cards, report headers, and tables, while the existing reports, 51 fictional employees, 86 subcategories, and Settings & Data remain unchanged. Includes reduced-motion support. Both standard and standalone offline previews include the same styles.
+
+## Settings & Data: limited scope (v5.8)
+
+The single Settings & Data sidebar link now covers **Accessibility & Display** and **Data Architecture & Sources** only. Employee records, KPIs and sample CSV export remain in the relevant dashboards (Employee Masterlist for CSV). Source mappings show provider names and inactive demo status without credentials. The existing `#data-system` route remains a deep link to the architecture section. Original navigation and all fictional reports are preserved.
