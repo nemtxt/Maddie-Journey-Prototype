@@ -51,3 +51,6 @@ The original dashboard layout, fictional records, and navigation are unchanged. 
 ## Website-style presentation redesign
 
 `maddie-site.css` and `maddie-site.js` provide a compact reference-inspired sidebar, a simplified home page, focused workspace directories, summary-first report pages and report previews. `#settings` includes appearance, readability, motion, privacy-display and developer credit (NemDev). `#data-system` includes fictional employee records, source mapping, technical architecture and sample CSV export. No connected accounts are used. The original nine workspaces, 86 report routes, 51 fictional employee records and protected live entry remain intact.\n
+## Original navigation restored, pink sidebar (v5.5)
+
+The original nine P&C workspace categories return as expandable sidebar destinations with all 86 subcategory links, plus six executive views, Divisions, 3D Office, Settings, and Data & System. Sidebar uses a deep plum-pink gradient and active pink motion; dashboard surfaces stay white, with mint/coral/navy/lemon highlights. These are presentation-only files; fictional data, original reporting, and protected live entry remain unchanged.
