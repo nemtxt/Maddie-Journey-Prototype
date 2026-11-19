@@ -66,3 +66,7 @@ Light mode uses a pure white page and white report surfaces. Dark mode uses a pu
 ## Settings & Data: limited scope (v5.8)
 
 The single Settings & Data sidebar link now covers **Accessibility & Display** and **Data Architecture & Sources** only. Employee records, KPIs and sample CSV export remain in the relevant dashboards (Employee Masterlist for CSV). Source mappings show provider names and inactive demo status without credentials. The existing `#data-system` route remains a deep link to the architecture section. Original navigation and all fictional reports are preserved.
+
+## Layered Dashboard Design v5.9
+
+Adds the non-destructive presentation files `maddie-layered.css` and `maddie-layered.js` to the fictional preview. Includes a fully coloured overview KPI band (navy, mint, plum and lemon), an elevated editorial hero, asymmetric full-colour workspace cards, a plum priority panel, a lemon quick-action panel, workspace-specific report heroes, richly coloured callouts, and nested quiet table surfaces. All nine workspaces and 86 report routes remain mapped to the original fixtures and actions. The existing plum-pink sidebar, accessibility controls, source architecture and true-black/white modes are untouched. Purely presentational DOM zoning labels add structure without changing data or navigation.
