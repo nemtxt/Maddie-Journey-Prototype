@@ -54,3 +54,7 @@ The original dashboard layout, fictional records, and navigation are unchanged. 
 ## Original navigation restored, pink sidebar (v5.5)
 
 The original nine P&C workspace categories return as expandable sidebar destinations with all 86 subcategory links, plus six executive views, Divisions, 3D Office, Settings, and Data & System. Sidebar uses a deep plum-pink gradient and active pink motion; dashboard surfaces stay white, with mint/coral/navy/lemon highlights. These are presentation-only files; fictional data, original reporting, and protected live entry remain unchanged.
+
+## Sidebar consistency fixes (v5.6)
+
+Removed duplicate Settings links: the single **Settings & Data** sidebar destination opens `#settings`, with data tools accessible from there and `#data-system` deep links preserved. Pinned Settings & Data and Help outside the scrolling workspace list; added collapsible executive and organization groups, single-open workspace accordion, active-route highlighting, keyboard labels, compact and mobile states. Fixed the old navigation briefly rendering during startup. Updated the self-contained offline preview too. No fictional records or report routes changed.
