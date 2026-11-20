@@ -567,3 +567,41 @@ body.mj-new #layer .mj-profile-group .plist{max-height:none!important}
  body.mj-new #view .mj-org-expand,
  body.mj-new #layer .mj-profile-jump{transition:none!important}
 }
+
+/* Data-sized level bands. All eight division columns inherit the same per-level
+   heights, derived from the real count in the fictional reference roster. */
+body.mj-new #view .mj-org-reference .mj-org-level-rail{
+ grid-template-rows:
+  74px
+  var(--mj-org-h6,128px)
+  var(--mj-org-h5,128px)
+  var(--mj-org-h4,128px)
+  var(--mj-org-h3,128px)
+  var(--mj-org-h2,128px)
+  var(--mj-org-h1,128px)!important;
+}
+body.mj-new #view .mj-org-reference .mj-org-chart-columns .mj-org-level-bands{
+ grid-template-rows:
+  var(--mj-org-h6,128px)
+  var(--mj-org-h5,128px)
+  var(--mj-org-h4,128px)
+  var(--mj-org-h3,128px)
+  var(--mj-org-h2,128px)
+  var(--mj-org-h1,128px)!important;
+}
+body.mj-new #view .mj-org-reference .mj-org-chart-columns .mj-org-unit{
+ height:calc(
+  74px + var(--mj-org-h6,128px) + var(--mj-org-h5,128px) +
+  var(--mj-org-h4,128px) + var(--mj-org-h3,128px) +
+  var(--mj-org-h2,128px) + var(--mj-org-h1,128px)
+ )!important;
+}
+body.mj-new #view .mj-org-reference .mj-org-chart-columns .mj-org-level-bands .mj-org-level-group{
+ height:var(--mj-org-specific-height,128px)!important;
+ min-height:var(--mj-org-specific-height,128px)!important;
+ max-height:var(--mj-org-specific-height,128px)!important;
+}
+:root[data-theme="dark"] body.mj-new #layer .sheet.mj-profile-sheet>.mj-profile-identity{
+ background:#0b0b0b!important;
+ border-bottom-color:#343434!important;
+}
