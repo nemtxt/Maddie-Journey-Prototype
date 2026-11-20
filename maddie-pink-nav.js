@@ -103,7 +103,9 @@ function areaHtml([id,name,ico]){
  sections(id).map(s=>'<a href="#'+id+':'+s.id+'" data-id="'+id+':'+s.id+'" data-mj-href="'+id+':'+s.id+'" title="'+esc(s.label)+'"><i class="mj-pink-dot" aria-hidden="true"></i><span class="nl">'+esc(s.label)+'</span></a>').join('')+'</div>';
 }
 function toggle(id,label,expanded,count){
- return '<button class="mj-pink-section-toggle" type="button" data-pink-section="'+id+'" aria-controls="pink-section-'+id+'" aria-expanded="'+expanded+'"><span>'+label+'</span><small>'+count+'</small>'+icon('arrow')+'</button>';
+ return '<button class="mj-pink-section-toggle" type="button" data-pink-section="'+id+'" aria-controls="pink-section-'+id+'" aria-expanded="'+expanded+'">'+
+  '<svg class="i mj-rail-section-icon" aria-hidden="true"><use href="#i-bars"></use></svg>'+
+  '<span>'+label+'</span><small>'+count+'</small><span class="mj-section-chevron" aria-hidden="true">'+icon('arrow')+'</span></button>';
 }
 function render(){
  const nav=q('#nav');
