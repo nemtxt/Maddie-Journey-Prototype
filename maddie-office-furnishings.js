@@ -74,6 +74,11 @@
       box(1.79,.79,2.08,.13,.055,.025,C.steel);
       cup(2.10,.65,2.02,C.pale);
     };
+    // Subtle pools of light and area rugs add depth without dynamic shadow maps.
+    const softLight=MT({color:0xfff5dd,emissive:0xffdfae,emissiveIntensity:.26});
+    const moodRug=(x,z,w=1.35,d=1.12)=>box(x,.165,z,w,.012,d,C.pale);
+    box(0,1.52,-2.31,2.15,.055,.055,softLight);
+    box(2.31,1.20,0,.055,.06,2.20,softLight);
     const chair=(x,z)=>{
       box(x,.26,z,.34,.08,.35,C.blue);
       box(x,.45,z+.17,.37,.41,.075,C.steel);
@@ -86,6 +91,7 @@
       for(let i=0;i<3;i++)box(-1.96+i*.18,.89+i*.10,-2.20,.10,.16+i*.06,.012,C.ink);
     };
     if(isLobby){
+      moodRug(-1.56,1.45,1.75,1.60);
       // The central globe and rings are kept visible: furniture stays at the perimeter.
       box(0,.36,2.16,1.60,.56,.42,C.wood);
       box(0,.69,2.16,1.64,.10,.45,C.white);
@@ -96,6 +102,7 @@
       return;
     }
     // All furniture sits around the existing staff/workstation footprint.
+    moodRug(1.35,.27,1.55,1.56);
     shelf(1.74,-2.09);
     coffeeNook();
     for(const desk of desks){

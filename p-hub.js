@@ -81,7 +81,7 @@ function mcCloseFocus(){mcCloseFloating();if(ready)$("#mc-office-directory",hub)
 function mcPreview(d){if(!hub||!isOpen){window.MC_PENDING_DIVISION=d;H.open();if(!hub||!isOpen)return}if(dvd)dvd.classList.remove("on");if(d!=="HQ"&&!D.some(x=>x[0]===d))return;
  mcCloseFloating();mcRoom=d;mcSelectedPerson=null;mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcViewPreset="iso";rest=0;const ri=d==="HQ"?"L":D.findIndex(x=>x[0]===d),r=rooms.find(x=>x.idx==ri);
  if(ready&&r){focus=r;Vt.r=clamp(3.8/(.3443*hub.clientWidth/hub.clientHeight),7.5,13);Vt.ph=.95;Vt.tx=r.x+(hub.clientWidth>860?.9:0);Vt.tz=r.z;hub.classList.add("hxz")}else{focus=null}
- mcApplyRoomLOD();mcWake();
+ mcApplyRoomLOD();mcAnimateFocusedPeople(Math.max(0,performance.now()/1000-t0),mcLifeEnabled());mcWake();
  mcSelectedPerson=(d==="HQ"?EMP:EMP.filter(e=>e.dept===d)).filter(e=>mcTask(e).due).sort((a,b)=>Math.abs(mcDayDiff(mcTask(a).due,mcSelectedDay))-Math.abs(mcDayDiff(mcTask(b).due,mcSelectedDay)))[0]?.i??null;
  mcPaintPanel();if(ready&&r)mcFocusCamera("iso");const hint=$(".hxk",hub);if(hint)hint.hidden=true;
  requestAnimationFrame(()=>{$(".mc-scene-back",hub)?.focus({preventScroll:true})});}
@@ -110,45 +110,67 @@ const mcRoomSets=[];
  // A single transform object updates the overview's instanced avatar meshes;
  // this preserves batching and avoids dozens of additional draw calls.
  let mcOverviewTransform=null;
- function mcAnimateOverviewPeople(el){
-  // THREE loads conditionally; create this helper only after WebGL succeeds.
-  if(!mcOverviewTransform)mcOverviewTransform=new THREE.Object3D();
-  for(const entry of mcRoomSets){
-   const set=entry.peopleInstances;
-   if(!set||!entry.actors?.length)continue;
-   for(let i=0;i<entry.actors.length;i++){
-    const person=entry.actors[i];
-    const phase=el*(.52+(i%4)*.08)+person.phase+entry.idx*.41;
-    const walking=person.activity==="walk";
-    const x=person.homeX+Math.sin(phase)*(walking?.35:.09);
-    const z=person.homeZ+Math.cos(phase*.86)*(walking?.28:.075);
-    const bob=Math.abs(Math.sin(phase*(walking?2.8:1.5)))*(walking?.038:.018);
-    const turn=person.activity==="chat"?(i%2?-.38:.38):walking?Math.cos(phase)*.40:Math.sin(phase*.7)*.10;
-    mcOverviewTransform.position.set(x,.45+bob,z);
-    mcOverviewTransform.rotation.set(0,turn,0);
-    mcOverviewTransform.scale.set(1,1,1);
-    mcOverviewTransform.updateMatrix();
-    set.body.setMatrixAt(i,mcOverviewTransform.matrix);
-    mcOverviewTransform.position.y=.79+bob;
-    mcOverviewTransform.updateMatrix();
-    set.head.setMatrixAt(i,mcOverviewTransform.matrix);
-    mcOverviewTransform.position.y=.84+bob;
-    mcOverviewTransform.updateMatrix();
-    set.hair.setMatrixAt(i,mcOverviewTransform.matrix);
+ // Shared, fictional behavior engine. No telemetry or changes to employee records.
+ const mcLifeEnabled=()=>mcLifeMotion&&!RM.matches&&!document.documentElement.classList.contains("mj-reduced");
+ const mcLifePose=(actor,elapsed,moving=mcLifeEnabled())=>window.MC_OFFICE_LIFE
+   ?window.MC_OFFICE_LIFE.pose(actor,elapsed,moving)
+   :{x:actor.homeX,z:actor.homeZ,y:0,turn:0,activity:actor.activity,walking:false,coffee:actor.activity==="coffee",cupLift:.06,armSwing:0,legSwing:0};
+ function mcAnimateOverviewPeople(el,motion=mcLifeEnabled()){
+   if(!mcOverviewTransform)mcOverviewTransform=new THREE.Object3D();
+   for(const entry of mcRoomSets){
+     const set=entry.peopleInstances;
+     if(!set||!entry.actors?.length)continue;
+     for(let i=0;i<entry.actors.length;i++){
+       const actor=entry.actors[i],v=mcLifePose(actor,el,motion);
+       mcOverviewTransform.position.set(v.x,.45+v.y,v.z);
+       mcOverviewTransform.rotation.set(0,v.turn,0);
+       mcOverviewTransform.scale.set(1,1,1);mcOverviewTransform.updateMatrix();
+       set.body.setMatrixAt(i,mcOverviewTransform.matrix);
+       mcOverviewTransform.position.y=.79+v.y;mcOverviewTransform.updateMatrix();
+       set.head.setMatrixAt(i,mcOverviewTransform.matrix);
+       mcOverviewTransform.position.y=.84+v.y;mcOverviewTransform.updateMatrix();
+       set.hair.setMatrixAt(i,mcOverviewTransform.matrix);
+       if(set.shadows){
+         mcOverviewTransform.position.set(v.x,.169,v.z);
+         mcOverviewTransform.rotation.set(-Math.PI/2,0,0);mcOverviewTransform.updateMatrix();
+         set.shadows.setMatrixAt(i,mcOverviewTransform.matrix);
+       }
+     }
+     set.body.instanceMatrix.needsUpdate=true;
+     set.head.instanceMatrix.needsUpdate=true;
+     set.hair.instanceMatrix.needsUpdate=true;
+     if(set.shadows)set.shadows.instanceMatrix.needsUpdate=true;
+     if(set.cups){
+       set.coffeeActors.forEach((actor,k)=>{
+         const v=mcLifePose(actor,el,motion);
+         mcOverviewTransform.position.set(v.x+.26,.55+v.cupLift,v.z+.10);
+         mcOverviewTransform.rotation.set(0,v.turn,0);
+         const scale=v.coffee?1:.0001;
+         mcOverviewTransform.scale.set(scale,scale,scale);mcOverviewTransform.updateMatrix();
+         set.cups.setMatrixAt(k,mcOverviewTransform.matrix);
+       });
+       set.cups.instanceMatrix.needsUpdate=true;
+     }
    }
-   set.body.instanceMatrix.needsUpdate=true;
-   set.head.instanceMatrix.needsUpdate=true;
-   set.hair.instanceMatrix.needsUpdate=true;
-    if(set.cups){
-      set.coffeeActors.forEach((person,k)=>{
-        const sip=(Math.sin(el*1.5+person.phase)+1)/2;
-        mcOverviewTransform.position.set(person.homeX+.26,.56+sip*.20,person.homeZ+.10);
-        mcOverviewTransform.rotation.set(0,0,0);mcOverviewTransform.scale.set(1,1,1);
-        mcOverviewTransform.updateMatrix();set.cups.setMatrixAt(k,mcOverviewTransform.matrix);
-      });
-      set.cups.instanceMatrix.needsUpdate=true;
-    }
-  }
+ }
+ function mcAnimateFocusedPeople(el,motion=mcLifeEnabled()){
+   if(!focus)return;
+   for(const a of mcActors){
+     if(a.room!==focus.idx)continue;
+     const v=mcLifePose(a,el,motion);
+     a.pf.position.set(v.x,v.y,v.z);a.pf.rotation.y=v.turn;
+     a.arms.forEach((arm,j)=>{arm.rotation.x=v.armSwing*(j?-.8:1)});
+     a.legs.forEach((leg,j)=>{leg.rotation.x=v.legSwing*(j?-1:1)});
+     if(a.cup){a.cup.visible=v.coffee;a.cup.position.set(.26,.55+v.cupLift,.10)}
+     a.glow.position.y=1.12+(motion?Math.sin(el*2+a.phase)*.035:0);
+     a.glow.scale.setScalar(a.emp.i===mcSelectedPerson?1.65:1);
+   }
+ }
+ function mcResetLifePose(){
+   if(!ready)return;
+   mcAnimateOverviewPeople(0,false);
+   mcAnimateFocusedPeople(0,false);
+   mcWake();
  }
  function mcApplyRoomLOD(){for(const entry of mcRoomSets){const detailed=!!focus&&focus.idx===entry.idx;entry.proxy.visible=!focus;entry.staff.forEach(x=>x.visible=detailed);entry.desks.forEach(x=>x.visible=detailed)}}
  let zm=1,rest=0,cw=1,ch=1,fa=0,fn=0,dpr=1,hub,dvd,cv,ren,scene,cam,glow,ray,nd,pv,parts,pa,scan,rooms=[],desks=[],spins=[],raf=0,ready=0,fail=0,isOpen=0,hov=null,focus=null,dn=null,moved=0,base=.75,skip=0,t0=0,last=0,cur=null;
@@ -157,7 +179,7 @@ const V={th:.75,ph:.95,r:46,tx:0,tz:0},Vt={ph:.95,r:21,tx:0,tz:0},clamp=(v,a,b)=
 /* v3.9: sustained-performance adaptive quality; settings remain local to this trial. */
 const MC_QUALITY_MODES=["auto","quality","balanced","lite"];
 let mcQuality=MC_QUALITY_MODES.includes(store.get("officeQualityV39"))?store.get("officeQualityV39"):"auto";
-let mcPerfDebug=false,mcDirectoryClosed=store.get("officeMapClosed")==="1",mcDecorative=store.get("officeDecorativeMotion")==="1",mcLastActivity=performance.now();
+let mcPerfDebug=false,mcDirectoryClosed=store.get("officeMapClosed")==="1",mcDecorative=store.get("officeDecorativeMotion")==="1",mcLifeMotion=store.get("officeLifeMotion")!=="0",mcLastActivity=performance.now();
 let mcFrameSamples=0,mcFrameClock=0,mcDrawAverage=0,mcDrawCalls=0,mcTriangles=0,mcObservedFPS=0,mcLastQualityAdjust=0,mcLabelAt=0,mcActorAt=0,mcEmoteAt=0,mcParticleAt=0,mcSizeW=0,mcSizeH=0,mcSizeRatio=0;
 const mcLowCost=()=>mcQuality==="lite"||(window.UX&&UX.lite());
 const mcFrameLimit=()=>mcLowCost()?(TC?18:22):mcQuality==="quality"?(TC?40:50):mcQuality==="balanced"?(TC?25:34):(TC?28:38);
@@ -173,7 +195,7 @@ const mcDPRCap=()=>mcLowCost()?Math.min(devicePixelRatio||1,TC?.7:.8):mcQuality=
 const mcDPRFloor=()=>mcLowCost()?.55:TC?.55:.65;
 const mcQualityOptions=()=>MC_QUALITY_MODES.map(m=>`<option value="${m}" ${mcQuality===m?"selected":""}>${({auto:"Recommended (automatic)",quality:"Detailed",balanced:"Smooth",lite:"Lightweight"})[m]}</option>`).join("");
  function mcWake(){mcLastActivity=performance.now();if(isOpen&&ready&&!document.hidden&&!raf){last=mcLastActivity;lastR=0;raf=requestAnimationFrame(frame)}}
- function mcOfficeSettings(){if(!hub)return;mcCloseFloating();const dialog=document.createElement("div");dialog.id="mc-settings";dialog.className="mc-floating-backdrop mc-settings-backdrop";dialog.innerHTML=`<div class="mc-floating-dialog mc-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="mc-settings-title"><div class="mc-dialog-head"><div><span class="mc-directory-eyebrow">Maddie Journey</span><h2 id="mc-settings-title">Office settings</h2></div><button type="button" data-hx="close-float" aria-label="Close settings">${ic("x")}</button></div><p class="mc-setting-intro">Choose how the office looks and moves. The suggested settings favor smooth navigation.</p><div class="mc-setting-row"><div><b>Visual detail</b><small>Automatic is recommended for most devices.</small></div><select data-perf-quality aria-label="Office visual detail">${mcQualityOptions()}</select></div><label class="mc-setting-row"><span><b>Decorative motion</b><small>Optional scene effects. Off uses less battery.</small></span><input type="checkbox" data-mc-decorative ${mcDecorative?"checked":""} aria-label="Enable decorative office motion"></label><div class="mc-setting-actions"><button data-hx="scene-theme" type="button">Switch appearance</button><button data-hx="settings-fullscreen" type="button">Full screen</button><button data-hx="settings-help" type="button">How to navigate</button><button data-hx="settings-lock" type="button">Lock</button></div><details class="mc-settings-technical"><summary>Technical details</summary><p>Optional performance information for troubleshooting.</p><output id="mc-settings-diagnostics">${mcPerfSummary()}</output></details><p class="mc-settings-note">Read-only monitoring. Settings are saved on this device.</p></div>`;hub.append(dialog);mcSyncQualityUI();dialog.querySelector("[data-hx=close-float]")?.focus()}
+ function mcOfficeSettings(){if(!hub)return;mcCloseFloating();const dialog=document.createElement("div");dialog.id="mc-settings";dialog.className="mc-floating-backdrop mc-settings-backdrop";dialog.innerHTML=`<div class="mc-floating-dialog mc-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="mc-settings-title"><div class="mc-dialog-head"><div><span class="mc-directory-eyebrow">Maddie Journey</span><h2 id="mc-settings-title">Office settings</h2></div><button type="button" data-hx="close-float" aria-label="Close settings">${ic("x")}</button></div><p class="mc-setting-intro">Choose how the office looks and moves. The suggested settings favor smooth navigation.</p><div class="mc-setting-row"><div><b>Visual detail</b><small>Automatic is recommended for most devices.</small></div><select data-perf-quality aria-label="Office visual detail">${mcQualityOptions()}</select></div><label class="mc-setting-row"><span><b>Illustrative activity</b><small>Fictional work, conversations, coffee breaks and meetings. Turn off to keep people still.</small></span><input type="checkbox" data-mc-life ${mcLifeMotion?"checked":""} aria-label="Animate fictional employee activities"></label><label class="mc-setting-row"><span><b>Decorative motion</b><small>Optional scene effects. Off uses less battery.</small></span><input type="checkbox" data-mc-decorative ${mcDecorative?"checked":""} aria-label="Enable decorative office motion"></label><div class="mc-setting-actions"><button data-hx="scene-theme" type="button">Switch appearance</button><button data-hx="settings-fullscreen" type="button">Full screen</button><button data-hx="settings-help" type="button">How to navigate</button><button data-hx="settings-lock" type="button">Lock</button></div><details class="mc-settings-technical"><summary>Technical details</summary><p>Optional performance information for troubleshooting.</p><output id="mc-settings-diagnostics">${mcPerfSummary()}</output></details><p class="mc-settings-note">Read-only monitoring. Settings are saved on this device.</p></div>`;hub.append(dialog);mcSyncQualityUI();dialog.querySelector("[data-hx=close-float]")?.focus()}
  function mcPerfSummary(){return ready?`${mcObservedFPS||"—"} frames/sec · ${mcDrawCalls} draw calls · ${mcTriangles.toLocaleString()} triangles · ${dpr.toFixed(2)}× resolution`:"Simplified office view · 3D engine unavailable"}
 
 function mcSyncQualityUI(){
@@ -195,7 +217,7 @@ function mcSetQuality(mode){
   mcWake();mcSyncQualityUI();
 }
 window.MC_PERF={get mode(){return mcQuality},setMode:mcSetQuality,
- snapshot:()=>({mode:mcQuality,fps:mcObservedFPS,drawCalls:mcDrawCalls,triangles:mcTriangles,renderMs:+mcDrawAverage.toFixed(2),pixelRatio:+dpr.toFixed(2),webgl:!!ready,rooms:rooms.length,employees:mcActors.length})};
+ snapshot:()=>({mode:mcQuality,illustrativeActivity:mcLifeMotion&&!RM.matches,fps:mcObservedFPS,drawCalls:mcDrawCalls,triangles:mcTriangles,renderMs:+mcDrawAverage.toFixed(2),pixelRatio:+dpr.toFixed(2),webgl:!!ready,rooms:rooms.length,employees:mcActors.length})};
 
 // Use the existing saved dashboard theme setting, without rebuilding
 // the 3D renderer or resetting its camera.
@@ -224,7 +246,14 @@ function mk(){
   else if(b.dataset.i!=null){const i=b.dataset.i;mcPreview(i==="L"?"HQ":D[i][0])}});
  hub.addEventListener("change",e=>{if(e.target.id==="mc-date")mcSetDay(e.target.value);if(e.target.matches("[data-mc-decorative]")){mcDecorative=!!e.target.checked;store.set("officeDecorativeMotion",mcDecorative?"1":"0");if(parts)parts.visible=!!(mcDecorative&&mcQuality==="quality"&&!mcLowCost()&&isDark());mcWake()}});
  hub.addEventListener("input",e=>{if(e.target.id==="mc-search-input"){mcSearchTerm=e.target.value;mcSearchResults()}});
- hub.addEventListener("change",e=>{if(e.target.matches("[data-perf-quality]"))mcSetQuality(e.target.value)});
+ hub.addEventListener("change",e=>{
+   if(e.target.matches("[data-perf-quality]"))mcSetQuality(e.target.value);
+   if(e.target.matches("[data-mc-life]")){
+     mcLifeMotion=!!e.target.checked;store.set("officeLifeMotion",mcLifeMotion?"1":"0");
+     if(!mcLifeMotion)mcResetLifePose();
+     mcWake();mcSyncQualityUI();
+   }
+  });
  let mcLastPointerWake=0;
  hub.addEventListener("pointermove",()=>{
   if(mcRoom||raf)return;
@@ -291,6 +320,7 @@ function build(){
    screen:new THREE.BoxGeometry(.29,.19,.016),deskLeg:new THREE.CylinderGeometry(.045,.045,.34,6),body:new THREE.CylinderGeometry(.17,.205,.40,8),head:new THREE.SphereGeometry(.155,10,8),
    eye:new THREE.SphereGeometry(.016,5,4),mouth:new THREE.BoxGeometry(.065,.013,.012),arm:new THREE.CylinderGeometry(.045,.05,.31,6),foot:new THREE.CylinderGeometry(.055,.07,.28,6),glow:new THREE.SphereGeometry(.07,8,6)},MC={},MT=o=>{const k=JSON.stringify(o);return MC[k]||(MC[k]=new THREE.MeshLambertMaterial(o))};
  GD.cup=new THREE.CylinderGeometry(.065,.052,.11,8);
+ GD.actorShadow=new THREE.CircleGeometry(.23,16);
  ORDER.forEach((o,n)=>{
   const L=o==="L",d=L?"":D[o][0],hex=L?LOB:HX[o],col=new THREE.Color(hex),g=new THREE.Group(),x=(n%3-1)*5.7,z=(Math.floor(n/3)-1)*5.7;
   g.position.set(x,-8,z);const mbm=new THREE.MeshBasicMaterial({color:col});
@@ -344,24 +374,26 @@ function build(){
      const cup=activity==="coffee"?new THREE.Mesh(GD.cup,MT({color:0xfffaf1})):null;
      if(cup){cup.position.set(.26,.55,.10);pf.add(cup)}
      const m=mcMood(mcTask(e));const glowDot=new THREE.Mesh(GD.glow,new THREE.MeshBasicMaterial({color:m.color}));glowDot.position.set(0,1.12,0);pf.add(glowDot);
-     mcActors.push({emp:e,task:mcTask(e),pf,body:bd,glow:glowDot,mood:m,arms,legs,activity,cup,homeX:px,homeZ:pz,phase:e.i*.81,room:o,avatarIndex:k});roomActors.push(pf)});
+     mcActors.push({emp:e,task:mcTask(e),pf,body:bd,glow:glowDot,mood:m,arms,legs,activity,cup,homeX:px,homeZ:pz,deskX:ds.position.x+.25,deskZ:ds.position.z+.47,phase:e.i*.81,room:o,avatarIndex:k});roomActors.push(pf)});
    furnish({desks:roomDesks});
    const proxy=new THREE.Group(),obj=new THREE.Object3D();
    const pDesk=new THREE.InstancedMesh(GD.d,MT({color:0xd8c8c1}),l.length),pBody=new THREE.InstancedMesh(GD.body,MT({color:0xffffff}),l.length),pHead=new THREE.InstancedMesh(GD.head,MT({color:0xf0c9a8}),l.length),pHair=new THREE.InstancedMesh(GD.r,MT({color:0x3b303a}),l.length);
    const pMonitor=new THREE.InstancedMesh(GD.unit,MT({color:0x3e7194}),l.length),pChair=new THREE.InstancedMesh(GD.unit,MT({color:0x92b7d2}),l.length);
+    const pShadow=new THREE.InstancedMesh(GD.actorShadow,MT({color:0x244969,transparent:true,opacity:.17,side:THREE.DoubleSide,depthWrite:false}),l.length);
     const coffeeActors=mcActors.slice(-roomActors.length).filter(a=>a.activity==="coffee"),pCup=coffeeActors.length?new THREE.InstancedMesh(GD.cup,MT({color:0xfffaf1}),coffeeActors.length):null;
     const shirtColors=[0xf6a6c1,0x9ad7a8,0xf3b27a,0x9fc3ff,0xcdb8ff];
    l.forEach((e,k)=>{const desk=roomDesks[k],person=roomActors[k];obj.position.copy(desk.position);obj.scale.set(1,1,1);obj.updateMatrix();pDesk.setMatrixAt(k,obj.matrix);
-    obj.position.set(desk.position.x,.65,desk.position.z-.12);obj.scale.set(.32,.21,.035);obj.updateMatrix();pMonitor.setMatrixAt(k,obj.matrix);
+    obj.position.set(person.position.x,.169,person.position.z);obj.rotation.set(-Math.PI/2,0,0);obj.updateMatrix();pShadow.setMatrixAt(k,obj.matrix);
+     obj.rotation.set(0,0,0);obj.position.set(desk.position.x,.65,desk.position.z-.12);obj.scale.set(.32,.21,.035);obj.updateMatrix();pMonitor.setMatrixAt(k,obj.matrix);
     obj.position.set(desk.position.x+.25,.43,desk.position.z+.65);obj.scale.set(.37,.41,.08);obj.updateMatrix();pChair.setMatrixAt(k,obj.matrix);
     obj.scale.set(1,1,1);obj.position.set(person.position.x,.45,person.position.z);obj.updateMatrix();pBody.setMatrixAt(k,obj.matrix);pBody.setColorAt(k,new THREE.Color(shirtColors[(e.i*7)%5]));
     obj.position.y=.79;obj.updateMatrix();pHead.setMatrixAt(k,obj.matrix);
     obj.position.y=.84;obj.updateMatrix();pHair.setMatrixAt(k,obj.matrix)});
    if(pCup)coffeeActors.forEach((a,k)=>{obj.position.set(a.homeX+.26,.58,a.homeZ+.10);obj.rotation.set(0,0,0);obj.scale.set(1,1,1);obj.updateMatrix();pCup.setMatrixAt(k,obj.matrix)});
-   [pDesk,pMonitor,pChair,pBody,pHead,pHair,pCup].filter(Boolean).forEach(m=>{m.instanceMatrix.needsUpdate=true;m.frustumCulled=false;proxy.add(m)});
+   [pDesk,pMonitor,pChair,pShadow,pBody,pHead,pHair,pCup].filter(Boolean).forEach(m=>{m.instanceMatrix.needsUpdate=true;m.frustumCulled=false;proxy.add(m)});
    g.add(proxy);mcRoomSets.push({idx:o,proxy,staff:roomActors,desks:roomDesks,
     actors:mcActors.slice(-roomActors.length),
-    peopleInstances:{body:pBody,head:pHead,hair:pHair,cups:pCup,coffeeActors}});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
+    peopleInstances:{body:pBody,head:pHead,hair:pHair,shadows:pShadow,cups:pCup,coffeeActors}});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
   // Static architecture is batched per room. Staff and desks remain individually selectable.
   const temp=new THREE.Object3D();
   staticBatches.forEach(batch=>{
@@ -417,7 +449,7 @@ function frame(now){
   // Do not render the locked demo behind the passcode, or when reduced motion
   // is requested and the user has stopped interacting with the scene.
   if(document.body.classList.contains("mc-demo-locked"))return;
-  if(!focus&&(RM.matches||document.documentElement.classList.contains("mj-reduced"))&&!dn&&!mcDecorative&&now-mcLastActivity>2800&&now-t0*1000>4400)return;
+  if(!focus&&!mcLifeEnabled()&&!dn&&!mcDecorative&&now-mcLastActivity>2800&&now-t0*1000>4400)return;
   raf=requestAnimationFrame(frame);
  const gap=now-lastR,targetGap=1000/(focus?mcFrameLimit():Math.min(mcFrameLimit(),mcOverviewLimit()));
  if(gap<targetGap)return;
@@ -436,23 +468,13 @@ function frame(now){
   if(updateLabels&&!focus){pv.set(r.x,2.2+r.h*.5,r.z).project(cam);const l=r.lab;l.style.opacity=pv.z>1?0:e;l.style.transform=`translate(${(pv.x*.5+.5)*W}px,${(-pv.y*.5+.5)*Hh}px) translate(-50%,-100%)`}
  });
  if(el<4)desks.forEach(d=>{const p=clamp((el-d.userData.dl)/.5,0,1);d.scale.setScalar(Math.max(.001,1-Math.pow(1-p,3)))});
-  const animatePeople=!RM.matches&&!document.documentElement.classList.contains("mj-reduced")&&
+  const animatePeople=mcLifeEnabled()&&
     now-mcActorAt>(focus?mcLowCost()?110:mcQuality==="balanced"?54:22:mcLowCost()?125:TC?90:50);
  if(!focus&&animatePeople){
    mcActorAt=now;
    mcAnimateOverviewPeople(el);
  }
- if(focus&&animatePeople){mcActorAt=now;mcActors.forEach(a=>{
-   if(a.room!==focus.idx)return;const m=a.mood||mcMood(a.task),p=a.phase,active=focus&&focus.idx===a.room,wander=active&&a.avatarIndex%3===1,fast=m.code==="late"?1.55:m.code==="due"?1.34:1;
-   a.pf.position.x=a.homeX+(wander?Math.sin(el*.75*fast+p)*.15:Math.sin(el*.6+p)*.014);
-   a.pf.position.z=a.homeZ+(wander?Math.cos(el*.75*fast+p)*.20:Math.cos(el*.5+p)*.01);
-   a.pf.position.y=0+(wander?Math.abs(Math.sin(el*4*fast+p))*.035:Math.abs(Math.sin(el*1.7+p))*.014);
-   a.pf.rotation.y=wander?Math.sin(el*.75*fast+p)*.65:Math.sin(el*.32+p)*.08;
-   a.arms.forEach((arm,j)=>arm.rotation.x=Math.sin(el*(m.code==="late"?6:3)+p+j*1.7)*(wander?.43:a.activity==="chat"?.36:.22));
-    if(a.cup){const sip=(Math.sin(el*1.5+p)+1)/2;a.cup.position.y=.55+sip*.20;a.cup.position.z=.10-sip*.03}
-   a.legs.forEach((leg,j)=>leg.rotation.x=wander?Math.sin(el*4*fast+p+j*Math.PI)*.4:0);
-   a.glow.position.y=1.12+Math.sin(el*2.3+p)*.065;a.glow.scale.setScalar(a.emp.i===mcSelectedPerson&&focus?.idx===a.room?1.65:1);
-  })}
+ if(focus&&animatePeople){mcActorAt=now;mcAnimateFocusedPeople(el)}
  if(mcDecorative&&!mcLowCost()&&!RM.matches&&!focus){spins.forEach((s,i)=>{if(s.geometry.type==="IcosahedronGeometry"){s.rotation.y=el*.6;s.position.y=1.7+Math.sin(el*1.4)*.14}else s.rotation.z=el*(.25+i*.1)*(i%2?-1:1)});const sc=(el%6)/6;scan.scale.setScalar(2+sc*16);scan.material.opacity=el<1.6?0:.28*(1-sc)}else scan.material.opacity=0;
   if(mcRoom&&focus&&now-mcEmoteAt>85){mcEmoteAt=now;const b=$("#mc-emotes",hub);if(b){$$('.mc-emote',b).forEach(el=>{const a=mcActors.find(x=>x.emp.i===+el.dataset.actor);if(!a)return;a.pf.getWorldPosition(pv);pv.y+=1.23;pv.project(cam);let xx=(pv.x*.5+.5)*cw,yy=(-pv.y*.5+.5)*ch;el.style.transform=`translate(${xx.toFixed(1)}px,${yy.toFixed(1)}px) translate(-50%,-100%)`;el.style.opacity=pv.z>1||xx<5||xx>cw-5||yy<135||yy>ch*(cw<730?.52:.94)?"0":"1"})}}
  if(hov){glow.color.copy(hov.col);glow.position.set(hov.x,3.4,hov.z)}glow.intensity+=((hov?2.6:0)-glow.intensity)*Math.min(1,dt*8);

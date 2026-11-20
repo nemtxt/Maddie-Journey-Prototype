@@ -10,8 +10,8 @@ new (require('node:vm').Script)(hub);
 new (require('node:vm').Script)(furniture);
 for(const html of ['index.html','demo.html']){
   const doc=read(html);
-  assert.match(doc,/maddie-office-furnishings\.js\?v=office-rooms-v1/);
-  assert.match(doc,/p-hub\.js\?v=office-rooms-v1/);
+  assert.match(doc,/maddie-office-furnishings\.js\?v=living-office-v437/);
+  assert.match(doc,/p-hub\.js\?v=living-office-v437/);
   assert.ok(doc.indexOf('maddie-office-furnishings.js')<doc.indexOf('p-hub.js'));
 }
 assert.match(hub,/window\.MC_OFFICE_FURNISH/);
