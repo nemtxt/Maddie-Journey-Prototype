@@ -40,7 +40,7 @@ const divisionItems=()=>{
  return '<div class="mj-divisions-heading">DIVISIONS <span>'+divisions.length+'</span></div>'+
  '<div class="mj-division-links">'+divisions.map(([name,count])=>{
   const route='division/'+encodeURIComponent(name),color=departmentColor(name);
-  return '<a class="mj-division-item" href="#'+route+'" data-id="'+esc(route)+'" data-mj-href="'+esc(route)+'" title="Open '+esc(name)+' division">'+
+  return '<a class="mj-division-item" style="--mj-division-accent:'+color+'" href="#'+route+'" data-id="'+esc(route)+'" data-mj-href="'+esc(route)+'" title="Open '+esc(name)+' division">'+
    '<span class="mj-division-dot" aria-hidden="true" style="--division-color:'+color+'"></span>'+
    '<span class="nl">'+esc(name)+'</span><span class="mj-division-count">'+Number(count||0)+'</span></a>';
  }).join('')+'</div><div class="mj-divisions-heading mj-divisions-heading-secondary">PEOPLE REPORTS</div>';
@@ -108,8 +108,7 @@ function active(){
  all('[data-mj-href]',side).forEach(a=>{
   const d=a.dataset.mjHref;
   const on=d===h||(d==='settings'&&h==='data-system')||
-   (d==='people'&&h.startsWith('people:'))||
-   (d==='divisions'&&h.startsWith('division/'));
+   (d==='people'&&h.startsWith('people:'));
   a.classList.toggle('on',on);
   if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
  });
