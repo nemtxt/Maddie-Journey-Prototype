@@ -73,11 +73,11 @@ function mcPaintPanel(){if(!hub||!mcRoom)return;let el=$("#mc-scene",hub);if(!el
  const panelScroll=$(".mc-scene-panel",el)?.scrollTop||0;
  el.innerHTML=mcPanel(mcRoom);
  const activePanel=$(".mc-scene-panel",el);if(activePanel&&panelScroll)activePanel.scrollTop=panelScroll;
- mcSyncQualityUI();hub.classList.add("mc-focused");hub.classList.toggle("mc-css-fallback",!ready);mcBuildDirectory();if(!ready)mcFallbackRoom(mcRoom);mcBuildEmotes()}
+ mcSyncQualityUI();hub.classList.add("mc-focused");hub.classList.toggle("mc-css-fallback",!ready);if(!ready){mcBuildDirectory();mcFallbackRoom(mcRoom)}mcBuildEmotes()}
 function mcFallbackRoom(d){let v=$("#mc-fallback",hub);if(!v){v=document.createElement("div");v.id="mc-fallback";hub.append(v)}
  const people=mcPeople(d).slice(0,8);
  v.innerHTML=`<div class="mc-fallback-office" style="--room-accent:${d==="HQ"?LOB:HX[D.findIndex(x=>x[0]===d)]}"><div class="mc-fb-wall"><div class="mc-fb-window"></div><div class="mc-fb-window"></div><div class="mc-fb-sign">${mcSafe(d)}</div></div><div class="mc-fb-floor">${people.map((e,k)=>{const m=mcMood(mcTask(e));return `<button type="button" class="mc-fb-desk" data-hx="person" data-emp="${e.i}" aria-label="Select ${mcSafe(e.name)}" style="--n:${k}"><span class="mc-fb-screen"></span><span class="mc-fb-person"></span><span class="mc-fb-chair"></span><span class="mc-fb-emote" style="--emo:#${m.color.toString(16).padStart(6,"0")}">${m.symbol}</span></button>`}).join("")}</div></div>`}
-function mcCloseFocus(){mcCloseFloating();mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcRoom=null;mcSelectedPerson=null;focus=null;mcApplyRoomLOD();hub.classList.remove("mc-focused","mc-css-fallback","hxz");mcWake();const el=$("#mc-scene",hub);if(el)el.remove();const v=$("#mc-fallback",hub);if(v)v.remove();const bubbles=$("#mc-emotes",hub);if(bubbles)bubbles.remove();Vt.r=homeR();Vt.ph=.95;Vt.tx=Vt.tz=0;base=.75;rest=0;const hint=$(".hxk",hub);if(hint)hint.hidden=false}
+function mcCloseFocus(){mcCloseFloating();if(ready)$("#mc-office-directory",hub)?.remove();mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcRoom=null;mcSelectedPerson=null;focus=null;mcApplyRoomLOD();hub.classList.remove("mc-focused","mc-css-fallback","hxz");mcWake();const el=$("#mc-scene",hub);if(el)el.remove();const v=$("#mc-fallback",hub);if(v)v.remove();const bubbles=$("#mc-emotes",hub);if(bubbles)bubbles.remove();Vt.r=homeR();Vt.ph=.95;Vt.tx=Vt.tz=0;base=.75;rest=0;const hint=$(".hxk",hub);if(hint)hint.hidden=false}
 function mcPreview(d){if(!hub||!isOpen){window.MC_PENDING_DIVISION=d;H.open();if(!hub||!isOpen)return}if(dvd)dvd.classList.remove("on");if(d!=="HQ"&&!D.some(x=>x[0]===d))return;
  mcCloseFloating();mcRoom=d;mcSelectedPerson=null;mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcViewPreset="iso";rest=0;const ri=d==="HQ"?"L":D.findIndex(x=>x[0]===d),r=rooms.find(x=>x.idx==ri);
  if(ready&&r){focus=r;Vt.r=clamp(3.8/(.3443*hub.clientWidth/hub.clientHeight),7.5,13);Vt.ph=.95;Vt.tx=r.x+(hub.clientWidth>860?.9:0);Vt.tz=r.z;hub.classList.add("hxz")}else{focus=null}
@@ -152,8 +152,16 @@ let mcPerfDebug=false,mcDirectoryClosed=store.get("officeMapClosed")==="1",mcDec
 let mcFrameSamples=0,mcFrameClock=0,mcDrawAverage=0,mcDrawCalls=0,mcTriangles=0,mcObservedFPS=0,mcLastQualityAdjust=0,mcLabelAt=0,mcActorAt=0,mcEmoteAt=0,mcParticleAt=0,mcSizeW=0,mcSizeH=0,mcSizeRatio=0;
 const mcLowCost=()=>mcQuality==="lite"||(window.UX&&UX.lite());
 const mcFrameLimit=()=>mcLowCost()?(TC?18:22):mcQuality==="quality"?(TC?40:50):mcQuality==="balanced"?(TC?25:34):(TC?28:38);
-const mcDPRCap=()=>mcLowCost()?Math.min(devicePixelRatio||1,TC?.75:.9):mcQuality==="quality"?Math.min(devicePixelRatio||1,TC?1.35:1.75):mcQuality==="balanced"?Math.min(devicePixelRatio||1,TC?.9:1.15):Math.min(devicePixelRatio||1,TC?1:1.2);
-const mcDPRFloor=()=>mcLowCost()?.65:TC?.65:.75;
+const mcOverviewLimit=()=>{
+  if(mcLowCost())return TC?13:17;
+  // Lower GPU upload and draw pressure when profiling indicates a slow device.
+  if(mcDrawAverage>21)return 15;
+  if(mcDrawAverage>14)return TC?17:20;
+  if(mcQuality==="quality")return TC?22:31;
+  return TC?18:29;
+};
+const mcDPRCap=()=>mcLowCost()?Math.min(devicePixelRatio||1,TC?.7:.8):mcQuality==="quality"?Math.min(devicePixelRatio||1,TC?1:1.4):mcQuality==="balanced"?Math.min(devicePixelRatio||1,TC?.8:1.05):Math.min(devicePixelRatio||1,TC?.82:1);
+const mcDPRFloor=()=>mcLowCost()?.55:TC?.55:.65;
 const mcQualityOptions=()=>MC_QUALITY_MODES.map(m=>`<option value="${m}" ${mcQuality===m?"selected":""}>${({auto:"Recommended (automatic)",quality:"Detailed",balanced:"Smooth",lite:"Lightweight"})[m]}</option>`).join("");
  function mcWake(){mcLastActivity=performance.now();if(isOpen&&ready&&!document.hidden&&!raf){last=mcLastActivity;lastR=0;raf=requestAnimationFrame(frame)}}
  function mcOfficeSettings(){if(!hub)return;mcCloseFloating();const dialog=document.createElement("div");dialog.id="mc-settings";dialog.className="mc-floating-backdrop mc-settings-backdrop";dialog.innerHTML=`<div class="mc-floating-dialog mc-settings-dialog" role="dialog" aria-modal="true" aria-labelledby="mc-settings-title"><div class="mc-dialog-head"><div><span class="mc-directory-eyebrow">Maddie Journey</span><h2 id="mc-settings-title">Office settings</h2></div><button type="button" data-hx="close-float" aria-label="Close settings">${ic("x")}</button></div><p class="mc-setting-intro">Choose how the office looks and moves. The suggested settings favor smooth navigation.</p><div class="mc-setting-row"><div><b>Visual detail</b><small>Automatic is recommended for most devices.</small></div><select data-perf-quality aria-label="Office visual detail">${mcQualityOptions()}</select></div><label class="mc-setting-row"><span><b>Decorative motion</b><small>Optional scene effects. Off uses less battery.</small></span><input type="checkbox" data-mc-decorative ${mcDecorative?"checked":""} aria-label="Enable decorative office motion"></label><div class="mc-setting-actions"><button data-hx="scene-theme" type="button">Switch appearance</button><button data-hx="settings-fullscreen" type="button">Full screen</button><button data-hx="settings-help" type="button">How to navigate</button><button data-hx="settings-lock" type="button">Lock</button></div><details class="mc-settings-technical"><summary>Technical details</summary><p>Optional performance information for troubleshooting.</p><output id="mc-settings-diagnostics">${mcPerfSummary()}</output></details><p class="mc-settings-note">Read-only monitoring. Settings are saved on this device.</p></div>`;hub.append(dialog);mcSyncQualityUI();dialog.querySelector("[data-hx=close-float]")?.focus()}
@@ -184,9 +192,9 @@ const go=(h,quiet)=>{if(location.hash==="#"+h){if(!quiet)route();return}if(quiet
 const home=()=>clamp(9.5/(.3443*(hub.clientWidth/hub.clientHeight)),21,46),homeR=()=>home()*zm;
 function mk(){
  hub=document.createElement("div");hub.id="hub";hub.setAttribute("role","region");hub.setAttribute("aria-label","Madhouse office, choose a division");
- hub.innerHTML=`<canvas id="hcv" role="img" aria-label="3D office with eight divisions. Use the buttons below to choose one."></canvas><div id="hxlab"></div><button type="button" class="hxbt mc-office-workspaces-btn" data-hx="workspaces" aria-label="Open Workspaces dashboard">${ic("grid")}<span>Workspaces</span></button><div class="hxh"><div><div class="hxt" role="heading" aria-level="1">Virtual office</div><p class="hxs">Select a division on the office map to explore.</p></div><div class="hxb"><button class="hxbt mc-live2" data-hx="sources" aria-label="Data status and sources"><i class="dot a" id="livedot2"></i><span id="livetxt2">Connecting…</span></button><button class="hxbt" data-hx="search" aria-label="Find a person or division">${ic("search")}<span>Find</span></button><button class="hxbt" data-hx="org">Organization chart</button><button class="hxbt mc-settings-trigger" data-hx="office-settings" aria-label="Office settings">${ic("compass")}<span>Settings</span></button></div></div><aside class="hxi" id="hxi" aria-live="polite"></aside><p class="hxk">Drag to look around. ${TC?"Pinch":"Scroll"} to zoom. ${TC?"Tap":"Click"} a room to enter it.</p><nav class="hxl" aria-label="Alternative division navigation"><button data-i="L" style="--c:#8fb4ff">Company <small>${M.n}</small></button>${D.map(([d,c],i)=>`<button data-i="${i}" style="--c:${HX[i]}">${d} <small>${c}</small></button>`).join("")}</nav>`;
+ hub.innerHTML=`<canvas id="hcv" role="img" aria-label="3D office with eight divisions. Use the buttons below to choose one."></canvas><div id="hxlab"></div><button type="button" class="hxbt mc-office-workspaces-btn" data-hx="workspaces" aria-label="Open Workspaces dashboard">${ic("grid")}<span>Workspaces</span></button><div class="hxh"><div><div class="hxt" role="heading" aria-level="1">Virtual office</div><p class="hxs">Select a division on the office map to explore.</p></div><div class="hxb"><button class="hxbt mc-live2" data-hx="sources" aria-label="Data status and sources"><i class="dot a" id="livedot2"></i><span id="livetxt2">Connecting…</span></button><button class="hxbt" data-hx="search" aria-label="Find a person or division">${ic("search")}<span>Find</span></button></div></div><aside class="hxi" id="hxi" aria-live="polite"></aside><p class="hxk">Drag to look around. ${TC?"Pinch":"Scroll"} to zoom. ${TC?"Tap":"Click"} a room to enter it.</p><nav class="hxl" aria-label="Alternative division navigation"><button data-i="L" style="--c:#8fb4ff">Company <small>${M.n}</small></button>${D.map(([d,c],i)=>`<button data-i="${i}" style="--c:${HX[i]}">${d} <small>${c}</small></button>`).join("")}</nav>`;
  dvd=document.createElement("div");dvd.id="dvd";dvd.setAttribute("role","dialog");dvd.setAttribute("aria-modal","true");
- document.body.append(hub,dvd);mcBuildDirectory();cv=$("#hcv",hub);mdl=document.createElement("div");mdl.id="hxm";document.body.append(mdl);mdl.addEventListener("click",e=>{if(e.target===mdl||e.target.closest("[data-m]"))closeM()});
+ document.body.append(hub,dvd);cv=$("#hcv",hub);mdl=document.createElement("div");mdl.id="hxm";document.body.append(mdl);mdl.addEventListener("click",e=>{if(e.target===mdl||e.target.closest("[data-m]"))closeM()});
  hub.addEventListener("click",e=>{mcWake();const b=e.target.closest("button");if(!b)return;const a=b.dataset.hx;
   if(a==="theme"){window.mcTheme()}if(a==="fs"){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(_){}}
   if(a==="org"){dash("HQ");setTimeout(()=>{const o=$("#hxorg",dvd);o&&o.scrollIntoView({behavior:RM.matches?"auto":"smooth",block:"start"})},400)}else if(a==="lk"){$("#lock").click()}
@@ -237,7 +245,7 @@ function mk(){
 function build(){
  if(typeof THREE==="undefined"){fail=1;return 0}
  if(!hub)mk();
- try{ren=new THREE.WebGLRenderer({canvas:cv,antialias:!TC&&mcQuality==="quality"&&(devicePixelRatio||1)<2,powerPreference:"low-power"})}catch(e){fail=1;return 0}
+ try{ren=new THREE.WebGLRenderer({canvas:cv,antialias:!TC&&mcQuality==="quality"&&(devicePixelRatio||1)<2,powerPreference:TC?"low-power":"high-performance"})}catch(e){fail=1;return 0}
  cv.addEventListener("webglcontextlost",e=>{e.preventDefault();cancelAnimationFrame(raf);raf=0;hub.classList.add("hxnogl")});cv.addEventListener("webglcontextrestored",()=>{hub.classList.remove("hxnogl");last=performance.now();if(isOpen&&!raf)raf=requestAnimationFrame(frame)});
  dpr=mcDPRCap();ren.setPixelRatio(dpr);
  scene=new THREE.Scene();scene.background=new THREE.Color(0x070b16);scene.fog=new THREE.FogExp2(0x070b16,.016);
@@ -356,7 +364,7 @@ function frame(now){
   if(document.body.classList.contains("mc-demo-locked"))return;
   if(!focus&&(RM.matches||document.documentElement.classList.contains("mj-reduced"))&&!dn&&!mcDecorative&&now-mcLastActivity>2800&&now-t0*1000>4400)return;
   raf=requestAnimationFrame(frame);
- const gap=now-lastR,targetGap=1000/(focus?mcFrameLimit():Math.min(mcFrameLimit(),mcLowCost()?14:TC?18:24));
+ const gap=now-lastR,targetGap=1000/(focus?mcFrameLimit():Math.min(mcFrameLimit(),mcOverviewLimit()));
  if(gap<targetGap)return;
  lastR=now;
  const dt=Math.min(.05,(now-last)/1000||.016),el=now/1000-t0;last=now;
@@ -364,7 +372,7 @@ function frame(now){
  const k=1-Math.pow(.02,dt);
   V.th+=(base-V.th)*k;V.ph+=(Vt.ph-V.ph)*k;V.r+=(Vt.r-V.r)*k;V.tx+=(Vt.tx-V.tx)*k;V.tz+=(Vt.tz-V.tz)*k;
  cam.position.set(V.tx+V.r*Math.sin(V.ph)*Math.sin(V.th),V.r*Math.cos(V.ph),V.tz+V.r*Math.sin(V.ph)*Math.cos(V.th));cam.lookAt(V.tx,0,V.tz);
- const W=cw,Hh=ch,updateLabels=now-mcLabelAt>65;
+ const W=cw,Hh=ch,updateLabels=now-mcLabelAt>(focus?160:110);
  if(updateLabels)mcLabelAt=now;
  rooms.forEach(r=>{
   r.grp.visible=!focus||r===focus;
@@ -402,8 +410,8 @@ const renderStart=performance.now();
   mcDrawCalls=ren.info.render.calls;mcTriangles=ren.info.render.triangles;
   if(mcQuality==="auto"&&now-mcLastQualityAdjust>4200){
     const max=mcDPRCap(),floor=mcDPRFloor();
-    if(mcDrawAverage>19&&dpr>floor+.02){dpr=Math.max(floor,dpr-.12);mcLastQualityAdjust=now;size(true)}
-    else if(mcDrawAverage<8&&mcObservedFPS>=mcFrameLimit()*.72&&dpr<max-.02){dpr=Math.min(max,dpr+.1);mcLastQualityAdjust=now;size(true)}
+    if((mcDrawAverage>14||(mcObservedFPS<mcOverviewLimit()*.7&&!focus))&&dpr>floor+.02){dpr=Math.max(floor,dpr-.12);mcLastQualityAdjust=now;size(true)}
+    else if(mcDrawAverage<6&&mcObservedFPS>=(focus?mcFrameLimit():mcOverviewLimit())*.84&&dpr<max-.02){dpr=Math.min(max,dpr+.1);mcLastQualityAdjust=now;size(true)}
   }
   if($("#mc-settings-diagnostics",hub))mcSyncQualityUI();
  }
