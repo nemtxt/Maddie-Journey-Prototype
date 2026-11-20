@@ -616,8 +616,15 @@ function officeInit(){
  st.addEventListener("pointerup",end);st.addEventListener("pointercancel",end);
  st.addEventListener("click",e=>{if(moved){e.stopPropagation();e.preventDefault();moved=false}},true);
  st.addEventListener("keydown",e=>{const r=e.target.closest&&e.target.closest(".rm");if(r&&(e.key==="Enter"||e.key===" ")){e.preventDefault();location.hash="#"+r.dataset.go}});
- $$("[data-of]").forEach(b=>b.onclick=()=>{if(document.documentElement.classList.contains("lite"))return;const a=b.dataset.of;if(a==="l")rz-=45;else if(a==="r")rz+=45;else{rz=-35;rx=58}apply()});
+ $("[data-of]").forEach(b=>b.onclick=()=>{if(document.documentElement.classList.contains("lite"))return;const a=b.dataset.of;if(a==="l")rz-=45;else if(a==="r")rz+=45;else{rz=-35;rx=58}apply()});
 }
+// Release the old office view and resize callback as soon as navigation leaves it.
+addEventListener("hashchange",()=>{
+ if(officeResizeHandler&&location.hash.slice(1)!=="office"){
+  removeEventListener("resize",officeResizeHandler);
+  officeResizeHandler=null;
+ }
+});
 
 /* ---------- panels, palette, tooltips ---------- */
 let layer=null,opener=null;
