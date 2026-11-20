@@ -119,11 +119,11 @@ const mcRoomSets=[];
    for(let i=0;i<entry.actors.length;i++){
     const person=entry.actors[i];
     const phase=el*(.52+(i%4)*.08)+person.phase+entry.idx*.41;
-    const walking=i%3===1;
+    const walking=person.activity==="walk";
     const x=person.homeX+Math.sin(phase)*(walking?.35:.09);
     const z=person.homeZ+Math.cos(phase*.86)*(walking?.28:.075);
     const bob=Math.abs(Math.sin(phase*(walking?2.8:1.5)))*(walking?.038:.018);
-    const turn=walking?Math.cos(phase)*.40:Math.sin(phase*.7)*.10;
+    const turn=person.activity==="chat"?(i%2?-.38:.38):walking?Math.cos(phase)*.40:Math.sin(phase*.7)*.10;
     mcOverviewTransform.position.set(x,.45+bob,z);
     mcOverviewTransform.rotation.set(0,turn,0);
     mcOverviewTransform.scale.set(1,1,1);
@@ -139,6 +139,15 @@ const mcRoomSets=[];
    set.body.instanceMatrix.needsUpdate=true;
    set.head.instanceMatrix.needsUpdate=true;
    set.hair.instanceMatrix.needsUpdate=true;
+    if(set.cups){
+      set.coffeeActors.forEach((person,k)=>{
+        const sip=(Math.sin(el*1.5+person.phase)+1)/2;
+        mcOverviewTransform.position.set(person.homeX+.26,.56+sip*.20,person.homeZ+.10);
+        mcOverviewTransform.rotation.set(0,0,0);mcOverviewTransform.scale.set(1,1,1);
+        mcOverviewTransform.updateMatrix();set.cups.setMatrixAt(k,mcOverviewTransform.matrix);
+      });
+      set.cups.instanceMatrix.needsUpdate=true;
+    }
   }
  }
  function mcApplyRoomLOD(){for(const entry of mcRoomSets){const detailed=!!focus&&focus.idx===entry.idx;entry.proxy.visible=!focus;entry.staff.forEach(x=>x.visible=detailed);entry.desks.forEach(x=>x.visible=detailed)}}
@@ -281,6 +290,7 @@ function build(){
    unit:new THREE.BoxGeometry(1,1,1),plantStem:new THREE.CylinderGeometry(.055,.07,.37,7),plantPot:new THREE.CylinderGeometry(.18,.15,.22,8),plantLeaf:new THREE.SphereGeometry(.19,7,6),
    screen:new THREE.BoxGeometry(.29,.19,.016),deskLeg:new THREE.CylinderGeometry(.045,.045,.34,6),body:new THREE.CylinderGeometry(.17,.205,.40,8),head:new THREE.SphereGeometry(.155,10,8),
    eye:new THREE.SphereGeometry(.016,5,4),mouth:new THREE.BoxGeometry(.065,.013,.012),arm:new THREE.CylinderGeometry(.045,.05,.31,6),foot:new THREE.CylinderGeometry(.055,.07,.28,6),glow:new THREE.SphereGeometry(.07,8,6)},MC={},MT=o=>{const k=JSON.stringify(o);return MC[k]||(MC[k]=new THREE.MeshLambertMaterial(o))};
+ GD.cup=new THREE.CylinderGeometry(.065,.052,.11,8);
  ORDER.forEach((o,n)=>{
   const L=o==="L",d=L?"":D[o][0],hex=L?LOB:HX[o],col=new THREE.Color(hex),g=new THREE.Group(),x=(n%3-1)*5.7,z=(Math.floor(n/3)-1)*5.7;
   g.position.set(x,-8,z);const mbm=new THREE.MeshBasicMaterial({color:col});
@@ -304,15 +314,17 @@ function build(){
    const lamp=piece([0,1.95,0],[1.48,.055,.14],white,true);lamp.material.emissive&&lamp.material.emissive.setHex(0x5b5455);
    const plant=(a,b)=>{addStatic("plant-stem",GD.plantStem,MT({color:0x6b5142}),[a,.19,b]);addStatic("plant-pot",GD.plantPot,pot,[a,.11,b]);for(let j=0;j<4;j++)addStatic("plant-leaf",GD.plantLeaf,leaf,[a+Math.sin(j*2.1)*.14,.49+Math.cos(j*1.9)*.10,b+Math.cos(j*2.1)*.13],[.7,1.3,.65])};
    plant(2.02,-1.95);plant(-2.05,1.95);
+   const furnish=(extra={})=>{if(typeof window.MC_OFFICE_FURNISH==="function")
+      window.MC_OFFICE_FURNISH({THREE,GD,MT,addStatic,piece,plant,division:L?"Headquarters":d,isLobby:L,isLite:mcLowCost(),...extra})};
    if(!L){piece([1.1,.26,2.04],[1.24,.52,.32],metal);piece([1.1,.55,2.04],[1.14,.045,.30],white)}
-   if(L){const ic=new THREE.Mesh(new THREE.IcosahedronGeometry(.95,1),new THREE.MeshBasicMaterial({color:col,wireframe:true}));ic.position.y=1.7;g.add(ic);spins.push(ic);
+   if(L){furnish();const ic=new THREE.Mesh(new THREE.IcosahedronGeometry(.95,1),new THREE.MeshBasicMaterial({color:col,wireframe:true}));ic.position.y=1.7;g.add(ic);spins.push(ic);
    [1.7,2.3].forEach((r,k)=>{const t=new THREE.Mesh(new THREE.TorusGeometry(r,.035,8,72),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.7-k*.3}));t.rotation.x=Math.PI/2;t.position.y=.3+k*.35;g.add(t);spins.push(t)})}
-  else{const l=EMP.filter(e=>e.dept===d),rw=Math.ceil(l.length/4),roomActors=[],roomDesks=[];
-   l.forEach((e,k)=>{const c=k%4,r=Math.floor(k/4),dm=MT({color:e.head?0xffffff:!e.hasId?0xff5a5f:col.clone().lerp(new THREE.Color(0xffffff),.4),emissive:e.head?0x444444:0}),
+  else{const l=EMP.filter(e=>e.dept===d),rw=Math.ceil(l.length/3),roomActors=[],roomDesks=[];
+   l.forEach((e,k)=>{const c=k%3,r=Math.floor(k/3),dm=MT({color:e.head?0xffffff:!e.hasId?0xff5a5f:col.clone().lerp(new THREE.Color(0xffffff),.4),emissive:e.head?0x444444:0}),
     ds=new THREE.Mesh(GD.d,dm),mo=new THREE.Mesh(GD.m,mbm);
     mo.position.set(0,.20,-.13);ds.add(mo);const scr=new THREE.Mesh(GD.screen,MT({color:0x2e4f6c,emissive:0x203d5a,emissiveIntensity:.5}));scr.position.set(0,.19,-.10);ds.add(scr);
      const leg=new THREE.Mesh(GD.deskLeg,MT({color:0x88838c}));leg.position.y=-.2;ds.add(leg);
-     ds.position.set((c-1.5)*1.05+.1,.46,(r-(rw-1)/2)*.95+.1);ds.scale.setScalar(.001);ds.userData.dl=n*.09+.9+k*.05;g.add(ds);desks.push(ds);roomDesks.push(ds);
+     ds.position.set(-1.55+c*.85,.46,-1.10+r*.77);ds.scale.setScalar(.001);ds.userData.dl=n*.09+.9+k*.05;g.add(ds);desks.push(ds);roomDesks.push(ds);
      const pf=new THREE.Group(),shirt=MT({color:[0xf6a6c1,0x9ad7a8,0xf3b27a,0x9fc3ff,0xcdb8ff][(e.i*7)%5],emissive:0x000000}),skin=MT({color:0xf0c9a8}),hair=MT({color:e.head?0x4d3b43:0x222a39}),shadow=MT({color:0x4e4c59});
      const bd=new THREE.Mesh(GD.body,shirt),hd=new THREE.Mesh(GD.head,skin),hr=new THREE.Mesh(GD.r,hair);
      bd.position.y=.45;hd.position.y=.79;hr.position.y=.84;pf.add(bd,hd,hr);
@@ -320,20 +332,36 @@ function build(){
      const mouth=new THREE.Mesh(GD.mouth,eyes);mouth.position.set(0,.742,.15);pf.add(mouth);
      const arms=[],legs=[];for(const a of [-1,1]){const arm=new THREE.Mesh(GD.arm,shirt);arm.position.set(a*.20,.43,.025);arm.rotation.z=a*.18;pf.add(arm);arms.push(arm);
        const foot=new THREE.Mesh(GD.foot,shadow);foot.position.set(a*.105,.12,.005);pf.add(foot);legs.push(foot)}
-     pf.position.set(ds.position.x+.25,0,ds.position.z+.47);pf.userData.empId=e.i+1;g.add(pf);
+     const activity=l.length===2?"chat":k===1?"walk":k===2?"coffee":k===3||k===4?"chat":k===5?"meeting":"work";
+     let px=ds.position.x+.25,pz=ds.position.z+.47;
+     if(l.length===2){px=k===0?.55:1.56;pz=k===0?.88:.62}
+     else if(l.length>=3&&k===2){px=1.82;pz=1.38}
+     else if(l.length>=5&&k===1){px=.91;pz=.17}
+     else if(l.length>=5&&(k===3||k===4)){px=k===3?1.12:1.76;pz=-.13}
+     else if(l.length>=6&&k===5){px=1.18;pz=.78}
+     else if(l.length===3&&k===1){px=1.10;pz=.86}
+     pf.position.set(px,0,pz);pf.userData.empId=e.i+1;pf.userData.activity=activity;g.add(pf);
+     const cup=activity==="coffee"?new THREE.Mesh(GD.cup,MT({color:0xfffaf1})):null;
+     if(cup){cup.position.set(.26,.55,.10);pf.add(cup)}
      const m=mcMood(mcTask(e));const glowDot=new THREE.Mesh(GD.glow,new THREE.MeshBasicMaterial({color:m.color}));glowDot.position.set(0,1.12,0);pf.add(glowDot);
-     mcActors.push({emp:e,task:mcTask(e),pf,body:bd,glow:glowDot,mood:m,arms,legs,homeX:pf.position.x,homeZ:pf.position.z,phase:e.i*.81,room:o,avatarIndex:k});roomActors.push(pf)});
+     mcActors.push({emp:e,task:mcTask(e),pf,body:bd,glow:glowDot,mood:m,arms,legs,activity,cup,homeX:px,homeZ:pz,phase:e.i*.81,room:o,avatarIndex:k});roomActors.push(pf)});
+   furnish({desks:roomDesks});
    const proxy=new THREE.Group(),obj=new THREE.Object3D();
    const pDesk=new THREE.InstancedMesh(GD.d,MT({color:0xd8c8c1}),l.length),pBody=new THREE.InstancedMesh(GD.body,MT({color:0xffffff}),l.length),pHead=new THREE.InstancedMesh(GD.head,MT({color:0xf0c9a8}),l.length),pHair=new THREE.InstancedMesh(GD.r,MT({color:0x3b303a}),l.length);
-   const shirtColors=[0xf6a6c1,0x9ad7a8,0xf3b27a,0x9fc3ff,0xcdb8ff];
+   const pMonitor=new THREE.InstancedMesh(GD.unit,MT({color:0x3e7194}),l.length),pChair=new THREE.InstancedMesh(GD.unit,MT({color:0x92b7d2}),l.length);
+    const coffeeActors=mcActors.slice(-roomActors.length).filter(a=>a.activity==="coffee"),pCup=coffeeActors.length?new THREE.InstancedMesh(GD.cup,MT({color:0xfffaf1}),coffeeActors.length):null;
+    const shirtColors=[0xf6a6c1,0x9ad7a8,0xf3b27a,0x9fc3ff,0xcdb8ff];
    l.forEach((e,k)=>{const desk=roomDesks[k],person=roomActors[k];obj.position.copy(desk.position);obj.scale.set(1,1,1);obj.updateMatrix();pDesk.setMatrixAt(k,obj.matrix);
-    obj.position.set(person.position.x,.45,person.position.z);obj.updateMatrix();pBody.setMatrixAt(k,obj.matrix);pBody.setColorAt(k,new THREE.Color(shirtColors[(e.i*7)%5]));
+    obj.position.set(desk.position.x,.65,desk.position.z-.12);obj.scale.set(.32,.21,.035);obj.updateMatrix();pMonitor.setMatrixAt(k,obj.matrix);
+    obj.position.set(desk.position.x+.25,.43,desk.position.z+.65);obj.scale.set(.37,.41,.08);obj.updateMatrix();pChair.setMatrixAt(k,obj.matrix);
+    obj.scale.set(1,1,1);obj.position.set(person.position.x,.45,person.position.z);obj.updateMatrix();pBody.setMatrixAt(k,obj.matrix);pBody.setColorAt(k,new THREE.Color(shirtColors[(e.i*7)%5]));
     obj.position.y=.79;obj.updateMatrix();pHead.setMatrixAt(k,obj.matrix);
     obj.position.y=.84;obj.updateMatrix();pHair.setMatrixAt(k,obj.matrix)});
-   [pDesk,pBody,pHead,pHair].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.frustumCulled=false;proxy.add(m)});
+   if(pCup)coffeeActors.forEach((a,k)=>{obj.position.set(a.homeX+.26,.58,a.homeZ+.10);obj.rotation.set(0,0,0);obj.scale.set(1,1,1);obj.updateMatrix();pCup.setMatrixAt(k,obj.matrix)});
+   [pDesk,pMonitor,pChair,pBody,pHead,pHair,pCup].filter(Boolean).forEach(m=>{m.instanceMatrix.needsUpdate=true;m.frustumCulled=false;proxy.add(m)});
    g.add(proxy);mcRoomSets.push({idx:o,proxy,staff:roomActors,desks:roomDesks,
     actors:mcActors.slice(-roomActors.length),
-    peopleInstances:{body:pBody,head:pHead,hair:pHair}});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
+    peopleInstances:{body:pBody,head:pHead,hair:pHair,cups:pCup,coffeeActors}});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
   // Static architecture is batched per room. Staff and desks remain individually selectable.
   const temp=new THREE.Object3D();
   staticBatches.forEach(batch=>{
@@ -420,7 +448,8 @@ function frame(now){
    a.pf.position.z=a.homeZ+(wander?Math.cos(el*.75*fast+p)*.20:Math.cos(el*.5+p)*.01);
    a.pf.position.y=0+(wander?Math.abs(Math.sin(el*4*fast+p))*.035:Math.abs(Math.sin(el*1.7+p))*.014);
    a.pf.rotation.y=wander?Math.sin(el*.75*fast+p)*.65:Math.sin(el*.32+p)*.08;
-   a.arms.forEach((arm,j)=>arm.rotation.x=Math.sin(el*(m.code==="late"?6:3)+p+j*1.7)*(wander?.43:.22));
+   a.arms.forEach((arm,j)=>arm.rotation.x=Math.sin(el*(m.code==="late"?6:3)+p+j*1.7)*(wander?.43:a.activity==="chat"?.36:.22));
+    if(a.cup){const sip=(Math.sin(el*1.5+p)+1)/2;a.cup.position.y=.55+sip*.20;a.cup.position.z=.10-sip*.03}
    a.legs.forEach((leg,j)=>leg.rotation.x=wander?Math.sin(el*4*fast+p+j*Math.PI)*.4:0);
    a.glow.position.y=1.12+Math.sin(el*2.3+p)*.065;a.glow.scale.setScalar(a.emp.i===mcSelectedPerson&&focus?.idx===a.room?1.65:1);
   })}
