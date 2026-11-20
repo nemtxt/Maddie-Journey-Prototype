@@ -118,10 +118,22 @@ api.refresh();
 check('Enhancement idempotent',sheet.querySelectorAll('.mj-v43-profile-snapshot').length===1&&header.querySelectorAll('.mj-v43-division-eyebrow').length===1);
 const click=target=>{
  const event={target,preventDefault(){},stopPropagation(){}};
- (layer._listeners||[]).forEach(fn=>fn(event));
+ layerListeners.forEach(fn=>fn(event));
 };
 const contact=grid.children.find(x=>x.dataset.mjV43Group==='Contact');
 check('Closed contact group exists',!!contact);
+const contactJump=nav.querySelectorAll('[data-mj-profile-jump]').find(x=>x.textContent==='Contact');
+click(contactJump);
+check('Jumping to a collapsed section expands it',!contact.classList.contains('mj-v43-group-closed'));
+const groupToggle=contact.querySelector('[data-mj-v43-group-toggle]');
+click(groupToggle);
+check('Individual detail section can collapse',contact.classList.contains('mj-v43-group-closed')&&groupToggle.getAttribute('aria-expanded')==='false');
+const expand=sheet.querySelector('[data-mj-v43-control="expand"]');
+click(expand);
+check('Expand all reveals every profile section',grid.children.every(x=>!x.classList.contains('mj-v43-group-closed')));
+const collapse=sheet.querySelector('[data-mj-v43-control="collapse"]');
+click(collapse);
+check('Collapse all hides every detail section',grid.children.every(x=>x.classList.contains('mj-v43-group-closed')));
 
 const mods=people.map(e=>api.employeeModel(e));
 const teamModels=divisions.map(([name])=>api.divisionModel(name));
@@ -133,7 +145,7 @@ check('Every division average uses existing file percentages',teamModels.every(t
 }));
 check('Career dates never invented',mods.every(m=>m.events.every(ev=>ev.kind==='dated'?!!ev.date&&!!ev.displayDate:ev.date===null)));
 check('Sensitive compensation absent from quick summary',!SRC.includes('peso(')&&!SRC.includes('salaryOf('));
-const result={tests:22,passed:22-issues.length,issues,profiles:mods.length,divisions:teamModels.length};
+const result={tests:26,passed:26-issues.length,issues,profiles:mods.length,divisions:teamModels.length};
 if(typeof module!=='undefined'){
  console.log(JSON.stringify(result,null,2));
  if(issues.length)process.exitCode=1;
