@@ -1,7 +1,369 @@
 /* Fictional demonstration data. This file never reads a real organization or connector. */
 (function(){'use strict';
- const first=['Ari','Casey','Jules','Mika','Noel','Lio','Cora','Robin','Sam','Avery','Ellis','Dana','Taylor','Morgan','Reese','Finley','Jamie'],
- last=['Mercado','Santos','Cruz','Navarro','Alonzo','Rivera','Vega','Mendoza','Salazar','Sarmiento','Soriano','Bautista','Dizon','Valdez','Gonzales','Ramos','Montes','Quinto','Velasco','Chua','Villanueva'];
+ /* User-supplied organization-chart names are represented as demo aliases;
+  * no connected employee records, salary records, or identifiers are imported.
+  * Top/core tiers are organization-chart placement only; original records keep
+  * stable generated IDs and independently simulated employment information. */
+ const referenceRoster=[
+ {
+  "div": "RMD",
+  "name": "Trizia",
+  "role": "Chief Experience Officer",
+  "level": 0,
+  "tier": "top"
+ },
+ {
+  "div": "RMD",
+  "name": "Josh",
+  "role": "Team Member",
+  "level": 5,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Faye",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Ange",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Abigael",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Richard Q.",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Jocelyn",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Catherine",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "RMD",
+  "name": "Yvette",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Zach",
+  "role": "Principal Designer",
+  "level": 0,
+  "tier": "core"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "A.J.T.",
+  "role": "Design Operations Manager",
+  "level": 0,
+  "tier": "core"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Chano",
+  "role": "Madhouse Design Partner",
+  "level": 6,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Albert",
+  "role": "Team Member",
+  "level": 5,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "AJ",
+  "role": "Team Member",
+  "level": 5,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Regie",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Charmaine",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Ysac",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Marx",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "John Ray",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "DESIGN/OPERATION",
+  "name": "Erika",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Inigo",
+  "role": "Chief Operations Officer",
+  "level": 0,
+  "tier": "top"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Clai",
+  "role": "Director of Operations",
+  "level": 0,
+  "tier": "core"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Patricia",
+  "role": "Finance Manager",
+  "level": 6,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Kurt",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Herman",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Ragnor",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Elmer",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Kate",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Joy",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Shadeline",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "CORP OPS",
+  "name": "Jimmy",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Michelle",
+  "role": "Media Manager (Interim)",
+  "level": 6,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Justine",
+  "role": "Media Head",
+  "level": 5,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Miggy",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Lemuel",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Domz",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "MEDIA",
+  "name": "Ian",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "COO TEAM",
+  "name": "Sean",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "COO TEAM",
+  "name": "Janjo",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "COO TEAM",
+  "name": "Chris",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "Shane",
+  "role": "Team Member",
+  "level": 5,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "Stephen",
+  "role": "Team Member",
+  "level": 4,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "Fatima",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "David",
+  "role": "Team Member",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "New QA/QC Hire",
+  "role": "Vacant QA/QC role (demo)",
+  "level": 3,
+  "tier": "division"
+ },
+ {
+  "div": "GENCON",
+  "name": "Richard S.",
+  "role": "Team Member",
+  "level": 2,
+  "tier": "division"
+ },
+ {
+  "div": "BUSINESS DEV",
+  "name": "Tin",
+  "role": "Business Development Division Head",
+  "level": 0,
+  "tier": "core"
+ },
+ {
+  "div": "BUSINESS DEV",
+  "name": "Marc Kevin",
+  "role": "Team Member",
+  "level": 1,
+  "tier": "division"
+ },
+ {
+  "div": "CEO TEAM",
+  "name": "Gila",
+  "role": "Chief Executive Officer",
+  "level": 0,
+  "tier": "top"
+ },
+ {
+  "div": "CEO TEAM",
+  "name": "Sachi",
+  "role": "Chief Strategy Officer / Chief of Staff",
+  "level": 0,
+  "tier": "top"
+ },
+ {
+  "div": "CEO TEAM",
+  "name": "Alyssa",
+  "role": "Chief of External Affairs",
+  "level": 0,
+  "tier": "core"
+ }
+];
+ const referenceByRecord=new Map();
  const divisions=[['RMD','Revenue Management'],['DESIGN/OPERATION','Design & Operations'],['CORP OPS','Corporate Operations'],['MEDIA','Media'],['COO TEAM','IT Operations'],['GENCON','General Construction'],['BUSINESS DEV','Business Development'],['CEO TEAM','Executive Office']];
  const roles=['Division Head','Operations Specialist','Senior Analyst','Coordinator','Project Officer','Design Associate','Team Supervisor','People Operations Associate'];
  const F={id:'fldqkxggPg5zwh4Ab',first:'flddzBNWtDWYM8jn1',last:'fldo1b8IVG8guhPg0',dept:'flduz4B2OAtIZ8LjG',pos:'fldRagX7PCDhmAzkx',status:'fld9fvRtbONcAEg7C',hire:'fldrluTRKtUIcNYZB',reg:'fldEM5tCqpdj1bwQS',bday:'fldIDTYfwZ9q8Kv7Q'},
@@ -10,15 +372,18 @@
  const today=new Date('2026-11-20T12:00:00+08:00'),dateOffset=n=>new Date(today.getTime()+n*86400000).toISOString().slice(0,10),rec=(id,fields)=>({id,cellValuesByFieldId:fields}),raw={};
  let people=[],attendance=[],development=[];
  for(let i=0;i<51;i++){
-   const div=divisions[i%divisions.length],name=first[i%first.length],surname=last[(i*5+Math.floor(i/9))%last.length],status=i%7===0?'Probationary':i%17===0?'Part-Time':'Regular';
+   const sample=referenceRoster[i],div=divisions.find(d=>d[0]===sample.div);
+   const words=sample.name.split(/\s+/),name=words.shift(),surname=words.join(' ');
+   const status=i%7===0?'Probationary':i%17===0?'Part-Time':'Regular';
    const hire=dateOffset(status==='Probationary'?-(40+i%5*18):-(450+i*12)),monthly=24000+i%9*3900,fields={
      [F.id]:i%13===0?'':String(100100+i),[F.first]:name,[F.last]:surname,[F.dept]:[{id:'dep'+(i%8),name:div[0]}],
-     [F.pos]:i<8?'Division Head':roles[(i*3)%roles.length],[F.status]:status,[F.hire]:hire,[F.reg]:status==='Regular'?dateOffset(-220-i*11):'',[F.bday]:'199'+i%10+'-'+String(i%12+1).padStart(2,'0')+'-'+String((i*3)%27+1).padStart(2,'0'),
+     [F.pos]:sample.role==='Team Member'?('Team Member · Level '+sample.level):sample.role,[F.status]:status,[F.hire]:hire,[F.reg]:status==='Regular'?dateOffset(-220-i*11):'',[F.bday]:'199'+i%10+'-'+String(i%12+1).padStart(2,'0')+'-'+String((i*3)%27+1).padStart(2,'0'),
      [FX.basic]:monthly,[FX.current]:monthly,[FX.daily]:Math.round(monthly/22),[FX.allowance]:1500+i%4*500,[FX.gross]:monthly+1500+i%4*500,[FX.ptype]:'Monthly',
      [FX.sss]:i%5===0?'':'SAMPLE-SSS-'+(10000+i),[FX.philhealth]:'SAMPLE-PH-'+(20000+i),[FX.pagibig]:i%6===0?'':'SAMPLE-PAG-'+(30000+i),[FX.tin]:i%8===0?'':'SAMPLE-TIN-'+(40000+i),
-     [FX.cemail]:(name+'.'+surname+i+'@example.com').toLowerCase(),[FX.pemail]:'sample'+i+'@example.net',[FX.phone]:'09XX-XXX-'+String(i).padStart(4,'0'),[FX.address]:'Fictional address, Metro Manila', [FX.ecName]:'Demo Emergency Contact',[FX.ecPhone]:'09XX-000-0000',[FX.ecRel]:'Family'};
+     [FX.cemail]:(sample.name.toLowerCase().replace(/[^a-z0-9]+/g,'.').replace(/^\.|\.$/g,'')+i+'@example.com'),[FX.pemail]:'sample'+i+'@example.net',[FX.phone]:'09XX-XXX-'+String(i).padStart(4,'0'),[FX.address]:'Fictional address, Metro Manila', [FX.ecName]:'Demo Emergency Contact',[FX.ecPhone]:'09XX-000-0000',[FX.ecRel]:'Family'};
    docs.forEach((d,j)=>{if(i%3===0||(i+j*3)%8!==0)fields[d]=[{id:'attachment'+i+'_'+j}]});
    const rid='recDemo'+String(i).padStart(7,'0');people.push(rec(rid,fields));
+   referenceByRecord.set(rid,sample);
    if(i%4===0){for(let n=0;n<1+i%3;n++)attendance.push(rec('recAtt'+i+'_'+n,{fldfJzllNfMpJoTvN:[{id:rid}],fldN9MmrWvdDAB6wu:dateOffset(-((i+n)%27+1)),fldJMbl3NVma2kNSw:'Late'}))}
    if(i%9===0)attendance.push(rec('recLeave'+i,{fldfJzllNfMpJoTvN:[{id:rid}],fldN9MmrWvdDAB6wu:dateOffset(-(i%16+2)),fldJMbl3NVma2kNSw:'Vacation Leave'}));
    if(status==='Probationary')development.push(rec('recDev'+i,{fldGPGsYzmKwexrA2:[{id:rid}],fldgVvnkOgIrmEQeS:'Probationary Review',fldOJ6Ra6KQly5B1T:i%2?'In Progress':'For Evaluation',fldF62Y49plNBLs2h:'Pending',fldQxCSJ8MChl8dUm:'Pending'}));
@@ -41,7 +406,7 @@
 
  // Expanded fictional fixtures: every generated record belongs exclusively to this demonstration.
  // Individual names below are generated sample identities, not records fetched from a connector.
- const who=(i)=>[{id:people[i%51].id}], samplePerson=i=>first[i%first.length]+' '+last[(i*5+Math.floor(i/9))%last.length];
+ const who=(i)=>[{id:people[i%51].id}], samplePerson=i=>referenceRoster[i%referenceRoster.length].name;
  raw.incidents={records:Array.from({length:7},(_,i)=>rec('recIncidentDemo'+i,{
   fld8nbnaqwun51b8D:'DEMO-INC-'+String(i+1).padStart(3,'0'),
   fldhr8w04sGPCi6XE:['In Review','Open','Resolved','Action in Progress'][i%4],
@@ -112,6 +477,16 @@
     return{no:i+1,name:n,prob:i%7===0?'No Record':'Uploaded',mh:!isProb&&i%5!==0?'Uploaded':'No Record',tcg:'',mf:'',nda:i%8===0?'No Record':'Uploaded',ncc:i%10===0?'No Record':'Uploaded',verified:i%6===0?'Demo verifier - P&C':'Sample checklist'};});
   model.t201={declared:51,rows:trows,core:trows.slice(0,8).map((r,i)=>({name:r.name,level:'L1',role:'Division Head',core:i%6===0?'No Record':'Uploaded',nda:r.nda,verified:'Sample P&C',})),folders:[],foldersMore:false};
   model.exits=[{name:'Alexandra Marquez',div:'Design & Operations',pos:'Creative Associate',status:'Resigned',sep:'2026-10-15'},{name:'Gabriel Ledesma',div:'Media',pos:'Production Assistant',status:'Contract ended',sep:'2026-09-30'}];
-  MC_ADAPT(model);Object.keys(MCD.SRC).forEach(k=>{MCD.SRC[k]={name:(MC_CORE.SOURCE_NAMES||{})[k]||k,url:''}});window.MC_FICTIONAL=true}
+  MC_ADAPT(model);
+  MCD.EMP.forEach(e=>{
+   const reference=referenceByRecord.get(e.rid);
+   if(!reference)return;
+   e.orgLevel=reference.level||e.lvl;
+   e.orgTier=reference.tier;
+   e.orgReferenceName=reference.name;
+   e.orgReferenceRole=reference.role;
+  });
+  MCD.orgReference={source:'User-provided chart reference · fictional sample',people:referenceRoster.length};
+  Object.keys(MCD.SRC).forEach(k=>{MCD.SRC[k]={name:(MC_CORE.SOURCE_NAMES||{})[k]||k,url:''}});window.MC_FICTIONAL=true}
  catch(e){window.MC_DEMO_ERROR=e;console.error('Demo fixture error',e)}
 })();
