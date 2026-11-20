@@ -44,21 +44,27 @@ function mcLayerContent(d){const people=mcPeople(d),tasks=d==="HQ"?MC_TASKS:MC_T
  if(mcLayer==="attendance"){const risks=[...people].sort((a,b)=>b.l90-a.l90);return `<div class="mc-section-label">Attendance overview <span>Previous 90 days</span></div><p class="mc-mini-explainer">Lates recorded in the Tardiness/Leave Tracker. Not real-time presence or productivity.</p><div class="mc-team-list mc-compact-list">${risks.map(e=>mcEmployeeRow(e,"attendance")).join("")}</div>`}
  if(mcLayer==="deadlines"){const o=MCD.OPS[d],open=o?o.tasks.filter(x=>!x.done).sort((a,b)=>(a.due||"9999").localeCompare(b.due||"9999")):[],dated=tasks.filter(x=>x.due).sort((a,b)=>a.due.localeCompare(b.due));return `<div class="mc-section-label">People dates <span>${dated.length} items</span></div><div class="mc-team-list mc-compact-list">${dated.map(mcScheduleRow).join("")||'<p class="mc-mini-explainer">No dated items in the next 60 days.</p>'}</div><div class="mc-section-label" style="margin-top:14px">Division tasks · Chiefs’ Hub <span>${o&&o.loaded?open.length+" open":"No task source"}</span></div><div class="mc-team-list mc-compact-list">${open.slice(0,12).map(x=>{const q=x.due?mcDayDiff(x.due,mcSelectedDay):null,c=q==null?"steady":q<0?"late":q===0?"due":q<=2?"focus":"steady";return`<div class="mc-team-item" style="cursor:default"><span class="mc-avatar ${c}">${q!=null&&q<0?"!":"·"}</span><span class="mc-task-main"><b>${mcSafe(x.title)}</b><small>${mcSafe([x.project,x.status].filter(Boolean).join(" · "))}</small><em>${x.due?mcFormatted(x.due):"No due date"}</em></span><span class="mc-task-state ${c}">${q==null?"No date":q<0?"Overdue":q===0?"Due today":q<=2?"Due soon":"Planned"}</span></div>`}).join("")}</div>`}
  return `<div class="mc-section-label">Team schedule <span>${mcFormatted(mcSelectedDay)}</span></div><div class="mc-team-list">${mcAgenda(d).map(mcScheduleRow).join("")}</div>`}
-function mcPanel(d){const people=mcPeople(d),n=people.length,c=mcCounters(d),i=D.findIndex(x=>x[0]===d),hx=i<0?LOB:HX[i],idx=mcOfficeNames.indexOf(d),prev=mcOfficeNames[(idx-1+mcOfficeNames.length)%mcOfficeNames.length],next=mcOfficeNames[(idx+1)%mcOfficeNames.length];
- const e=EMP.find(p=>p.i===mcSelectedPerson&& (d==="HQ"||p.dept===d)),t=e&&mcTask(e),m=t&&mcMood(t),s=d==="HQ"?{a:M.avg}:deptStat(d);
- const dots=mcRoomButtons(d,true);
- return `<div class="mc-scene" style="--room-accent:${hx}"><div class="mc-scene-top"><div class="mc-scene-left"><button class="mc-scene-back" data-hx="leave">${ic("left")} All divisions</button><button class="mc-scene-back mc-mini-btn" data-hx="prev" aria-label="Previous division" title="${mcSafe(prev)}">${ic("left")}</button><button class="mc-scene-back mc-mini-btn" data-hx="next" aria-label="Next division" title="${mcSafe(next)}">${ic("arrow")}</button></div><div class="mc-scene-actions"><button class="mc-scene-back mc-mini-btn" data-hx="search" aria-label="Search employees or divisions" title="Find someone">${ic("search")}</button><button class="mc-scene-back mc-mini-btn" data-hx="office-settings" aria-label="Office settings" title="Office settings">${ic("compass")}</button></div></div>
- <div class="mc-room-billboard"><p class="mc-eyebrow">Inside the office</p><h2>${mcSafe(d==="HQ"?"Headquarters":d)}</h2><p>${mcSafe(d==="HQ"?"Company overview":SPEC[d].tag)} · ${n} people</p><div class="mc-bill-stats"><span><b>${s.a}%</b>201 files</span><span><b>${c.late}</b>Overdue</span><span><b>${c.due}</b>Due today</span></div></div>
- <div class="mc-scene-controls${mcViewsOpen?" is-open":""}" role="group" aria-label="Office camera controls"><button type="button" class="mc-views-toggle" data-hx="toggle-views" aria-expanded="${mcViewsOpen}">View <span aria-hidden="true">⌄</span></button><div class="mc-view-options"><button data-hx="preset" data-view="iso" aria-pressed="${mcViewPreset==="iso"}">Isometric</button><button data-hx="preset" data-view="top" aria-pressed="${mcViewPreset==="top"}">Top</button><button data-hx="preset" data-view="front" aria-pressed="${mcViewPreset==="front"}">Front</button><button data-hx="reset" title="Reset camera" aria-label="Reset camera">${ic("compass")}</button></div></div>
- <div class="mc-room-map${mcRoomMapOpen?" is-open":""}"><div class="mc-map-title"><button type="button" data-hx="toggle-room-map" aria-expanded="${mcRoomMapOpen}">Office map</button><span>Room ${idx+1} of ${mcOfficeNames.length}</span></div><div class="mc-map-grid">${dots}</div></div>
- <section class="mc-scene-panel${mcPanelCollapsed?" is-collapsed":""}" aria-label="${mcSafe(d)} executive monitoring"><div class="mc-panel-head"><span class="mc-eyebrow">Executive overview</span><span class="mc-live-indicator">Live data · Read-only</span><button class="mc-collapse" data-hx="collapse" aria-expanded="${!mcPanelCollapsed}" aria-label="${mcPanelCollapsed?"Expand":"Collapse"} monitoring panel">${mcPanelCollapsed?"Expand":"Minimize"} <span aria-hidden="true">${mcPanelCollapsed?"▴":"▾"}</span></button></div><div class="mc-panel-inner">
- <h3>Inside the office</h3><p class="mc-panel-desc">Inspect people and activity without leaving the virtual workspace.</p>
- <div class="mc-datebar" role="group" aria-label="Preview date"><button data-hx="prevday" aria-label="Previous day">${ic("left")}</button><label><span>Date</span><input id="mc-date" type="date" value="${mcSelectedDay}" aria-label="Date to review"></label><button data-hx="nextday" aria-label="Next day">${ic("arrow")}</button><button class="mc-today" data-hx="today">Today</button></div>
- <div class="mc-pulse-grid"><div><strong>${c.due}</strong><small>Due on date</small></div><div><strong>${c.soon}</strong><small>Next 48 hours</small></div><div><strong>${c.late}</strong><small>Overdue</small></div></div>
- <div class="mc-layer-tabs" role="group" aria-label="Choose monitoring layer">${MC_LAYERS.map(([k,l])=>`<button data-hx="layer" data-layer="${k}" aria-pressed="${mcLayer===k}">${l}</button>`).join("")}</div>
- <div id="mc-layer-view">${mcLayerContent(d)}</div>
- ${e?`<div class="mc-selected-card"><div class="mc-section-label">Selected team member <span>${mcSafe(m.short)}</span></div><strong>${mcSafe(e.name)}</strong><small>${mcSafe(e.role)} · ${mcSafe(e.dept)}</small><p>${mcSafe(t.title)} · ${mcFormatted(t.due)}</p><button class="mc-profile-btn" data-hx="profile" data-emp="${e.i}">View read-only profile ${ic("arrow")}</button></div>`:""}
- <button class="mc-dash-btn" data-hx="metrics">Open ${d==="HQ"?"company":"division"} dashboard ${ic("arrow")}</button><div class="mc-footnote">${srcLine(["people","attendance","development"].concat((MCD.OPS[d]&&MCD.OPS[d].src)||[]))}</div></div></section></div>`}
+/* Focused rooms intentionally use an uncluttered 3D scene. The full reports,
+   employee profiles and org charts remain available in dashboard routes. */
+function mcPanel(d){
+ const i=D.findIndex(x=>x[0]===d),hx=i<0?LOB:HX[i],
+ idx=mcOfficeNames.indexOf(d),
+ prev=mcOfficeNames[(idx-1+mcOfficeNames.length)%mcOfficeNames.length],
+ next=mcOfficeNames[(idx+1)%mcOfficeNames.length];
+ return `<div class="mc-scene mc-scene-minimal" style="--room-accent:${hx}">
+   <div class="mc-scene-top">
+     <div class="mc-scene-left">
+       <button class="mc-scene-back" data-hx="leave">${ic("left")} All divisions</button>
+       <button class="mc-scene-back mc-mini-btn" data-hx="prev" aria-label="Previous division" title="${mcSafe(prev)}">${ic("left")}</button>
+       <button class="mc-scene-back mc-mini-btn" data-hx="next" aria-label="Next division" title="${mcSafe(next)}">${ic("arrow")}</button>
+     </div>
+     <div class="mc-scene-actions">
+       <button class="mc-scene-back mc-mini-btn" data-hx="search" aria-label="Search employees or divisions" title="Find someone">${ic("search")}</button>
+       <button class="mc-scene-back mc-mini-btn" data-hx="office-settings" aria-label="Office settings" title="Office settings">${ic("compass")}</button>
+     </div>
+   </div>
+ </div>`;
+}
 function mcBuildEmotes(){let root=$("#mc-emotes",hub);if(root)root.remove();if(!ready||!mcRoom||!focus)return;
  root=document.createElement("div");root.id="mc-emotes";root.setAttribute("aria-hidden","true");hub.append(root);
  const candidates=mcActors.filter(a=>a.room===focus.idx).sort((a,b)=>(a.emp.i===mcSelectedPerson?-100:0)-(b.emp.i===mcSelectedPerson?-100:0)||mcDayDiff(a.task.due,mcSelectedDay)-mcDayDiff(b.task.due,mcSelectedDay));
