@@ -39,7 +39,14 @@
    });
  }
  const queue=()=>{if(!queued){queued=true;requestAnimationFrame(enhance)}};
- new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+ // Skip mutations produced by our own headings and other decorators.
+ // Main route changes replace #view; subreport updates add actual cards/panels.
+ const relevant=record=>record.target===root||Array.from(record.addedNodes).some(node=>{
+  if(node.nodeType!==1||node.matches?.('.mj-zone-heading,.mj-screen-insights,.mj-org-panel,.mj-division-key'))return false;
+  return node.matches?.('.mj-page,.ph,.g12,.card,.cos,.mj-metrics,.mj-duo,#pane')||
+         Boolean(node.querySelector?.('.mj-page,.g12,.card,.cos,.mj-metrics'));
+ });
+ new MutationObserver(records=>{if(records.some(relevant))queue()}).observe(root,{childList:true,subtree:true});
  addEventListener('hashchange',queue);
  queue();
 })();
