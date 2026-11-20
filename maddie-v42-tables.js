@@ -233,6 +233,9 @@
    'Filtered visibility only · source totals and group counts remain unchanged.':
    'Select a record to inspect its details · read-only.');
   host.append(note);
+  // Place controls at the table's existing position before moving its scroll
+  // node. Reparenting without this step would detach the whole report table.
+  wrap.before(host);
   host.append(wrap);
   const foot=create('div','mj-v42-bottom');
   if(state.kind==='plain')state.controls=footer(foot);
