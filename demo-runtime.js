@@ -25,11 +25,18 @@
   if(status)status.textContent='Entering the fictional 3D Office';
   if(input){input.value='';input.removeAttribute('aria-invalid')}
   if(form)form.classList.remove('bad');
-  // Release the application before navigation; the 3D viewer intentionally
-  // makes the underlying dashboard inert while its full-screen scene is open.
+  // The office scene is prepared behind the gate. Reopen/reaffirm it
+  // synchronously after unlocking, even when the hash was already #office.
+  // Do not clear app.inert AFTER HUB.open(): the 3D viewer owns that flag.
   if(app)app.inert=false;
-  location.hash='#office';
-  try{window.MC_APP?.route?.()}catch(error){console.error('3D Office navigation failed',error)}
+  if(location.hash!=='#office')location.hash='#office';
+  try{
+   if(window.HUB?.open){window.HUB.open();}
+   else if(window.MC_APP?.route){window.MC_APP.route();}
+  }catch(error){console.error('3D Office navigation failed',error);
+   // Keep the office route available even if the immersive renderer fails.
+   window.MC_APP?.route?.();
+  }
   document.body.classList.remove('mc-demo-locked');
   document.body.classList.add('mc-demo-revealing');
   gate?.classList.add('mc-demo-leaving');
@@ -83,6 +90,12 @@
  document.addEventListener('click',function(e){var x=e.target.closest&&e.target.closest('#sensbtn');if(!x)return;var b=document.body,on=!b.classList.contains('mc-hide');b.classList.toggle('mc-hide',on);x.setAttribute('aria-pressed',String(on));x.setAttribute('aria-label',on?'Show sensitive values':'Hide sensitive values')});
  document.addEventListener('click',function(e){var x=e.target.closest&&e.target.closest('#bigbtn');if(!x)return;var b=document.body,on=!b.classList.contains('mc-big');b.classList.toggle('mc-big',on);x.setAttribute('aria-pressed',String(on));x.textContent=on?'A−':'A+'});
  addEventListener('hashchange',refreshLabels);
- window.MC_DEMO_READY=function(){refreshLabels();if(!location.hash)location.hash='#overview';else if(window.MC_APP)window.MC_APP.route()};
+ window.MC_DEMO_READY=function(){
+   refreshLabels();
+   // Prepare the actual 3D office beneath the passcode overlay. After unlock,
+   // the gate fades away to reveal this scene, rather than the overview page.
+   if(!location.hash)location.replace('#office');
+   else if(window.MC_APP)window.MC_APP.route();
+  };
  refreshLabels();
 })();
