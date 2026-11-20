@@ -33,7 +33,7 @@ function settings(){
  const dark=document.documentElement.dataset.theme==='dark',b=document.body;
  return wrap(head('PROTOTYPE SETTINGS','Settings & Data','Accessibility preferences and technical source documentation only.')+
  settingsMenu('access')+'<div class="mj-2col">'+
- '<section class="mj-panel"><h2>Appearance & readability</h2><p>Display choices affect this browser only. Light mode uses a black sidebar with white dashboards; dark mode uses a white sidebar with black dashboards.</p>'+
+ '<section class="mj-panel"><h2>Appearance & readability</h2><p>Display choices affect this browser only. The sidebar always remains black with white text. Only the dashboard changes between light and dark appearance.</p>'+
  switcher('Dark mode','Black background and near-black report cards','dark',dark)+
  switcher('Larger text','Increase text throughout the prototype','large',b.classList.contains('mc-big'))+
  switcher('Compact layout','Reduce dashboard spacing','dense',b.classList.contains('mj-dense'))+
