@@ -602,12 +602,14 @@ function officeHtml(){
  return`<header class="ph"><div><h1>Madhouse office</h1><p>${Math.min(8,D.length)} division rooms, ${M.n} people. Click a room to open its dashboard. Drag to look around.${D.length>8?` ${D.slice(8).map(x=>esc(x[0])+" ("+x[1]+")").join(" and ")} have no room and are listed under Divisions.`:""}</p></div><div class="chips dvnav" role="group" aria-label="Camera"><button data-of="l" aria-label="Rotate left">${ic("left")}</button><button data-of="reset">Reset view</button><button data-of="r" aria-label="Rotate right">${ic("arrow")}</button></div></header>
  <div class="g12">${sec("c12","",`<div class="of"><div class="ofs" id="ofs" role="group" aria-label="3D office with ${D.length} divisions"><div class="ofw" id="ofw"><div class="fl0"></div><div class="sh0"></div><div class="ofg">${rooms}</div></div></div><p class="ofk mu"><span><i style="background:#fff;box-shadow:0 0 0 1px var(--ln)"></i>White-capped figure: division head</span><span><i style="background:var(--red)"></i>Red figure: no Employee ID yet</span><span>Tap a division below on small screens</span></p></div>`)}
  ${sec("c12","Divisions",`<div class="dvg">${D.map(dvCard).join("")}</div>`)}</div><p class="foot">${SRC_NOTE}</p>`}
+let officeResizeHandler=null;
 function officeInit(){
  const st=$("#ofs"),w=$("#ofw");if(!st||!w)return;
+ if(officeResizeHandler)removeEventListener("resize",officeResizeHandler);
  let rz=-35,rx=58,sx=null,sy=0,sr=0,sxr=0,pid=null,moved=false;
  const apply=()=>{w.style.setProperty("--rz",rz+"deg");w.style.setProperty("--rx",rx+"deg")};
  const fit=()=>{if(!st.isConnected)return;const k=Math.min(1,Math.max(.38,st.clientWidth/960));st.style.setProperty("--sc",k)};
- fit();if(!st._fit){st._fit=1;addEventListener("resize",fit)}
+ fit();officeResizeHandler=fit;addEventListener("resize",officeResizeHandler,{passive:true})
  st.addEventListener("pointerdown",e=>{if(document.documentElement.classList.contains("lite")||e.button)return;sx=e.clientX;sy=e.clientY;sr=rz;sxr=rx;pid=e.pointerId;moved=false});
  st.addEventListener("pointermove",e=>{if(document.documentElement.classList.contains("lite")||pid!==e.pointerId||sx===null)return;const dx=e.clientX-sx,dy=e.clientY-sy;if(!moved){if(Math.hypot(dx,dy)<6)return;moved=true;st.classList.add("dr");try{st.setPointerCapture(pid)}catch(_){}}rz=sr+dx*.35;if(e.pointerType==="mouse")rx=Math.max(35,Math.min(75,sxr-dy*.2));apply()});
  const end=e=>{if(pid!==e.pointerId)return;pid=null;sx=null;st.classList.remove("dr")};
@@ -658,13 +660,32 @@ document.addEventListener("focusin",e=>{const t=e.target.closest&&e.target.close
 document.addEventListener("focusout",hideTip);
 let tt;const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2200)};
 /* ---------- motion ---------- */
-const AN=()=>window.anime&&!RM.matches;
+const AN=()=>Boolean(window.anime)&&!RM.matches&&!document.documentElement.classList.contains("mj-reduced")&&!document.hidden;
 function enter(root){
+ const counters=$("[data-count]",root);
+ // Populate all statistics immediately. Animate only the small, visible set
+ // rather than creating a separate RAF timeline for every table/metric cell.
+ counters.forEach(el=>{el.textContent=(+el.dataset.count||0).toString()});
  if(!AN())return;
- anime({targets:$$(".rv2",root),opacity:[0,1],translateY:[10,0],delay:anime.stagger(40),duration:380,easing:"easeOutCubic"});
- $$("[data-count]",root).forEach(el=>{const to=+el.dataset.count,o={v:0};anime({targets:o,v:to,round:1,duration:700,easing:"easeOutExpo",update:()=>{el.textContent=o.v}})});
+ const targets=$(".rv2",root).slice(0,10);
+ if(targets.length)anime({targets,opacity:[0,1],translateY:[6,0],delay:anime.stagger(20),duration:220,easing:"easeOutCubic"});
+ counters.slice(0,5).forEach(el=>{
+  const to=+el.dataset.count||0,o={v:0};
+  anime({targets:o,v:to,round:1,duration:300,easing:"easeOutQuad",update:()=>{if(el.isConnected)el.textContent=String(o.v)}});
+ });
 }
-function show(html,after){const v=$("#view"),go=()=>{v.innerHTML=html;if(after)after();enter(v)};if(RM.matches||!v.animate){go();return}v.animate({opacity:[1,0],transform:["none","translateY(-4px)"]},{duration:110,easing:"ease-out"}).finished.then(go).then(()=>v.animate({opacity:[0,1],transform:["translateY(6px)","none"]},{duration:240,easing:"cubic-bezier(.22,1,.36,1)"})).catch(go)}
+let currentShow=0;
+function show(html,after){
+ const v=$("#view"),id=++currentShow;
+ let done=false;
+ const go=()=>{if(done||id!==currentShow)return;done=true;v.innerHTML=html;if(after)after();enter(v)};
+ if(RM.matches||document.documentElement.classList.contains("mj-reduced")||document.hidden||!v.animate){go();return}
+ v.animate({opacity:[1,0]},{duration:65,easing:"ease-out"}).finished.then(()=>{
+  if(id!==currentShow)return;
+  go();
+  v.animate({opacity:[0,1]},{duration:130,easing:"ease-out"});
+ }).catch(go);
+}
 /* ---------- routing and shell ---------- */
 const TAB={};
 const paneHtml=w=>{const tb=TAB[w.id]||(CATS.includes(w.id)?"sec":"sum");return tb==="rec"?sec("c12","",REC[w.id](),"",RSRC[w.id]):tb==="sec"&&CAT_SECTIONS[w.id]?`<div class="c12">${sectionsHtml(w.id)}</div>`:SUM[w.id]()};
