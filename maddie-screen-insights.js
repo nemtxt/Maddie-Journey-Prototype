@@ -211,11 +211,12 @@ function decorateDivisions(){
   return '';
  }
  const h=route();
- root.removeAttribute('data-mj-division-color');
  if(h.startsWith('division/')){
   const name=h.slice('division/'.length),accent=color(name);
-  root.dataset.mjDivisionColor=accent;
-  root.style.setProperty('--mj-division-accent',accent);
+  if(root.dataset.mjDivisionColor!==accent)root.dataset.mjDivisionColor=accent;
+  if(root.style.getPropertyValue('--mj-division-accent')!==accent)root.style.setProperty('--mj-division-accent',accent);
+ }else if(root.hasAttribute('data-mj-division-color')){
+  root.removeAttribute('data-mj-division-color');
  }
  $$('[data-go^="division/"],[href^="#division/"]').forEach(el=>{
   const url=el.getAttribute('data-go')||el.getAttribute('href')?.slice(1)||'';
@@ -245,7 +246,9 @@ function decorateDivisions(){
   if(!name)return;
   const bar=$('.bt i',li);
   if(bar&&bar.style.getPropertyValue('--c')!==color(name))bar.style.setProperty('--c',color(name));
-  li.style.setProperty('--mj-division-accent',color(name));li.classList.add('mj-division-chart-row');
+  const accent=color(name);
+  if(li.style.getPropertyValue('--mj-division-accent')!==accent)li.style.setProperty('--mj-division-accent',accent);
+  li.classList.add('mj-division-chart-row');
  });
 }
 let pending=false;
@@ -269,7 +272,16 @@ function update(){
  decorateDivisions();
 }
 const queue=()=>{if(!pending){pending=true;requestAnimationFrame(update)}};
-new MutationObserver(queue).observe(root,{subtree:true,childList:true});
+// React to incoming report/page content, not our own summary/legend nodes.
+ // The previous unfiltered subtree observer repeatedly scanned every table
+ // whenever a chart, summary, or modal-adjacent DOM fragment was inserted.
+ const relevant=(record)=>record.target===root||Array.from(record.addedNodes).some(node=>{
+  if(node.nodeType!==1)return false;
+  if(node.matches?.('.mj-screen-insights,.mj-route-summary,.mj-org-panel,.mj-division-key'))return false;
+  return node.matches?.('.mj-page,.ph,.mj-head,.secc,.tbl,table,.g12,.dvc,.bars,#pane')||
+         Boolean(node.querySelector?.('.ph,.mj-head,.secc,.tbl,.dvc,.bars,table'));
+ });
+ new MutationObserver(records=>{if(records.some(relevant))queue()}).observe(root,{subtree:true,childList:true});
 addEventListener('hashchange',queue);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',queue,{once:true});else queue();
 })();
