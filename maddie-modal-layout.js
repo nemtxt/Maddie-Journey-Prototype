@@ -35,6 +35,25 @@
   if(!grid.children.length)return;
   sheet.appendChild(grid);
   footers.forEach(n=>sheet.appendChild(n));
+  // Consolidate the scattered name, role, and avatar into one compact,
+  // sticky identity header. Reuse the original nodes to preserve their data.
+  const name=Array.from(sheet.children).find(n=>n.tagName==='H2');
+  const subtitle=Array.from(sheet.children).find(n=>n.classList?.contains('sub'));
+  if(name){
+   const identity=document.createElement('header');
+   identity.className='mj-profile-identity';
+   const text=document.createElement('div');
+   text.className='mj-profile-heading';
+   text.appendChild(name);
+   if(subtitle)text.appendChild(subtitle);
+   const note=document.createElement('span');
+   note.className='mj-profile-readonly';
+   note.textContent='Fictional profile · Read-only';
+   text.appendChild(note);
+   identity.appendChild(portrait);
+   identity.appendChild(text);
+   sheet.insertBefore(identity,grid);
+  }
  }
  function enhance(){
   scheduled=false;
