@@ -41,6 +41,7 @@ function levels(list,{compact=false,allLevels=false}={}){
  if(!levels.length){wrap.append(make('p','mj-org-empty','No employees are recorded in this division.'));return wrap}
  for(const n of levels){
   const group=make('section','mj-org-level-group');
+  if(allLevels)group.style.setProperty('--mj-org-specific-height','var(--mj-org-h'+n+',128px)');
   const head=make('div','mj-org-level-heading');
   head.append(make('span','mj-org-level-badge','L'+n),make('strong','',levelTitle(n)),make('small','',count(list,n)+' '+(count(list,n)===1?'person':'people')));
   group.append(head);
