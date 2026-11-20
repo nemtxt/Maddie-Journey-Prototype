@@ -92,6 +92,19 @@ function header(text,desc){
  * columns visible on wide screens. The links represent organization groupings,
  * not unrecorded person-to-person reporting lines.
  */
+const compactPerson=(e,{detailed=false}={})=>{
+  const b=make('button','mj-one-person'+(detailed?' mj-one-leader':''));
+  b.type='button';b.dataset.emp=String(e.i);
+  b.setAttribute('aria-label','Open profile: '+e.name+', '+(e.role||'role not recorded'));
+  b.title=e.name+' · '+(e.role||'Role not recorded');
+  const dot=make('i','mj-one-dot');
+  dot.setAttribute('aria-hidden','true');
+  const content=make('span','mj-one-person-name');
+  content.append(make('strong','',e.name));
+  if(detailed)content.append(make('small','',e.role||'Role not recorded'));
+  b.append(dot,content);
+  return b;
+ };
 function companyChart(){
  const P=people(),D=divisions();
  const order=['Revenue Management','Business Development','Design & Design Operations','GenCon','Corporate Operations','COO Team','Media','CEO Team'];
@@ -120,19 +133,6 @@ function companyChart(){
 
  // Render one employee identity once. Buttons retain the existing data-emp
  // handler, so every position opens the correct read-only employee profile.
- const compactPerson=(e,{detailed=false}={})=>{
-  const b=make('button','mj-one-person'+(detailed?' mj-one-leader':''));
-  b.type='button';b.dataset.emp=String(e.i);
-  b.setAttribute('aria-label','Open profile: '+e.name+', '+(e.role||'role not recorded'));
-  b.title=e.name+' · '+(e.role||'Role not recorded');
-  const dot=make('i','mj-one-dot');
-  dot.setAttribute('aria-hidden','true');
-  const content=make('span','mj-one-person-name');
-  content.append(make('strong','',e.name));
-  if(detailed)content.append(make('small','',e.role||'Role not recorded'));
-  b.append(dot,content);
-  return b;
- };
  const tree=make('div','mj-one-tree');
  const ceo=P.find(e=>e.orgTier==='top'&&/chief executive officer/i.test(e.role||''))||
            P.find(e=>e.orgTier==='top')||null;
@@ -223,30 +223,53 @@ function companyChart(){
 }
 function divisionChart(name){
  const P=people(),D=divisions();
- const known=D.some(([n])=>n===name);
- if(!known)return null;
+ if(!D.some(([n])=>n===name))return null;
  const staff=P.filter(e=>e.dept===name);
- const panel=make('section','mj-org-panel mj-org-division');
+ const panel=make('section','mj-one-chart mj-one-division-chart');
  panel.dataset.mjOrgRoute='division/'+name;
- panel.style.setProperty('--mj-org-accent',color(name));
- panel.setAttribute('aria-label',name+' organization and role levels');
- const heading=header(name+' · organization chart',
-  'Division hierarchy grouped by recorded levels and positions. All '+staff.length+' team members are included below.');
- const metrics=make('div','mj-org-summary');
- const leads=staff.filter(e=>level(e)===1).length;
- metrics.append(make('strong','',staff.length+' people'),make('span','',leads+' division '+(leads===1?'head':'heads')),
-  make('span','',new Set(staff.map(level)).size+' levels'));
- heading.append(metrics);panel.append(heading);
- const root=make('div','mj-org-company-root mj-org-division-root');
- root.append(make('i','mj-org-division-dot'));
- const text=make('span','');
- text.append(make('strong','',name),make('small','','Division · '+staff.length+' people'));
- root.append(text);panel.append(root);
- const chart=make('div','mj-org-division-chart');
- chart.append(levels(staff));
- panel.append(chart);
- panel.append(make('p','mj-org-footnote',
-  'People are grouped by recorded position levels. Direct manager-to-employee reporting relationships are not specified in the fictional source.'));
+ panel.style.setProperty('--mj-one-color',color(name));
+ panel.setAttribute('aria-label',name+' organization chart with levels six to one');
+ const heading=make('header','mj-one-header mj-one-division-header');
+ const titles=make('div','mj-one-titles');
+ titles.append(make('p','mj-one-overline','DIVISION ORGANIZATION'));
+ titles.append(make('h2','',name));
+ titles.append(make('p','mj-one-lede','The complete division arranged by level, using the same structure as the company chart.'));
+ const meta=make('div','mj-one-meta');
+ meta.append(make('strong','',staff.length+' people'),make('span','', 'Levels 6–1'));
+ heading.append(titles,meta);
+ panel.append(heading);
+ const tree=make('div','mj-one-tree mj-one-division-tree');
+ const root=make('div','mj-one-division-root');
+ const dot=make('i','mj-one-department-dot');
+ dot.setAttribute('aria-hidden','true');
+ root.append(dot,make('strong','',name));
+ tree.append(root);
+ const line=make('div','mj-one-line mj-one-line-divisions');
+ line.setAttribute('aria-hidden','true');
+ tree.append(line);
+ const board=make('div','mj-one-board mj-one-division-board');
+ const header=make('div','mj-one-board-heading');
+ header.append(make('span','mj-one-level-head','LEVEL'));
+ const label=make('div','mj-one-department');
+ label.style.setProperty('--mj-one-color',color(name));
+ const divisionLink=make('span','mj-one-department-link');
+ divisionLink.append(make('i','mj-one-department-dot'),make('strong','',name));
+ label.append(divisionLink,make('small','',staff.length+' people'));
+ header.append(label);board.append(header);
+ for(const n of [6,5,4,3,2,1]){
+  const row=make('div','mj-one-level-row');
+  row.dataset.mjOneLevel=String(n);
+  row.append(make('span','mj-one-level-name','Level '+n));
+  const cell=make('div','mj-one-cell');
+  cell.style.setProperty('--mj-one-color',color(name));
+  staff.filter(e=>level(e)===n)
+   .sort((a,b)=>(a.name||'').localeCompare(b.name||''))
+   .forEach(e=>cell.append(compactPerson(e)));
+  row.append(cell);board.append(row);
+ }
+ tree.append(board);panel.append(tree);
+ panel.append(make('p','mj-one-footnote',
+  'Fictional employee roster · Select a name to view their full read-only profile.'));
  return panel;
 }
 // Expanded chart provides maximum usable space without entering the browser
