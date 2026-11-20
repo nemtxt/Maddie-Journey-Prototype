@@ -722,3 +722,21 @@ body.mj-new #view .foot{
  animation:none!important;
  transform:none!important;
 }
+
+/* Explicit theme safeguard against higher-specificity legacy dark overrides.
+ * These selectors cannot reach the permanent black sidebar or the 3D scene. */
+:root[data-theme="dark"] body.mj-new #view :is(.mj-v4-header,.mj-v4-surface,.mj-v4-tile,.mj-v4-kpi){
+ background-color:var(--v4-surface)!important;
+ background-image:none!important;
+ color:var(--v4-ink)!important;
+ border-color:var(--v4-stroke)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-v4-attention-surface{
+ border-left-color:var(--v4-stroke-strong)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-v4-kpis:is(.cos,.strip)>.mj-v4-kpi.r{
+ border-left-color:#c46b6b!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-v4-kpis:is(.cos,.strip)>.mj-v4-kpi.a{
+ border-left-color:#c79d55!important;
+}
