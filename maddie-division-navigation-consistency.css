@@ -226,3 +226,30 @@ body.mj-new #view .mj-one-division-board .mj-one-person-name strong{
  #hub .hxb .mc-office-theme-btn span{display:none!important}
  #hub .hxb .mc-office-theme-btn{padding:9px 11px!important}
 }
+
+/* Mobile chart must stay visible; the previous overview-only breakpoint hides
+   .mj-one-board globally below 1000px. */
+@media(max-width:1000px){
+ body.mj-new #view .mj-one-division-chart .mj-one-division-board{
+  display:block!important;
+ }
+}
+/* Resolve specificity from older compact nav styles in both app themes. */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav a.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav .mj-pink-group>button.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav .mj-pink-section-toggle.mj-nav-selected{
+ background:#fff!important;
+ border-color:#fff!important;
+ color:#111513!important;
+ box-shadow:none!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav a.mj-nav-selected>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav a.mj-nav-selected.on>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav .mj-pink-group>button.mj-nav-selected>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav .mj-pink-section-toggle.mj-nav-selected>.i{
+ color:#111513!important;
+ background:transparent!important;
+ fill:none!important;
+ border:0!important;
+ box-shadow:none!important;
+}
