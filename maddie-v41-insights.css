@@ -464,3 +464,34 @@ body.mj-new #view .mj-v41 a:focus-visible{
 :root.mj-reduced body.mj-new #view .mj-v41-heading .mj-v41-more{
  transition:none!important;
 }
+
+/* Data-bound narrative stays compact, not another summary dashboard. */
+body.mj-new #view .mj-v41-observation{
+ display:flex;
+ align-items:baseline;
+ gap:8px 15px;
+ flex-wrap:wrap;
+ margin:0 0 13px!important;
+ padding:10px 15px!important;
+ border:1px solid var(--v41-border)!important;
+ border-left:3px solid var(--v41-line)!important;
+ border-radius:10px!important;
+ color:var(--v41-ink)!important;
+ background:var(--v41-soft)!important;
+}
+body.mj-new #view .mj-v41-observation strong{
+ flex:0 0 auto;
+ color:var(--v41-ink)!important;
+ font-size:10.2px!important;
+ font-weight:820!important;
+ text-transform:uppercase!important;
+ letter-spacing:.06em!important;
+}
+body.mj-new #view .mj-v41-observation p{
+ flex:1 1 350px;
+ margin:0!important;
+ font-size:10.9px!important;
+ line-height:1.55!important;
+ font-weight:560!important;
+ color:var(--v41-muted)!important;
+}
