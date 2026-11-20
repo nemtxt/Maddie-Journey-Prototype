@@ -11,7 +11,7 @@ const people=()=>Array.isArray(window.MCD?.EMP)?window.MCD.EMP:[];
 const divisions=()=>Array.isArray(window.MCD?.D)?window.MCD.D:[];
 const route=()=>{try{return decodeURIComponent(location.hash.slice(1)||'overview')}catch{return location.hash.slice(1)||'overview'}};
 const color=name=>window.MJ_DIVISION_COLOR?.(name)||'#7d7d7d';
-const level=e=>e.head?1:Math.max(2,Math.min(6,Number(e.lvl)||3));
+const level=e=>Number(e.orgLevel)>0?Math.min(6,Number(e.orgLevel)):e.head?1:Math.max(2,Math.min(6,Number(e.lvl)||3));
 const make=(tag,cls,txt)=>{
  const e=document.createElement(tag);
  if(cls)e.className=cls;
@@ -80,24 +80,49 @@ function header(text,desc){
 }
 function companyChart(){
  const P=people(),D=divisions();
- const panel=make('section','mj-org-panel mj-org-company');panel.id='mj-full-org-chart';
+ const panel=make('section','mj-org-panel mj-org-company mj-org-reference');
+ panel.id='mj-full-org-chart';
  panel.dataset.mjOrgRoute='overview';
- panel.setAttribute('aria-label','Complete organization chart for the fictional company');
+ panel.setAttribute('aria-label','Company organization chart, leadership and eight divisions');
  const head=header('Company organization chart',
-  'Full company structure grouped by division and recorded levels. Select any employee to view their read-only profile.');
+  'Explore the complete fictional organization from leadership to division teams, arranged by recorded role levels.');
  const metrics=make('div','mj-org-summary');
- metrics.append(make('strong','',P.length+' people'),make('span','',D.length+' divisions'),make('span','',new Set(P.map(level)).size+' recorded levels'));
+ metrics.append(make('strong','',P.length+' people'),make('span','',D.length+' divisions'),make('span','','Levels 6 to 1'));
  head.append(metrics);panel.append(head);
- const root=make('div','mj-org-company-root');
- root.append(make('strong','','Madhouse · People & Culture'),make('small','',P.length+' employees across '+D.length+' divisions'));
+ const root=make('div','mj-org-company-root mj-org-hq-root');
+ root.append(make('strong','','MADHOUSE · PEOPLE & CULTURE'),
+  make('small','','Executive leadership · Operations · Division teams'));
  panel.append(root);
- const tree=make('div','mj-org-company-tree');
- tree.setAttribute('aria-label','All divisions and employees');
- D.forEach(([name])=>tree.append(divisionUnit(name,P)));
- panel.append(tree);
- const foot=make('p','mj-org-footnote',
-  'Fictional roster. Connections show the company, divisions and recorded position levels; individual reporting lines are not defined in the sample data.');
- panel.append(foot);
+ const leadership=make('div','mj-org-leadership');
+ for(const [tier,label,description] of [
+  ['top','Top leadership','Executive team'],
+  ['core','Core leadership','Division leaders and principal roles']
+ ]){
+  const members=P.filter(e=>e.orgTier===tier);
+  const band=make('section','mj-org-hierarchy-band');
+  band.dataset.orgTier=tier;
+  const labelRow=make('div','mj-org-band-heading');
+  labelRow.append(make('strong','',label),make('small','',members.length+' people · '+description));
+  band.append(labelRow);
+  const group=make('div','mj-org-leadership-people');
+  members.forEach(e=>group.append(person(e)));
+  band.append(group);leadership.append(band);
+ }
+ panel.append(leadership);
+ const note=make('div','mj-org-grid-intro');
+ note.append(make('strong','','Division-level organization'),
+  make('span','','Scroll horizontally to view every division; select a name to open their profile.'));
+ panel.append(note);
+ const scroll=make('div','mj-org-division-scroll');
+ scroll.tabIndex=0;
+ scroll.setAttribute('role','region');
+ scroll.setAttribute('aria-label','Organization chart: eight division columns, horizontally scrollable');
+ const tree=make('div','mj-org-company-tree mj-org-chart-columns');
+ const departmentStaff=P.filter(e=>e.orgTier==='division'||!e.orgTier);
+ D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff)));
+ scroll.append(tree);panel.append(scroll);
+ panel.append(make('p','mj-org-footnote',
+  'Reference-based names are demo identities. Leadership appears above the division columns and division teams are grouped by level. Direct reporting lines are not specified by the source.'));
  return panel;
 }
 function divisionChart(name){
