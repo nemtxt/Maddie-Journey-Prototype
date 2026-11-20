@@ -55,3 +55,25 @@ body.mj-new #view .mj-record-export{flex:none}
  body.mj-new #view .mj-show-rows{width:100%;min-height:44px}
 }
 @media(prefers-reduced-motion:reduce){body.mj-new #view .mj-show-rows{transition:none}}
+
+/* No oversized outer frame around a detailed report: show the actual data directly. */
+body.mj-new #view #pane>.secc,
+:root[data-theme="dark"] body.mj-new #view #pane>.secc{
+ background:transparent!important;border:0!important;border-top:0!important;
+ border-left:0!important;box-shadow:none!important;padding:3px 0 0!important;
+ border-radius:0!important;
+}
+body.mj-new #view #pane>.secc>.mj-report-section-title{
+ padding:0 3px 14px!important;margin:0 0 16px!important;
+}
+body.mj-new #view #pane>.secc .secb>.tbl,
+body.mj-new #view #pane>.secc .secb>.scroll,
+body.mj-new #view #pane>.secc .secb>.mj-tablewrap{
+ border:1px solid var(--mj-border)!important;
+ border-radius:15px!important;box-shadow:0 6px 18px rgba(20,30,45,.045)!important;
+}
+:root[data-theme="dark"] body.mj-new #view #pane>.secc .secb>.tbl,
+:root[data-theme="dark"] body.mj-new #view #pane>.secc .secb>.scroll,
+:root[data-theme="dark"] body.mj-new #view #pane>.secc .secb>.mj-tablewrap{
+ border-color:#32323A!important;box-shadow:none!important;
+}
