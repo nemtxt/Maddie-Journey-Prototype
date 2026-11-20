@@ -156,7 +156,9 @@ function schedule(){
  if(scheduled)return;
  scheduled=true;requestAnimationFrame(enhance);
 }
-new MutationObserver(schedule).observe(view,{childList:true,subtree:true});
+// Only full page replacements require rebuilding a chart. The chart's own
+// inserted employee cards must not trigger repeated organization-wide scans.
+new MutationObserver(schedule).observe(view,{childList:true});
 addEventListener('hashchange',schedule);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',schedule,{once:true});else schedule();
 })();
