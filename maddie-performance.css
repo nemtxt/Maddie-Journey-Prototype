@@ -1,0 +1,22 @@
+/* Maddie Journey — targeted performance safeguards.
+ * Preserve all established UI colors, components, routes and interactions.
+ */
+@supports (content-visibility:auto){
+  /* The complete company chart keeps every employee in the DOM, but sections
+     outside its scroll viewport do not require full style/paint work. */
+  body.mj-new #view .mj-org-company-tree > .mj-org-unit{
+    content-visibility:auto;
+    contain-intrinsic-size:auto 340px;
+  }
+}
+/* Keep animated page cards light: only opacity/transform are composited. */
+body.mj-new #view .rv2{
+  backface-visibility:hidden;
+}
+@media (prefers-reduced-motion:reduce){
+  body.mj-new #view .rv2,
+  body.mj-new #view .mj-org-person{
+    transition:none!important;
+    animation:none!important;
+  }
+}
