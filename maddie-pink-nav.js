@@ -62,11 +62,17 @@ function syncRoute(){
 function areaHtml([id,name,ico]){
  const expanded=expandedWorkspace===id;
  const count=sections(id).length;
- const groupLink=link(id,name,ico).replace('</a>','<small class="mj-pink-group-count" aria-label="'+count+' section dashboards">'+count+'</small></a>');
- return '<div class="mj-pink-group'+(expanded?' expanded':'')+'" data-pink-group="'+id+'">'+groupLink+
- '<button class="mj-pink-expand" type="button" data-pink-expand="'+id+'" aria-expanded="'+expanded+'" aria-controls="pink-'+id+'" aria-label="'+(expanded?'Collapse ':'Expand ')+esc(name)+' subcategories">'+icon('arrow')+'</button></div>'+
+ // One full-width accordion control: clicking the icon, label, count or chevron toggles.
+ // The category summary route remains accessible as the submenu's first link.
+ const header='<button class="mj-pink-workspace-toggle" type="button" data-pink-expand="'+id+'" aria-expanded="'+expanded+'" aria-controls="pink-'+id+'" aria-label="'+(expanded?'Collapse ':'Expand ')+esc(name)+' subcategories">'+
+  icon(ico)+'<span class="nl">'+esc(name)+'</span><small class="mj-pink-group-count" aria-label="'+count+' section dashboards">'+count+'</small>'+
+  '<span class="mj-pink-workspace-chevron" aria-hidden="true">'+icon('arrow')+'</span></button>';
+ const overview='<a class="mj-group-summary-link" href="#'+id+'" data-id="'+id+'" data-mj-href="'+id+'">'+
+  icon('grid')+'<span class="nl">Summary dashboard</span></a>';
+ return '<div class="mj-pink-group'+(expanded?' expanded':'')+'" data-pink-group="'+id+'">'+header+'</div>'+
  '<div class="mj-pink-submenu" id="pink-'+id+'"'+(expanded?'':' hidden')+'>'+
- (id==='people'?divisionItems():'')+sections(id).map(s=>'<a href="#'+id+':'+s.id+'" data-id="'+id+':'+s.id+'" data-mj-href="'+id+':'+s.id+'" title="'+esc(s.label)+'"><i class="mj-pink-dot" aria-hidden="true"></i><span class="nl">'+esc(s.label)+'</span></a>').join('')+'</div>';
+ overview+(id==='people'?divisionItems():'')+
+ sections(id).map(s=>'<a href="#'+id+':'+s.id+'" data-id="'+id+':'+s.id+'" data-mj-href="'+id+':'+s.id+'" title="'+esc(s.label)+'"><i class="mj-pink-dot" aria-hidden="true"></i><span class="nl">'+esc(s.label)+'</span></a>').join('')+'</div>';
 }
 function toggle(id,label,expanded,count){
  return '<button class="mj-pink-section-toggle" type="button" data-pink-section="'+id+'" aria-controls="pink-section-'+id+'" aria-expanded="'+expanded+'"><span>'+label+'</span><small>'+count+'</small>'+icon('arrow')+'</button>';
@@ -117,7 +123,7 @@ function active(){
  all('[data-pink-group]',side).forEach(g=>{
   const id=g.dataset.pinkGroup,expanded=expandedWorkspace===id;
   g.classList.toggle('expanded',expanded);g.classList.toggle('current',id===base||(id==='people'&&h.startsWith('division/')));
-  const sub=q('#pink-'+id),btn=g.querySelector('[data-pink-expand]');
+  const sub=q('#pink-'+id),btn=g.querySelector('.mj-pink-workspace-toggle');
   if(sub)sub.hidden=!expanded;
   if(btn){btn.setAttribute('aria-expanded',String(expanded));btn.setAttribute('aria-label',(expanded?'Collapse ':'Expand ')+areas.find(x=>x[0]===id)[1]+' subcategories')}
  });
