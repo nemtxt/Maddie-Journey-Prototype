@@ -97,7 +97,14 @@
       var nz = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim(); };
       var split = function (n) { var p = String(n).split(','); return { last: nz(p[0]), given: nz(p.slice(1).join(' ')).split(' ').filter(Boolean) }; };
       var tokens = function (n) { return nz(n).split(' ').filter(Boolean); };
-      var findEmp = function (n) { var s = split(n); if (!s.last || !s.given.length) return null; var lt = s.last.split(' ');
+      var findEmp = function (n) {
+        /* Exact-name fallback supports unique single-name sample identities.
+           It is deliberately uniqueness-checked; ambiguous matches are never linked. */
+        var target = String(n || '').trim().toLowerCase();
+        var direct = E.filter(function (e) { return String(e.name || '').trim().toLowerCase() === target; });
+        if (direct.length === 1) return direct[0];
+        if (direct.length > 1) return null;
+        var s = split(n); if (!s.last || !s.given.length) return null; var lt = s.last.split(' ');
         var hits = E.filter(function (e) { var tk = tokens(e.name); return lt.every(function (x) { return tk.indexOf(x) >= 0; }) && (tk[0] === s.given[0] || s.given.filter(function (g) { return g.length > 1 && tk.indexOf(g) >= 0; }).length >= 2); });
         return hits.length === 1 ? hits[0] : null; };
       var findFolder = function (n, core) { var s = split(n); return model.t201.folders.filter(function (f) { var c = /^core\b/i.test(f.title); if (!!core !== c) return false; var tk = tokens(f.title.replace(/^core\s+\w+\s*-\s*/i, ''));
