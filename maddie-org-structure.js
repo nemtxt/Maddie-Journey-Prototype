@@ -10,7 +10,7 @@ const $=(sel,base=view)=>base.querySelector(sel);
 const people=()=>Array.isArray(window.MCD?.EMP)?window.MCD.EMP:[];
 const divisions=()=>Array.isArray(window.MCD?.D)?window.MCD.D:[];
 const route=()=>{try{return decodeURIComponent(location.hash.slice(1)||'overview')}catch{return location.hash.slice(1)||'overview'}};
-const color=name=>window.MJ_DIVISION_COLOR?.(name)||({}).noop||'#7d7d7d';
+const color=name=>window.MJ_DIVISION_COLOR?.(name)||'#7d7d7d';
 const level=e=>e.head?1:Math.max(2,Math.min(6,Number(e.lvl)||3));
 const make=(tag,cls,txt)=>{
  const e=document.createElement(tag);
