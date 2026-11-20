@@ -94,7 +94,7 @@ function header(text,desc){
  */
 function companyChart(){
  const P=people(),D=divisions();
- const order=['RMD','BUSINESS DEV','DESIGN/OPERATION','GENCON','CORP OPS','COO TEAM','MEDIA','CEO TEAM'];
+ const order=['Revenue Management','Business Development','Design & Design Operations','GenCon','Corporate Operations','COO Team','Media','CEO Team'];
  const ranked=[...D].sort((a,b)=>{
   const ai=order.indexOf(a[0]),bi=order.indexOf(b[0]);
   return (ai<0?100:ai)-(bi<0?100:bi);
