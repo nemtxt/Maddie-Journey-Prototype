@@ -534,3 +534,53 @@ body.mj-new #layer .mj-v43-profile .mj-v43-timeline-event:hover{
  transition:none!important;
  transform:none!important;
 }
+
+/* Fixed-position-in-panel chart inspector: values never reflow chart rows or
+ * move the report when users hover or traverse data with a keyboard. */
+body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout{
+ position:absolute!important;
+ z-index:4!important;
+ right:clamp(13px,1.3vw,22px)!important;
+ bottom:57px!important;
+ left:auto!important;
+ width:max-content!important;
+ max-width:calc(100% - 28px)!important;
+ max-height:100px!important;
+ padding:10px 14px!important;
+ margin:0!important;
+ border:1px solid var(--v435-strong-border)!important;
+ border-radius:10px!important;
+ background:var(--v435-paper)!important;
+ box-shadow:var(--v435-elevation-hover)!important;
+ opacity:0!important;
+ visibility:hidden!important;
+ transform:translateY(5px)!important;
+ pointer-events:none!important;
+ transition:opacity .14s ease,transform .14s ease,visibility .14s ease!important;
+}
+body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout.is-visible{
+ max-height:100px!important;
+ opacity:1!important;
+ visibility:visible!important;
+ transform:translateY(0)!important;
+ padding:10px 14px!important;
+ margin:0!important;
+}
+@media(max-width:600px){
+ body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout{
+  right:12px!important;
+  bottom:54px!important;
+  padding:9px 11px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout,
+ body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout.is-visible{
+  transition:none!important;
+  transform:none!important;
+ }
+}
+:root.mj-reduced body.mj-new #view .mj-v41-card.mj-v435-chart>.mj-v435-readout{
+ transition:none!important;
+ transform:none!important;
+}
