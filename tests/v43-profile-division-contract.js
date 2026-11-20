@@ -53,6 +53,8 @@ class Element{
 }
 const make=(t,c='',txt='')=>new Element(t,c,txt);
 const layer=make('div'),view=make('main');
+const layerListeners=[];
+layer.addEventListener=(type,fn)=>{if(type==='click')layerListeners.push(fn)};
 const people=FIXTURE?.EMP||[],divisions=FIXTURE?.D||[],cases=FIXTURE?.CASES||[];
 const selected=people.find(e=>e.dept==='Media')||people[0];
 if(!selected)throw Error('No fictional fixture employee supplied');
@@ -120,11 +122,7 @@ const click=target=>{
 };
 const contact=grid.children.find(x=>x.dataset.mjV43Group==='Contact');
 check('Closed contact group exists',!!contact);
-const layerListeners=[];
-layer.addEventListener=(type,fn)=>{if(type==='click')layerListeners.push(fn)};
-/* The source registered its handler before the test inspected it. The mock
-   listener implementation is intentionally injected on the instance below.
-   Use the exported data contract for all structural checks. */
+
 const mods=people.map(e=>api.employeeModel(e));
 const teamModels=divisions.map(([name])=>api.divisionModel(name));
 check('All 51 existing profiles map accurately',mods.length===51&&mods.every((m,i)=>m.id===people[i].i));
