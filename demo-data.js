@@ -473,7 +473,7 @@
  try {const model=MC_CORE.buildModel(raw,{},today.getTime());
   // The fictional 201 Files Digitalization Tracker is shaped like the existing connector model.
   // This drives the existing Who is missing what dashboard with 51 fully synthetic rows.
-  const trows=people.map((p,i)=>{const f=p.cellValuesByFieldId,n=f[F.last]+', '+f[F.first],status=f[F.status],isProb=status==='Probationary';
+  const trows=people.map((p,i)=>{const f=p.cellValuesByFieldId,n=f[F.last]?f[F.last]+', '+f[F.first]:f[F.first],status=f[F.status],isProb=status==='Probationary';
     return{no:i+1,name:n,prob:i%7===0?'No Record':'Uploaded',mh:!isProb&&i%5!==0?'Uploaded':'No Record',tcg:'',mf:'',nda:i%8===0?'No Record':'Uploaded',ncc:i%10===0?'No Record':'Uploaded',verified:i%6===0?'Demo verifier - P&C':'Sample checklist'};});
   model.t201={declared:51,rows:trows,core:trows.slice(0,8).map((r,i)=>({name:r.name,level:'L1',role:'Division Head',core:i%6===0?'No Record':'Uploaded',nda:r.nda,verified:'Sample P&C',})),folders:[],foldersMore:false};
   model.exits=[{name:'Alexandra Marquez',div:'Design & Operations',pos:'Creative Associate',status:'Resigned',sep:'2026-10-15'},{name:'Gabriel Ledesma',div:'Media',pos:'Production Assistant',status:'Contract ended',sep:'2026-09-30'}];
