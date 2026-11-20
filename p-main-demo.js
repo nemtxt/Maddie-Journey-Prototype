@@ -669,12 +669,12 @@ let tt;const toast=m=>{const t=$("#toast");t.textContent=m;t.classList.add("show
 /* ---------- motion ---------- */
 const AN=()=>Boolean(window.anime)&&!RM.matches&&!document.documentElement.classList.contains("mj-reduced")&&!document.hidden;
 function enter(root){
- const counters=$("[data-count]",root);
+ const counters=$$("[data-count]",root);
  // Populate all statistics immediately. Animate only the small, visible set
  // rather than creating a separate RAF timeline for every table/metric cell.
  counters.forEach(el=>{el.textContent=(+el.dataset.count||0).toString()});
  if(!AN())return;
- const targets=$(".rv2",root).slice(0,10);
+ const targets=$$(".rv2",root).slice(0,10);
  if(targets.length)anime({targets,opacity:[0,1],translateY:[6,0],delay:anime.stagger(20),duration:220,easing:"easeOutCubic"});
  counters.slice(0,5).forEach(el=>{
   const to=+el.dataset.count||0,o={v:0};
