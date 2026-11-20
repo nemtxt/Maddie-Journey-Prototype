@@ -342,3 +342,31 @@ body.mj-new #mj-rail-flyout .mj-division-count{margin-left:auto;opacity:.75}
 @media(prefers-reduced-motion:reduce){
  body.mj-new #side #nav a,body.mj-new #view .mj-intro{transition:none!important;animation:none!important}
 }
+
+
+/* Earlier theme-specific sidebar rules are more specific than ordinary body selectors.
+   Set final brand and active-subcategory treatment explicitly for each mode. */
+:root:not([data-theme="dark"]) body.mj-new #side .brand{
+  background:transparent!important;border:0!important;
+  border-bottom:1px solid #303632!important;border-radius:0!important;
+  box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new #side .brand{
+  background:transparent!important;border:0!important;
+  border-bottom:1px solid #dedede!important;border-radius:0!important;
+  box-shadow:none!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-submenu>a.on{
+  background:#272b28!important;color:#fff!important;
+  border-color:#3c443e!important;box-shadow:inset 3px 0 #ffcf3a!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-submenu>a.on .mj-pink-dot{
+  background:#ffcf3a!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-submenu>a.on{
+  background:#e7e7e7!important;color:#111!important;
+  border-color:#d7d7d7!important;box-shadow:inset 3px 0 #333!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-submenu>a.on .mj-pink-dot{
+  background:#333!important;
+}
