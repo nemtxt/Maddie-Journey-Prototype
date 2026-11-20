@@ -54,6 +54,31 @@
    identity.appendChild(text);
    sheet.insertBefore(identity,grid);
   }
+  // Fast access to every information group, without hiding any fields or
+  // introducing separate profile pages. All targets use the existing DOM.
+  const groups=Array.from(grid.querySelectorAll('.mj-profile-group'));
+  if(groups.length>1){
+   const bar=document.createElement('nav');
+   bar.className='mj-profile-jumps';
+   bar.setAttribute('aria-label','Jump to profile details');
+   const prefix=document.createElement('span');
+   prefix.className='mj-profile-jumps-title';
+   prefix.textContent='Profile details';
+   bar.appendChild(prefix);
+   groups.forEach((group,index)=>{
+    group.id='mj-profile-detail-'+index;
+    group.dataset.mjProfileDetail=String(index);
+    const label=group.querySelector('h3')?.textContent?.trim()||('Details '+(index+1));
+    const button=document.createElement('button');
+    button.type='button';button.className='mj-profile-jump';
+    button.textContent=label;
+    button.dataset.mjProfileJump=String(index);
+    button.setAttribute('aria-controls',group.id);
+    if(index===0)button.setAttribute('aria-current','location');
+    bar.appendChild(button);
+   });
+   sheet.insertBefore(bar,grid);
+  }
  }
  function enhance(){
   scheduled=false;
@@ -65,6 +90,28 @@
   scheduled=true;
   queueMicrotask(enhance);
  }
+ // Jump links operate within the modal's own scroll container. Preserve
+ // the keyboard focus and visible sensitive-value masking of the original sheet.
+ layer.addEventListener('click',event=>{
+  const button=event.target.closest?.('[data-mj-profile-jump]');
+  if(!button)return;
+  const sheet=button.closest('.mj-profile-sheet');
+  if(!sheet)return;
+  const target=sheet.querySelector('[data-mj-profile-detail="'+button.dataset.mjProfileJump+'"]');
+  if(!target)return;
+  const heading=sheet.querySelector('.mj-profile-identity');
+  const nav=sheet.querySelector('.mj-profile-jumps');
+  const sheetTop=sheet.getBoundingClientRect().top;
+  const desired=sheet.scrollTop+(target.getBoundingClientRect().top-sheetTop)-
+   (heading?.getBoundingClientRect().height||0)-(nav?.getBoundingClientRect().height||0)-12;
+  const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches||
+   document.documentElement.classList.contains('mj-reduced');
+  sheet.scrollTo({top:Math.max(0,desired),behavior:reduced?'instant':'smooth'});
+  nav?.querySelectorAll('[data-mj-profile-jump]').forEach(item=>{
+   if(item===button)item.setAttribute('aria-current','location');
+   else item.removeAttribute('aria-current');
+  });
+ });
  const observer=new MutationObserver(schedule);
  // Modal hosts are appended directly to #layer. Reflowing fields inside a
  // sheet should not queue another query for every moved DOM node.
