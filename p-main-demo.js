@@ -389,7 +389,7 @@ function navHtml(){const it=(id,n,i,tip)=>`<a href="#${id}" data-id="${id}" data
  return`<i class="ind"></i><div class="grp">Start here</div>${it("overview","Dashboard","grid")}${it("office","3D Office","office")}${it("help","How to use","search","How to use this page")}
  <div class="grp">Workspaces</div>${CATS.map(id=>{const w=WS.find(x=>x.id===id),o=!!NAVOPEN[id];return`<div class="ng${o?" open":""}"><a href="#${id}" data-id="${id}" data-tipmini="${CATNO(id)} ${CATNAME[id]}" class="nwi"><span class="nno">${CATNO(id)}</span><span class="nl"><b>${CATNAME[id]}</b><small>${CATSUB[id]}</small></span><em class="nb" data-nb="${id}"></em></a><button class="ntog" type="button" data-ntog="${id}" aria-expanded="${o}" aria-label="Show the sections of ${CATNAME[id]}">${ic("arrow")}</button></div><div class="nsub"${o?"":" hidden"} data-nsub="${id}">${(CAT_SECTIONS[id]||[]).map(s=>`<a href="#${id}:${s.id}" data-sub="${id}:${s.id}"><i class="sd ${s.state}"></i>${esc(s.label)}</a>`).join("")}</div>`}).join("")}
  <div class="grp">Executive views</div>${EXV.map(v=>it("view/"+v.id,v.n,"bars")).join("")}
- <div class="grp">Divisions</div>${it("divisions","All divisions","user")}`}
+ `}
 function paintNav(){CATS.forEach(id=>{const b=document.querySelector(`[data-nb="${id}"]`);if(!b)return;const f=NAVCOUNT[id];if(!f){b.textContent="";b.hidden=true;return}try{const[n,l]=f();b.textContent=n||"";b.hidden=!n;b.title=n+" "+l}catch(e){b.hidden=true}})}
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-ntog]");if(!b)return;e.preventDefault();e.stopPropagation();const id=b.dataset.ntog,sub=document.querySelector(`[data-nsub="${id}"]`),o=sub.hidden;sub.hidden=!o;b.setAttribute("aria-expanded",String(o));b.parentElement.classList.toggle("open",o);NAVOPEN[id]=o;try{localStorage.setItem("mc.navOpen",JSON.stringify(NAVOPEN))}catch(_){}setTimeout(()=>window.ind&&ind(),10)},true);
 document.addEventListener("click",e=>{const b=e.target.closest&&e.target.closest("[data-divsel]");if(!b)return;DIVSEL=b.dataset.divsel;const v=$("#view");v.innerHTML=execHtml("division");if(window.enter)enter(v)});
@@ -470,7 +470,7 @@ navHtml=function(){const it=(id,n,i,tip)=>`<a href="#${id}" data-id="${id}" data
  return`<i class="ind"></i><div class="grp">Start here</div>${it("overview","Dashboard","grid")}${it("office","3D Office","office")}${it("help","How to use","search","How to use this page")}
  <div class="grp">Workspaces</div>${CATS.map(id=>`<div class="ng" data-ng="${id}"><a href="#${id}" data-id="${id}" data-tipmini="${CATNO(id)} ${CATNAME[id]}" class="nwi"><span class="nno">${CATNO(id)}</span><span class="nl"><b>${CATNAME[id]}</b><small>${CATSUB[id]}</small></span><em class="nb" data-nb="${id}"></em></a><div class="nsub" data-nsub="${id}" hidden>${(CAT_SECTIONS[id]||[]).map(s=>`<a href="#${id}:${s.id}" data-sub="${id}:${s.id}"><i class="sd ${s.state}"></i>${esc(s.label)}</a>`).join("")}</div></div>`).join("")}
  <div class="grp">Executive views</div>${EXV.map(v=>it("view/"+v.id,v.n,"bars")).join("")}
- <div class="grp">Divisions</div>${it("divisions","All divisions","user")}`};
+ `};
 function syncNav(){const cur=(location.hash.slice(1)||"office").split(":")[0];$$(".ng").forEach(g=>{const on=g.dataset.ng===cur,s=g.querySelector(".nsub");g.classList.toggle("open",on);if(s)s.hidden=!on});setTimeout(()=>window.ind&&ind(),20)}
 addEventListener("hashchange",()=>setTimeout(syncNav,0));
 setTimeout(syncNav,0);
