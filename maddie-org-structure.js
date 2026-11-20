@@ -60,7 +60,16 @@ function divisionUnit(name,all,{inline=false,open=true,allLevels=false}={}){
  const label=make('span','mj-org-unit-label');
  label.append(make('strong','',name),make('small','',staff.length+' '+(staff.length===1?'person':'people')+' · '+[...new Set(staff.map(level))].length+' levels'));
  header.append(dot,label);
- if(!inline){const caret=make('span','mj-org-caret','▾');caret.setAttribute('aria-hidden','true');header.append(caret)}
+ if(inline){
+  const link=make('a','mj-org-division-link','View');
+  link.href='#division/'+encodeURIComponent(name);
+  link.title='Open the '+name+' division dashboard';
+  link.setAttribute('aria-label','Open '+name+' division dashboard');
+  header.append(link);
+ }else{
+  const caret=make('span','mj-org-caret','▾');
+  caret.setAttribute('aria-hidden','true');header.append(caret);
+ }
  unit.append(header);
  const inner=make('div','mj-org-unit-content');
  inner.append(levels(staff,{compact:!inline,allLevels}));
@@ -127,7 +136,7 @@ function companyChart(){
  scroll.setAttribute('aria-label','Organization chart: eight division columns, scroll horizontally when needed');
  const tree=make('div','mj-org-company-tree mj-org-chart-columns');
  const departmentStaff=P.filter(e=>e.orgTier==='division'||!e.orgTier);
- D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff,{allLevels:true})));
+ D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff,{inline:true,allLevels:true})));
  const board=make('div','mj-org-chart-board');
  const rail=make('div','mj-org-level-rail');
  rail.append(make('span','mj-org-level-rail-title','LEVEL'));
