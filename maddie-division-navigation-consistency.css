@@ -1,0 +1,228 @@
+/* Maddie Journey — consistent division charts, selected-sidebar icon colors,
+ * and Office appearance controls. Theme only affects the content workspace,
+ * while the sidebar remains permanently black.
+ */
+body.mj-new #view .mj-one-division-chart{
+ --mj-one-color:#7c8f7e;
+ width:100%!important;
+ max-width:none!important;
+ min-width:0!important;
+ margin:10px 0 22px!important;
+ padding:clamp(14px,1.6vw,24px)!important;
+ border-top:3px solid var(--mj-one-color)!important;
+ overflow:visible!important;
+}
+body.mj-new #view .mj-one-division-header{
+ grid-template-columns:minmax(0,1fr) auto!important;
+ margin:0 0 12px!important;
+}
+body.mj-new #view .mj-one-division-header h2{
+ font-size:clamp(21px,2.4vw,30px)!important;
+ line-height:1.14!important;
+ overflow-wrap:anywhere;
+}
+body.mj-new #view .mj-one-division-tree{
+ width:100%!important;
+ min-width:0!important;
+ margin:0!important;
+ padding:0!important;
+ overflow:visible!important;
+}
+body.mj-new #view .mj-one-division-root{
+ display:inline-flex;align-items:center;justify-content:center;
+ align-self:center;gap:9px;max-width:min(100%,450px);
+ min-height:39px;padding:8px 20px!important;
+ border:1px solid var(--one-border)!important;
+ border-top:3px solid var(--mj-one-color)!important;
+ border-radius:12px!important;
+ background:var(--one-paper)!important;
+ font-weight:820;font-size:12px;
+ color:var(--one-ink)!important;
+ text-align:center;
+}
+body.mj-new #view .mj-one-division-root .mj-one-department-dot{
+ background:var(--mj-one-color)!important;
+}
+body.mj-new #view .mj-one-division-tree .mj-one-line-divisions{
+ height:18px!important;flex-basis:18px!important;
+}
+body.mj-new #view .mj-one-division-board{
+ width:100%!important;max-width:100%!important;
+ min-width:0!important;overflow:visible!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-board-heading,
+body.mj-new #view .mj-one-division-board .mj-one-level-row{
+ display:grid!important;
+ grid-template-columns:76px minmax(0,1fr)!important;
+ width:100%!important;min-width:0!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-board-heading::before{
+ left:calc(76px + (100% - 76px)/2)!important;
+ right:calc((100% - 76px)/2)!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-board-heading{
+ min-height:56px!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-level-head{
+ font-size:10px!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-department{
+ background:color-mix(in srgb,var(--mj-one-color) 5%,var(--one-paper))!important;
+ min-height:56px!important;
+ padding:9px!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-department-link strong{
+ font-size:clamp(11px,1.2vw,14px)!important;
+ font-weight:830!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-department small{
+ font-size:10px!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-level-row{
+ min-height:55px!important;
+ border-bottom:1px dashed var(--one-line)!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-level-row:last-child{
+ border-bottom:0!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-level-name{
+ font-size:11px!important;
+ white-space:nowrap!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-cell{
+ justify-content:center!important;align-items:center!important;
+ flex-wrap:wrap!important;gap:9px!important;
+ padding:10px 14px!important;
+ border-left:1px solid var(--one-border)!important;
+ background:color-mix(in srgb,var(--mj-one-color) 4%,var(--one-paper))!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-person{
+ padding:6px 10px!important;min-height:29px!important;
+ border-color:color-mix(in srgb,var(--mj-one-color) 72%,#ddd)!important;
+}
+body.mj-new #view .mj-one-division-board .mj-one-person-name strong{
+ font-size:11px!important;
+ white-space:normal!important;
+ overflow-wrap:anywhere;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-one-division-board .mj-one-cell,
+:root[data-theme="dark"] body.mj-new #view .mj-one-division-board .mj-one-department{
+ background:color-mix(in srgb,var(--mj-one-color) 9%,#0d0d0d)!important;
+}
+@media(max-width:670px){
+ body.mj-new #view .mj-one-division-chart{
+  padding:13px!important;
+ }
+ body.mj-new #view .mj-one-division-board .mj-one-board-heading,
+ body.mj-new #view .mj-one-division-board .mj-one-level-row{
+  grid-template-columns:62px minmax(0,1fr)!important;
+ }
+ body.mj-new #view .mj-one-division-board .mj-one-board-heading::before{
+  left:calc(62px + (100% - 62px)/2)!important;
+  right:calc((100% - 62px)/2)!important;
+ }
+ body.mj-new #view .mj-one-division-board .mj-one-cell{
+  padding:9px 6px!important;gap:6px!important;
+ }
+ body.mj-new #view .mj-one-division-board .mj-one-person{
+  padding:6px 8px!important;
+ }
+ body.mj-new #view .mj-one-division-board .mj-one-person-name strong{
+  font-size:10.5px!important;
+ }
+}
+@media(prefers-reduced-motion:reduce){
+ body.mj-new #view .mj-one-division-board .mj-one-person{
+  transform:none!important;transition:none!important;
+ }
+}
+
+/* Sidebar: a single selected white icon surface. No nested dark/colored
+ * background on active icons, in either appearance mode.
+ */
+:root body.mj-new #side{
+ background:#080a09!important;
+ background-image:none!important;
+ color:#f5f5f5!important;
+ color-scheme:dark!important;
+}
+:root body.mj-new #side #nav .mj-nav-selected>.i,
+:root body.mj-new #side #nav .mj-nav-selected svg.i,
+:root body.mj-new #side #mj-sidebar-actions .mj-nav-selected>.i{
+ background:transparent!important;
+ background-image:none!important;
+ color:#111513!important;
+ stroke:currentColor!important;
+ box-shadow:none!important;
+}
+:root body.mj-new #side #nav .mj-nav-selected .mj-rail-section-icon{
+ background:transparent!important;color:#111513!important;
+}
+:root body.mj-new #side #nav .mj-nav-selected,
+:root body.mj-new #side #mj-sidebar-actions .mj-nav-selected{
+ background:#fff!important;
+ background-image:none!important;
+ color:#111513!important;
+ border-color:#fff!important;
+ box-shadow:none!important;
+}
+:root body.mj-new #side #nav .mj-nav-selected .nl,
+:root body.mj-new #side #nav .mj-nav-selected .mj-overview-count{
+ color:#111513!important;
+}
+:root body.mj-new #side #nav :is(a,button):not(.mj-nav-selected)>.i{
+ color:#e9ece9!important;
+}
+@media(min-width:821px){
+ :root body.mj-new .app.mini #side #nav a.mj-nav-selected,
+ :root body.mj-new .app.mini #side #nav .mj-pink-group>button.mj-nav-selected,
+ :root body.mj-new .app.mini #side #nav .mj-pink-section-toggle.mj-nav-selected,
+ :root body.mj-new .app.mini #side #mj-sidebar-actions a.mj-nav-selected{
+  width:44px!important;
+  max-width:44px!important;
+  min-width:44px!important;
+  height:44px!important;min-height:44px!important;
+  padding:0!important;
+  margin-inline:auto!important;
+  display:flex!important;justify-content:center!important;align-items:center!important;
+  border:1px solid #fff!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  color:#111513!important;
+  box-shadow:none!important;
+ }
+ :root body.mj-new .app.mini #side #nav a.mj-nav-selected>.i,
+ :root body.mj-new .app.mini #side #nav .mj-pink-group>button.mj-nav-selected>.i,
+ :root body.mj-new .app.mini #side #nav .mj-pink-section-toggle.mj-nav-selected>.i,
+ :root body.mj-new .app.mini #side #mj-sidebar-actions a.mj-nav-selected>.i{
+  box-sizing:border-box!important;
+  padding:0!important;
+  margin:0!important;
+  width:18px!important;height:18px!important;
+  min-width:18px!important;max-width:18px!important;
+  flex:0 0 18px!important;
+  border:0!important;border-radius:0!important;
+  background:transparent!important;
+  color:#111513!important;
+ }
+}
+/* Office: existing appearance control matches the previous Find button. */
+#hub .mc-office-theme-btn{
+ display:inline-flex!important;align-items:center!important;
+ gap:7px!important;
+ font-weight:710!important;
+ cursor:pointer!important;
+ white-space:nowrap!important;
+}
+#hub .mc-office-theme-btn .i{
+ width:16px!important;height:16px!important;
+ color:currentColor!important;
+ flex:0 0 16px!important;
+}
+#hub .mc-office-theme-btn:focus-visible{
+ outline:2px solid currentColor!important;outline-offset:3px!important;
+}
+@media(max-width:680px){
+ #hub .hxb .mc-office-theme-btn span{display:none!important}
+ #hub .hxb .mc-office-theme-btn{padding:9px 11px!important}
+}
