@@ -103,8 +103,10 @@ function skin(){const d=isDark(),tc=document.getElementById("tc");if(tc)tc.conte
 const mcRoomSets=[];
  // A single transform object updates the overview's instanced avatar meshes;
  // this preserves batching and avoids dozens of additional draw calls.
- const mcOverviewTransform=new THREE.Object3D();
+ let mcOverviewTransform=null;
  function mcAnimateOverviewPeople(el){
+  // THREE loads conditionally; create this helper only after WebGL succeeds.
+  if(!mcOverviewTransform)mcOverviewTransform=new THREE.Object3D();
   for(const entry of mcRoomSets){
    const set=entry.peopleInstances;
    if(!set||!entry.actors?.length)continue;
