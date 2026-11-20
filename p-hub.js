@@ -59,7 +59,7 @@ function mcPanel(d){
        <button class="mc-scene-back mc-mini-btn" data-hx="next" aria-label="Next division" title="${mcSafe(next)}">${ic("arrow")}</button>
      </div>
      <div class="mc-scene-actions">
-       <button class="mc-scene-back mc-mini-btn" data-hx="search" aria-label="Search employees or divisions" title="Find someone">${ic("search")}</button>
+       <button type="button" class="mc-scene-back mc-mini-btn mc-office-theme-btn" data-hx="scene-theme" aria-label="Switch light or dark mode" aria-pressed="${isDark()}" title="Toggle appearance"><svg aria-hidden="true" class="i"><use href="#i-theme"></use></svg></button>
        <button class="mc-scene-back mc-mini-btn" data-hx="office-settings" aria-label="Office settings" title="Office settings">${ic("compass")}</button>
      </div>
    </div>
@@ -188,11 +188,25 @@ function mcSetQuality(mode){
 window.MC_PERF={get mode(){return mcQuality},setMode:mcSetQuality,
  snapshot:()=>({mode:mcQuality,fps:mcObservedFPS,drawCalls:mcDrawCalls,triangles:mcTriangles,renderMs:+mcDrawAverage.toFixed(2),pixelRatio:+dpr.toFixed(2),webgl:!!ready,rooms:rooms.length,employees:mcActors.length})};
 
+// Use the existing saved dashboard theme setting, without rebuilding
+// the 3D renderer or resetting its camera.
+function syncOfficeThemeButtons(){
+ if(!hub)return;
+ const dark=isDark();
+ hub.querySelectorAll('[data-hx="scene-theme"]').forEach(button=>{
+  button.setAttribute("aria-pressed",String(dark));
+  button.setAttribute("aria-label",dark?"Switch to light mode":"Switch to dark mode");
+  button.title=dark?"Switch to light mode":"Switch to dark mode";
+ });
+}
+new MutationObserver(syncOfficeThemeButtons).observe(document.documentElement,{
+ attributes:true,attributeFilter:["data-theme"]
+});
 const go=(h,quiet)=>{if(location.hash==="#"+h){if(!quiet)route();return}if(quiet)skip=1;location.hash="#"+h};
 const home=()=>clamp(9.5/(.3443*(hub.clientWidth/hub.clientHeight)),21,46),homeR=()=>home()*zm;
 function mk(){
  hub=document.createElement("div");hub.id="hub";hub.setAttribute("role","region");hub.setAttribute("aria-label","Madhouse office, choose a division");
- hub.innerHTML=`<canvas id="hcv" role="img" aria-label="3D office with eight divisions. Use the buttons below to choose one."></canvas><div id="hxlab"></div><button type="button" class="hxbt mc-office-workspaces-btn" data-hx="workspaces" aria-label="Open Workspaces dashboard">${ic("grid")}<span>Workspaces</span></button><div class="hxh"><div><div class="hxt" role="heading" aria-level="1">Virtual office</div><p class="hxs">Select a division on the office map to explore.</p></div><div class="hxb"><button class="hxbt mc-live2" data-hx="sources" aria-label="Data status and sources"><i class="dot a" id="livedot2"></i><span id="livetxt2">Connecting…</span></button><button class="hxbt" data-hx="search" aria-label="Find a person or division">${ic("search")}<span>Find</span></button></div></div><aside class="hxi" id="hxi" aria-live="polite"></aside><p class="hxk">Drag to look around. ${TC?"Pinch":"Scroll"} to zoom. ${TC?"Tap":"Click"} a room to enter it.</p><nav class="hxl" aria-label="Alternative division navigation"><button data-i="L" style="--c:#8fb4ff">Company <small>${M.n}</small></button>${D.map(([d,c],i)=>`<button data-i="${i}" style="--c:${HX[i]}">${d} <small>${c}</small></button>`).join("")}</nav>`;
+ hub.innerHTML=`<canvas id="hcv" role="img" aria-label="3D office with eight divisions. Use the buttons below to choose one."></canvas><div id="hxlab"></div><button type="button" class="hxbt mc-office-workspaces-btn" data-hx="workspaces" aria-label="Open Workspaces dashboard">${ic("grid")}<span>Workspaces</span></button><div class="hxh"><div><div class="hxt" role="heading" aria-level="1">Virtual office</div><p class="hxs">Select a division on the office map to explore.</p></div><div class="hxb"><button class="hxbt mc-live2" data-hx="sources" aria-label="Data status and sources"><i class="dot a" id="livedot2"></i><span id="livetxt2">Connecting…</span></button><button type="button" class="hxbt mc-office-theme-btn" data-hx="scene-theme" aria-label="Switch light or dark mode" aria-pressed="${isDark()}" title="Toggle appearance"><svg aria-hidden="true" class="i"><use href="#i-theme"></use></svg><span>Appearance</span></button></div></div><aside class="hxi" id="hxi" aria-live="polite"></aside><p class="hxk">Drag to look around. ${TC?"Pinch":"Scroll"} to zoom. ${TC?"Tap":"Click"} a room to enter it.</p><nav class="hxl" aria-label="Alternative division navigation"><button data-i="L" style="--c:#8fb4ff">Company <small>${M.n}</small></button>${D.map(([d,c],i)=>`<button data-i="${i}" style="--c:${HX[i]}">${d} <small>${c}</small></button>`).join("")}</nav>`;
  dvd=document.createElement("div");dvd.id="dvd";dvd.setAttribute("role","dialog");dvd.setAttribute("aria-modal","true");
  document.body.append(hub,dvd);cv=$("#hcv",hub);mdl=document.createElement("div");mdl.id="hxm";document.body.append(mdl);mdl.addEventListener("click",e=>{if(e.target===mdl||e.target.closest("[data-m]"))closeM()});
  hub.addEventListener("click",e=>{mcWake();const b=e.target.closest("button");if(!b)return;const a=b.dataset.hx;
@@ -215,7 +229,7 @@ function mk(){
  hub.addEventListener("click",e=>{const b=e.target.closest("[data-hx]");if(!b)return;const a=b.dataset.hx;
  if(a==="workspaces"){H.close();document.body.classList.add("mcws");const h=location.hash.slice(1);if(!h||h==="office"||h.startsWith("division/"))location.hash="#overview";else if(window.MC_APP)MC_APP.route();return}
  if(a==="sources"){if(window.MC_BOOT)MC_BOOT.sources(b);return}
- if(a==="leave")mcCloseFocus();else if(a==="metrics")dash(mcRoom||"HQ");else if(a==="scene-theme")window.mcTheme();
+ if(a==="leave")mcCloseFocus();else if(a==="metrics")dash(mcRoom||"HQ");else if(a==="scene-theme"){window.mcTheme();syncOfficeThemeButtons()}
  else if(a==="today")mcSetDay(mcDate(mcBase));
  else if(a==="prev")mcNavigate(-1);else if(a==="next")mcNavigate(1);
  else if(a==="jump")mcPreview(b.dataset.div);
