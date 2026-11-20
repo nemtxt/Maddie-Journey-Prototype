@@ -229,7 +229,7 @@
  const statusMix=d=>mixCard('Employment status','Employment classifications across the current roster.',
   pairsOf(d.status),'Roster status · not benefits enrollment','people:masterlist');
  const pipeline=d=>barCard('Recruitment pipeline','Candidate count in each recorded stage; stages are not a conversion forecast.',
-  d.pipeline,'Candidate-stage snapshot','talent:recruitment-pipeline',{limit:8});
+  d.pipeline,'Candidate-stage snapshot','talent:pipeline',{limit:8});
  const priorities=d=>mixCard('Recorded priority signals','Severity of monitoring exceptions generated from current sample records.',
   [['High / critical',d.highRisk],['Routine',d.routine]],
   'Risk labels come from the prototype exception model','scoreboard:risks');
@@ -337,6 +337,36 @@
   };
   return map[h]||null;
  }
+ function observation(h,d){
+  const peak=d.divisions.reduce((a,b)=>!a||b.count>a.count?b:a,null);
+  const first=d.hc[0],last=d.hc[d.hc.length-1];
+  const net=finite(first)&&finite(last)?last-first:null;
+  const tagged=d.overdueDivisions.length;
+  const due=total(d.overdueDivisions.map(x=>x.overdue));
+  const change=net===null?'No comparable headcount periods':('Headcount '+(net>0?'increased by ':net<0?'decreased by ':'was unchanged across the recorded period (')+(net===0?'0 employees)':fmt(Math.abs(net))+' employees')+' from '+(d.mon[0]||'first')+' to '+(d.mon[d.mon.length-1]||'latest')+'.');
+  if(h==='view/ceo')return change+' '+fmt(due)+' overdue tasks are recorded across '+tagged+' divisions with task data.';
+  if(h==='view/coo'){
+   const lateCurrent=d.late.at(-1),latePrevious=d.late.at(-2);
+   return (peak?peak.name+' has the largest recorded division headcount ('+peak.count+'). ':'')+
+    (finite(lateCurrent)&&finite(latePrevious)?'The latest monthly late-entry count is '+lateCurrent+' versus '+latePrevious+' in the prior period.':'Late-entry periods are not comparable.');
+  }
+  if(h==='view/cso')return fmt(d.stages.Completed||0)+' employee journeys are classified Completed; '+
+   fmt(d.stages['For evaluation']||0)+' are currently For evaluation.';
+  if(h==='view/pc')return fmt(d.incomplete)+' employee files show less than 100% 201-file completion; '+
+   fmt(d.missingId)+' employee records do not have an assigned ID.';
+  if(h==='view/monthly'){
+   if(d.mon.length<2)return 'The selected dataset does not contain two comparable reporting months.';
+   return 'Headcount is '+fmt(d.hc.at(-1))+' in '+d.mon.at(-1)+' versus '+fmt(d.hc.at(-2))+' in '+d.mon.at(-2)+
+    '; recorded late entries are '+fmt(d.late.at(-1))+' versus '+fmt(d.late.at(-2))+'.';
+  }
+  if(h.startsWith('division/')||h==='view/division'){
+   const name=h.startsWith('division/')?h.slice('division/'.length):($('.divpick button[aria-pressed="true"]')?.dataset.divsel||d.divisions[0]?.name);
+   const team=d.divisions.find(x=>x.name===name);
+   if(team)return team.count+' employees are assigned to '+name+'. Their average recorded 201-file completion is '+
+    team.avgFile+'%, with '+fmt(team.lates)+' late entries over the last 30 days.';
+  }
+  return null;
+ }
  function render(){
   scheduled=false;
   if(!document.body.classList.contains('mj-new'))return;
@@ -352,6 +382,12 @@
   panel.dataset.mjV41=key;
   panel.setAttribute('aria-label',cfg.title);
   panel.append(heading(cfg.title,cfg.note,cfg.link));
+  const insight=observation(h,data);
+  if(insight){
+   const callout=el('div','mj-v41-observation');
+   callout.append(el('strong','','Key observation'),el('p','',insight));
+   panel.append(callout);
+  }
   const grid=el('div','mj-v41-grid');
   cfg.cards.forEach(c=>grid.append(c));
   panel.append(grid);
