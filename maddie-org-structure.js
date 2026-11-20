@@ -34,10 +34,10 @@ function person(e){
 function levelTitle(n){
  return n===1?'Division leadership':n===2?'Senior & supervisory roles':n===3?'Team roles':'Level '+n;
 }
-function levels(list,{compact=false}={}){
+function levels(list,{compact=false,allLevels=false}={}){
  const wrap=make('div','mj-org-levels mj-org-level-bands'+(compact?' compact':''));
  // Match the supplied level-band chart: highest recorded level at the top.
- const levels=[...new Set(list.map(level))].sort((a,b)=>b-a);
+ const levels=allLevels?[6,5,4,3,2,1]:[...new Set(list.map(level))].sort((a,b)=>b-a);
  if(!levels.length){wrap.append(make('p','mj-org-empty','No employees are recorded in this division.'));return wrap}
  for(const n of levels){
   const group=make('section','mj-org-level-group');
@@ -50,7 +50,7 @@ function levels(list,{compact=false}={}){
  }
  return wrap;
 }
-function divisionUnit(name,all,{inline=false,open=true}={}){
+function divisionUnit(name,all,{inline=false,open=true,allLevels=false}={}){
  const staff=all.filter(e=>e.dept===name);
  const unit=make(inline?'div':'details','mj-org-unit');
  unit.style.setProperty('--mj-org-accent',color(name));
@@ -63,7 +63,7 @@ function divisionUnit(name,all,{inline=false,open=true}={}){
  if(!inline){const caret=make('span','mj-org-caret','▾');caret.setAttribute('aria-hidden','true');header.append(caret)}
  unit.append(header);
  const inner=make('div','mj-org-unit-content');
- inner.append(levels(staff,{compact:!inline}));
+ inner.append(levels(staff,{compact:!inline,allLevels}));
  if(!inline){
   const link=make('a','mj-org-open','Open division dashboard');
   link.href='#division/'+encodeURIComponent(name);
@@ -119,8 +119,13 @@ function companyChart(){
  scroll.setAttribute('aria-label','Organization chart: eight division columns, horizontally scrollable');
  const tree=make('div','mj-org-company-tree mj-org-chart-columns');
  const departmentStaff=P.filter(e=>e.orgTier==='division'||!e.orgTier);
- D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff)));
- scroll.append(tree);panel.append(scroll);
+ D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff,{allLevels:true})));
+ const board=make('div','mj-org-chart-board');
+ const rail=make('div','mj-org-level-rail');
+ rail.append(make('span','mj-org-level-rail-title','LEVEL'));
+ [6,5,4,3,2,1].forEach(n=>rail.append(make('span','mj-org-level-rail-row','Level '+n)));
+ board.append(rail,tree);
+ scroll.append(board);panel.append(scroll);
  panel.append(make('p','mj-org-footnote',
   'Reference-based names are demo identities. Leadership appears above the division columns and division teams are grouped by level. Direct reporting lines are not specified by the source.'));
  return panel;
