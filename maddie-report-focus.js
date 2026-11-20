@@ -18,7 +18,8 @@
    const eligible=rows.filter(r=>!r.hidden);
    let visibleIndex=0;
    rows.forEach(row=>{
-      row.classList.toggle('mj-row-folded',!row.hidden && !expanded && visibleIndex>=previewCount);
+      const folded=!row.hidden && !expanded && visibleIndex>=previewCount;
+      if(row.classList.contains('mj-row-folded')!==folded)row.classList.toggle('mj-row-folded',folded);
       if(!row.hidden)visibleIndex++;
    });
    const total=eligible.length;
@@ -90,14 +91,27 @@
    pending=true;
    requestAnimationFrame(organize);
  }
- new MutationObserver(schedule).observe(view,{childList:true,subtree:true});
+ // Only new report/table content requires preparation. Ignore child nodes
+ // inserted by the existing summaries, charts and record-count controls.
+ const relevant=record=>record.target===view||Array.from(record.addedNodes).some(node=>{
+   if(node.nodeType!==1||node.matches?.('.mj-record-control,.mj-screen-insights,.mj-org-panel,.mj-zone-heading'))return false;
+   return node.matches?.('#pane,.secc,.secb,.tbl,table,.mj-page')||
+          Boolean(node.querySelector?.('.secc .secb,.secb .tbl'));
+ });
+ new MutationObserver(records=>{if(records.some(relevant))schedule()}).observe(view,{childList:true,subtree:true});
+ const pendingTables=new WeakSet();
+ const refreshSoon=table=>{
+  if(!table||pendingTables.has(table))return;
+  pendingTables.add(table);
+  requestAnimationFrame(()=>{pendingTables.delete(table);if(table.isConnected)refresh(table)});
+ };
  document.addEventListener('input',e=>{
-   const t=e.target.closest?.('#pane .secc .tbl');
-   if(t)setTimeout(()=>refresh(t),0);
+  const table=e.target.closest?.('#pane .secc .tbl');
+  refreshSoon(table);
  });
  document.addEventListener('click',e=>{
-   const t=e.target.closest?.('#pane .secc .tbl');
-   if(t&&!e.target.closest('.mj-show-rows'))setTimeout(()=>refresh(t),0);
+  const table=e.target.closest?.('#pane .secc .tbl');
+  if(table&&!e.target.closest('.mj-show-rows'))refreshSoon(table);
  });
  addEventListener('hashchange',schedule);
  schedule();
