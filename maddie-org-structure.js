@@ -85,7 +85,15 @@ function companyChart(){
  panel.dataset.mjOrgRoute='overview';
  panel.setAttribute('aria-label','Company organization chart, leadership and eight divisions');
  const head=header('Company organization chart',
-  'Explore the complete fictional organization from leadership to division teams, arranged by recorded role levels.');
+  'Explore executive leadership and all eight divisions in a single responsive organization view.');
+ const controls=make('div','mj-org-chart-actions');
+ const expand=make('button','mj-org-expand','Expand chart');
+ expand.type='button';
+ expand.dataset.mjOrgExpand='1';
+ expand.setAttribute('aria-pressed','false');
+ expand.setAttribute('aria-label','Expand organization chart to the full available workspace');
+ controls.append(expand);
+ head.append(controls);
  const metrics=make('div','mj-org-summary');
  metrics.append(make('strong','',P.length+' people'),make('span','',D.length+' divisions'),make('span','','Levels 6 to 1'));
  head.append(metrics);panel.append(head);
@@ -116,7 +124,7 @@ function companyChart(){
  const scroll=make('div','mj-org-division-scroll');
  scroll.tabIndex=0;
  scroll.setAttribute('role','region');
- scroll.setAttribute('aria-label','Organization chart: eight division columns, horizontally scrollable');
+ scroll.setAttribute('aria-label','Organization chart: eight division columns, scroll horizontally when needed');
  const tree=make('div','mj-org-company-tree mj-org-chart-columns');
  const departmentStaff=P.filter(e=>e.orgTier==='division'||!e.orgTier);
  D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff,{allLevels:true})));
@@ -127,7 +135,7 @@ function companyChart(){
  board.append(rail,tree);
  scroll.append(board);panel.append(scroll);
  panel.append(make('p','mj-org-footnote',
-  'Reference-based names are demo identities. Leadership appears above the division columns and division teams are grouped by level. Direct reporting lines are not specified by the source.'));
+  'Reference-based fictional names. Leadership and division levels are shown without inventing individual reporting relationships.'));
  return panel;
 }
 function divisionChart(name){
@@ -158,6 +166,41 @@ function divisionChart(name){
   'People are grouped by recorded position levels. Direct manager-to-employee reporting relationships are not specified in the fictional source.'));
  return panel;
 }
+// Expanded chart provides maximum usable space without entering the browser
+// Fullscreen API, so profiles, navigation and keyboard access still work.
+let expandedChart=null;
+function closeExpandedChart(){
+ if(!expandedChart)return;
+ const panel=expandedChart;expandedChart=null;
+ panel.classList.remove('mj-org-expanded');
+ const button=panel.querySelector('[data-mj-org-expand]');
+ if(button){
+  button.textContent='Expand chart';
+  button.setAttribute('aria-pressed','false');
+  button.setAttribute('aria-label','Expand organization chart to the full available workspace');
+ }
+ document.body.classList.remove('mj-org-expanded-open');
+ button?.focus({preventScroll:true});
+}
+document.addEventListener('click',event=>{
+ const button=event.target.closest?.('[data-mj-org-expand]');
+ if(!button)return;
+ const panel=button.closest('.mj-org-reference');
+ if(!panel)return;
+ if(expandedChart===panel){closeExpandedChart();return}
+ closeExpandedChart();
+ expandedChart=panel;
+ panel.classList.add('mj-org-expanded');
+ document.body.classList.add('mj-org-expanded-open');
+ button.textContent='Exit expanded view';
+ button.setAttribute('aria-pressed','true');
+ button.setAttribute('aria-label','Close expanded organization chart');
+ panel.scrollTop=0;
+});
+document.addEventListener('keydown',event=>{
+ if(event.key==='Escape'&&expandedChart){event.preventDefault();closeExpandedChart()}
+});
+window.addEventListener('hashchange',closeExpandedChart);
 let scheduled=false;
 function enhance(){
  scheduled=false;
