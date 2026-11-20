@@ -1,0 +1,588 @@
+/* Maddie Journey — Monochrome Interface v6.2
+ * LIGHT: black navigation / white dashboard
+ * DARK: white navigation / black dashboard
+ * Presentation only; no routes, widgets, datasets, or layout structure modified.
+ */
+body.mj-new{
+  --mc-page:#ffffff;--mc-card:#ffffff;--mc-ink:#101010;
+  --mc-muted:#656565;--mc-line:#e5e5e5;--mc-soft:#f6f6f6;
+  --mc-sh:0 3px 13px rgba(0,0,0,.035),0 11px 28px rgba(0,0,0,.035);
+  --mc-strong:#111111;
+}
+body.mj-new #view{
+  --mj-zone:#111111;--mj-zone-deep:#111111;
+  --mj-zone-pale:#ffffff;--mj-zone-bright:#111111;
+  --mj-accent:#111111;--mj-accent-soft:#ffffff;
+  --mj-violet:#111111;--mj-violet-bg:#f4f4f4;
+  --mj-ink:#111111;--mj-muted:#656565;
+  --mj-surface:#ffffff;--mj-border:#e5e5e5;
+  --mj-card-ink:#111111;--mj-card-muted:#656565;
+  --pastel-ink:#111111;--pastel-secondary:#656565;
+  color:var(--mc-ink)!important;background:var(--mc-page)!important;
+}
+body.mj-new,body.mj-new .app,body.mj-new .win,body.mj-new .ct{
+  background:#ffffff!important;color:#111111!important;
+}
+body.mj-new .tb{
+  background:#ffffff!important;color:#111111!important;
+  border-bottom:1px solid #e8e8e8!important;
+}
+body.mj-new .tb .crumbs,body.mj-new .tb .crumbs b{color:#2d2d2d!important}
+body.mj-new .tb .ib,body.mj-new .tb .sb{color:#262626!important}
+body.mj-new .tb .sb,body.mj-new .tb .demo{background:#ffffff!important;border-color:#dedede!important}
+
+/* All dashboard tiles and report/insight cards use white surfaces, not palettes. */
+body.mj-new #view .mj-metric,
+body.mj-new #view .mj-metric:nth-child(n),
+body.mj-new #view .mj-grid>.mj-tile,
+body.mj-new #view .mj-tile,
+body.mj-new #view .mj-panel,
+body.mj-new #view .mj-duo .mj-panel,
+body.mj-new #view .cos>.co,
+body.mj-new #view .strip>.k,
+body.mj-new #view .card,
+body.mj-new #view .secc,
+body.mj-new #view .kc,
+body.mj-new #view .mj-preview,
+body.mj-new #view .mj-intro,
+body.mj-new #view .mj-head,
+body.mj-new #view .ph,
+body.mj-new #view .mj-insight-surface,
+body.mj-new #view .mj-data-surface,
+body.mj-new #view .g12>.card:not(.strip),
+body.mj-new #view .g12>.card.mj-insight-surface:not(.strip),
+body.mj-new #view .g12>.card.mj-data-surface:not(.strip),
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child,
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child,
+body.mj-new[data-mj-layout="settings"] #view .mj-head,
+body.mj-new[data-mj-layout="data-system"] #view .mj-head{
+  background:#ffffff!important;background-image:none!important;
+  color:#111111!important;border:1px solid #e4e4e4!important;
+  box-shadow:var(--mc-sh)!important;
+}
+body.mj-new #view .mj-metric,
+body.mj-new #view .mj-metric:nth-child(n),
+body.mj-new #view .mj-grid>.mj-tile,
+body.mj-new #view .cos>.co,
+body.mj-new #view .strip>.k{
+  --fill:#ffffff;--text:#111111;--tile-bg:#ffffff;--tile-ink:#111111;
+  --call-bg:#ffffff;--call-ink:#111111;--strip-bg:#ffffff;--strip-ink:#111111;
+}
+body.mj-new #view .mj-metric::before,
+body.mj-new #view .mj-metric::after,
+body.mj-new #view .mj-grid>.mj-tile::before,
+body.mj-new #view .mj-grid>.mj-tile::after,
+body.mj-new #view .cos>.co::after,
+body.mj-new #view .mj-intro::before,
+body.mj-new #view .mj-intro::after,
+body.mj-new #view .mj-head::after,
+body.mj-new #view .ph::after,
+body.mj-new #view .mj-duo .mj-panel::after{
+  display:none!important;content:none!important;
+}
+body.mj-new #view .mj-metric,
+body.mj-new #view .mj-grid>.mj-tile,
+body.mj-new #view .cos>.co,
+body.mj-new #view .strip>.k{
+  border-top:1px solid #e4e4e4!important;
+}
+body.mj-new #view .mj-metric:hover,
+body.mj-new #view .mj-grid>.mj-tile:hover{
+  border-color:#bababa!important;box-shadow:0 9px 25px rgba(0,0,0,.08)!important;
+}
+body.mj-new #view .g12>.card.mj-data-surface:not(.strip){
+  border-left:1px solid #e4e4e4!important;
+}
+
+/* Type weight and scale, rather than colors, establish information hierarchy. */
+body.mj-new #view .mj-intro h1,
+body.mj-new #view .mj-head h1,
+body.mj-new #view .ph h1,
+body.mj-new #view .mj-intro h1 em{
+  color:#111111!important;-webkit-text-fill-color:#111111!important;
+  background:none!important;background-image:none!important;
+  font-weight:800!important;letter-spacing:-.045em!important;
+}
+body.mj-new #view .mj-head h1::after,
+body.mj-new #view .mj-zone-heading b::before,
+body.mj-new #view .g12>.card:not(.strip)>h2:first-child::before{
+  background:#141414!important;
+}
+body.mj-new #view .mj-sectionhead h2,
+body.mj-new #view .mj-panel h2,
+body.mj-new #view .mj-grid>.mj-tile h3,
+body.mj-new #view .mj-tile h3,
+body.mj-new #view .mj-report-section-title h2,
+body.mj-new #view .g12>.card h2{
+  color:#131313!important;font-weight:800!important;letter-spacing:-.025em!important;
+}
+body.mj-new #view .mj-metric strong,
+body.mj-new #view .cos>.co b,
+body.mj-new #view .strip>.k b{
+  color:#101010!important;font-weight:850!important;letter-spacing:-.045em!important;
+  opacity:1!important;text-shadow:none!important;
+}
+body.mj-new #view .mj-metric span,
+body.mj-new #view .cos>.co span,
+body.mj-new #view .strip>.k span,
+body.mj-new #view .mj-tilehead small{
+  color:#333333!important;font-weight:750!important;opacity:1!important;
+}
+body.mj-new #view .mj-metric small,
+body.mj-new #view .mj-intro p,
+body.mj-new #view .mj-head p,
+body.mj-new #view .ph p,
+body.mj-new #view .ph .pmeta,
+body.mj-new #view .mj-panel p,
+body.mj-new #view .mj-grid>.mj-tile p,
+body.mj-new #view .mj-grid>.mj-tile small,
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot span,
+body.mj-new #view .mj-tile p,
+body.mj-new #view .cos>.co small,
+body.mj-new #view .strip>.k small,
+body.mj-new #view .mj-zone-heading span,
+body.mj-new #view .mj-sectionhead p{
+  color:#656565!important;opacity:1!important;text-shadow:none!important;
+}
+body.mj-new #view .mj-tag,
+body.mj-new #view .mj-sectionhead a,
+body.mj-new #view .backbtn,
+body.mj-new #view .mj-show-rows,
+body.mj-new #view .mj-record-count{
+  color:#333333!important;
+}
+
+/* Monochrome badges, icons, section controls and report navigation. */
+body.mj-new #view .mj-ico,
+body.mj-new #view .mj-grid>.mj-tile .mj-ico,
+body.mj-new #view .mj-mini-count,
+body.mj-new #view .ph .catno{
+  background:#f4f4f4!important;color:#222222!important;
+  box-shadow:inset 0 0 0 1px #e6e6e6!important;border-color:#e6e6e6!important;
+}
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot,
+body.mj-new #view .mj-tilefoot{
+  border-top-color:#e6e6e6!important;
+}
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot a,
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot button,
+body.mj-new #view .mj-tilefoot a,
+body.mj-new #view .mj-tilefoot button,
+body.mj-new #view .ph .backbtn,
+body.mj-new #view .ph .dvnav button,
+body.mj-new #view .ph .seg,
+body.mj-new #view .ph .chip,
+body.mj-new #view .mj-show-rows,
+body.mj-new #view .mj-duo .mj-panel .mj-btn,
+body.mj-new #view .mj-shortcuts a,
+body.mj-new #view .mj-duo .mj-panel .mj-mini-count{
+  background:#ffffff!important;color:#1b1b1b!important;
+  border:1px solid #dedede!important;box-shadow:none!important;
+  font-weight:700!important;
+}
+body.mj-new #view .mj-shortcuts .i,
+body.mj-new #view .mj-shortcuts a:nth-child(n) .i{color:#242424!important}
+body.mj-new #view .ph .seg button,
+body.mj-new #view .ph .seg button[aria-pressed="true"]{color:#222222!important}
+body.mj-new #view .mj-btn.primary,
+body.mj-new #view .mj-intro .mj-btn.primary,
+body.mj-new #view .mj-detail-buttons .mj-btn.primary{
+  color:#ffffff!important;background:#111111!important;border-color:#111111!important;
+  font-weight:800!important;box-shadow:none!important;
+}
+body.mj-new #view .mj-btn.primary:hover{background:#303030!important}
+body.mj-new #view .secnav{
+  background:#ffffff!important;border:1px solid #e6e6e6!important;box-shadow:none!important;
+}
+body.mj-new #view .secnav a{
+  background:#ffffff!important;color:#575757!important;border-color:#e5e5e5!important;
+  box-shadow:none!important;
+}
+body.mj-new #view .secnav a:hover{background:#f4f4f4!important;color:#111111!important}
+body.mj-new #view .secnav a.on,
+body.mj-new #view .secnav a[aria-current="page"]{
+  background:#f1f1f1!important;color:#111111!important;
+  border-color:#bcbcbc!important;box-shadow:inset 0 -2px #111111!important;font-weight:800!important;
+}
+body.mj-new #view .mj-tabs button[aria-selected="true"],
+body.mj-new #view .mj-settings-tabs a.on{
+  color:#111111!important;background:#f2f2f2!important;font-weight:800!important;
+}
+body.mj-new #view .mj-preview,
+body.mj-new #view .acc2,
+body.mj-new #view .acc2>summary,
+body.mj-new #view .kc,
+body.mj-new #view .tools2,
+body.mj-new #view .mj-record-control,
+body.mj-new #view .mj-input,
+body.mj-new #view .mj-show-rows{
+  background:#ffffff!important;border-color:#e4e4e4!important;
+}
+body.mj-new #view .tbl,
+body.mj-new #view .scroll,
+body.mj-new #view .mj-tablewrap,
+body.mj-new #view .tbl table thead,
+body.mj-new #view .tbl table thead th,
+body.mj-new #view .scroll table thead th,
+body.mj-new #view table thead,
+body.mj-new #view .mj-data-table th,
+body.mj-new #view .tools2 .fin{
+  background:#ffffff!important;border-color:#e4e4e4!important;color:#222222!important;
+}
+body.mj-new #view .tbl table thead th,
+body.mj-new #view .scroll table thead th,
+body.mj-new #view .mj-data-table th{font-weight:800!important}
+body.mj-new #view .tbl table tbody tr:hover,
+body.mj-new #view .scroll table tbody tr:hover,
+body.mj-new #view table tbody tr:hover{background:#f7f7f7!important}
+body.mj-new #view .rk li:hover{background:#f6f6f6!important}
+body.mj-new #view .rk li .rkb i{background:#222222!important}
+body.mj-new #view .mj-preview,
+body.mj-new #view .g12>.card.mj-data-surface,
+body.mj-new #view .acc2{border-left-color:#e4e4e4!important}
+body.mj-new .mj-modal,body.mj-new .sheet{
+  background:#ffffff!important;color:#111111!important;border-color:#e4e4e4!important;
+}
+body.mj-new .mj-modal::before{background:#111111!important}
+
+/* Reference sidebar retained: BLACK in light appearance. */
+body.mj-new #side{
+  --rail-ink:#ffffff;--rail-muted:#bdbdbd;--rail-stroke:rgba(255,255,255,.16);
+  --rail-hover:rgba(255,255,255,.09);--rail-selected:rgba(255,255,255,.14);
+  --rail-focus:#ffffff;--rail-accent:#ffffff;
+  background:#070707!important;background-image:none!important;
+  color:#ffffff!important;border-color:#242424!important;
+  box-shadow:0 14px 32px rgba(0,0,0,.13)!important;
+}
+body.mj-new #side::before{display:none!important}
+body.mj-new #side::after{background:#909090!important;box-shadow:14px 0 0 #c7c7c7,28px 0 0 #f4f4f4!important}
+body.mj-new .app.mini #side::after{box-shadow:11px 0 0 #c7c7c7,22px 0 0 #f4f4f4!important}
+body.mj-new #side .brand{
+  background:#141414!important;border-color:#303030!important;box-shadow:none!important;
+}
+body.mj-new #side .brand span,
+body.mj-new #side #sfoot.mj-side-status b,
+body.mj-new #side #sfoot.mj-side-status small{color:#ffffff!important}
+body.mj-new #side .brand .logo{background:#1b1b1b!important;border-color:#383838!important}
+body.mj-new #side .brand .logo img{filter:brightness(0) invert(1)!important}
+body.mj-new #side #nav a.on,
+body.mj-new #side #mj-sidebar-actions a.on,
+body.mj-new #side #nav .mj-pink-group.current>a{
+  border-color:#393939!important;box-shadow:inset 3px 0 #ffffff!important;
+}
+body.mj-new #side #nav .mj-pink-heading,
+body.mj-new #side #nav .mj-pink-section-toggle small{color:#a6a6a6!important}
+body.mj-new #side #nav .mj-pink-divider{background:#303030!important}
+body.mj-new #side #nav .mj-pink-dot{background:#c8c8c8!important}
+body.mj-new #side #nav .mj-pink-submenu a.on{box-shadow:inset 3px 0 #ffffff!important}
+body.mj-new #side #sfoot.mj-side-status{background:#141414!important;border-color:#303030!important}
+body.mj-new #side #sfoot .mj-status-dot{background:#e7e7e7!important;box-shadow:none!important}
+body.mj-new #mj-sidebar-collapse{
+  background:#151515!important;color:#ffffff!important;
+  border-color:#393939!important;box-shadow:0 5px 15px rgba(0,0,0,.2)!important;
+}
+body.mj-new #mj-sidebar-collapse:hover{background:#303030!important}
+body.mj-new #mj-rail-flyout{
+  --fly-ink:#ffffff;--fly-muted:#bdbdbd;
+  background:#101010!important;color:#ffffff!important;border-color:#333333!important;
+}
+body.mj-new #mj-rail-flyout .mj-fly-title{border-bottom-color:#333333!important}
+body.mj-new #mj-rail-flyout a:hover{background:#303030!important}
+body.mj-new #mj-rail-flyout a[aria-current="page"]{
+  background:#292929!important;box-shadow:inset 3px 0 #ffffff!important;
+}
+body.mj-new #mj-rail-flyout a .mj-pink-dot{background:#dadada!important}
+body.mj-new .app.mini #side #nav a .i,
+body.mj-new .app.mini #side #mj-sidebar-actions a .i,
+body.mj-new .app.mini #side #nav .mj-rail-section-icon{color:currentColor!important}
+
+/* DARK: pure-black canvas, neutral near-black cards, WHITE sidebar. */
+:root[data-theme="dark"] body.mj-new{
+  --mc-page:#000000;--mc-card:#0b0b0b;--mc-ink:#f5f5f5;
+  --mc-muted:#aaaaaa;--mc-line:#303030;--mc-soft:#141414;
+  --mc-sh:none;--mc-strong:#ffffff;
+}
+:root[data-theme="dark"] body.mj-new,
+:root[data-theme="dark"] body.mj-new .app,
+:root[data-theme="dark"] body.mj-new .win,
+:root[data-theme="dark"] body.mj-new .ct,
+:root[data-theme="dark"] body.mj-new #view{
+  background:#000000!important;color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body.mj-new .tb{
+  background:#000000!important;color:#f5f5f5!important;
+  border-bottom-color:#2a2a2a!important;
+}
+:root[data-theme="dark"] body.mj-new .tb .crumbs,
+:root[data-theme="dark"] body.mj-new .tb .crumbs b,
+:root[data-theme="dark"] body.mj-new .tb .ib,
+:root[data-theme="dark"] body.mj-new .tb .sb{color:#ededed!important}
+:root[data-theme="dark"] body.mj-new .tb .sb,
+:root[data-theme="dark"] body.mj-new .tb .demo{
+  background:#0b0b0b!important;border-color:#333333!important;
+}
+:root[data-theme="dark"] body.mj-new #view{
+  --mj-zone:#f1f1f1;--mj-zone-deep:#f1f1f1;--mj-zone-pale:#0b0b0b;
+  --mj-zone-bright:#f1f1f1;--mj-accent:#ffffff;--mj-accent-soft:#0b0b0b;
+  --mj-violet:#f1f1f1;--mj-violet-bg:#1b1b1b;
+  --mj-ink:#f5f5f5;--mj-muted:#aaaaaa;
+  --mj-surface:#0b0b0b;--mj-border:#303030;
+  --mj-card-ink:#f5f5f5;--mj-card-muted:#aaaaaa;
+  --pastel-ink:#f5f5f5;--pastel-secondary:#aaaaaa;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-metric,
+:root[data-theme="dark"] body.mj-new #view .mj-metric:nth-child(n),
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile,
+:root[data-theme="dark"] body.mj-new #view .mj-tile,
+:root[data-theme="dark"] body.mj-new #view .mj-panel,
+:root[data-theme="dark"] body.mj-new #view .mj-duo .mj-panel,
+:root[data-theme="dark"] body.mj-new #view .cos>.co,
+:root[data-theme="dark"] body.mj-new #view .strip>.k,
+:root[data-theme="dark"] body.mj-new #view .card,
+:root[data-theme="dark"] body.mj-new #view .secc,
+:root[data-theme="dark"] body.mj-new #view .kc,
+:root[data-theme="dark"] body.mj-new #view .mj-preview,
+:root[data-theme="dark"] body.mj-new #view .mj-intro,
+:root[data-theme="dark"] body.mj-new #view .mj-head,
+:root[data-theme="dark"] body.mj-new #view .ph,
+:root[data-theme="dark"] body.mj-new #view .mj-insight-surface,
+:root[data-theme="dark"] body.mj-new #view .mj-data-surface,
+:root[data-theme="dark"] body.mj-new #view .g12>.card:not(.strip),
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-insight-surface:not(.strip),
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-data-surface:not(.strip),
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="settings"] #view .mj-head,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="data-system"] #view .mj-head{
+  background:#0b0b0b!important;background-image:none!important;
+  color:#f5f5f5!important;border:1px solid #303030!important;box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-metric,
+:root[data-theme="dark"] body.mj-new #view .mj-metric:nth-child(n),
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile,
+:root[data-theme="dark"] body.mj-new #view .cos>.co,
+:root[data-theme="dark"] body.mj-new #view .strip>.k{
+  --fill:#0b0b0b;--text:#f5f5f5;--tile-bg:#0b0b0b;--tile-ink:#f5f5f5;
+  --call-bg:#0b0b0b;--call-ink:#f5f5f5;--strip-bg:#0b0b0b;--strip-ink:#f5f5f5;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-intro h1,
+:root[data-theme="dark"] body.mj-new #view .mj-head h1,
+:root[data-theme="dark"] body.mj-new #view .ph h1,
+:root[data-theme="dark"] body.mj-new #view .mj-intro h1 em,
+:root[data-theme="dark"] body.mj-new #view .mj-sectionhead h2,
+:root[data-theme="dark"] body.mj-new #view .mj-panel h2,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile h3,
+:root[data-theme="dark"] body.mj-new #view .mj-tile h3,
+:root[data-theme="dark"] body.mj-new #view .mj-report-section-title h2,
+:root[data-theme="dark"] body.mj-new #view .g12>.card h2,
+:root[data-theme="dark"] body.mj-new #view .mj-metric strong,
+:root[data-theme="dark"] body.mj-new #view .cos>.co b,
+:root[data-theme="dark"] body.mj-new #view .strip>.k b{
+  color:#f5f5f5!important;-webkit-text-fill-color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-head h1::after,
+:root[data-theme="dark"] body.mj-new #view .mj-zone-heading b::before,
+:root[data-theme="dark"] body.mj-new #view .g12>.card:not(.strip)>h2:first-child::before{
+  background:#f4f4f4!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-metric span,
+:root[data-theme="dark"] body.mj-new #view .cos>.co span,
+:root[data-theme="dark"] body.mj-new #view .strip>.k span,
+:root[data-theme="dark"] body.mj-new #view .mj-tilehead small{
+  color:#e4e4e4!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-metric small,
+:root[data-theme="dark"] body.mj-new #view .mj-intro p,
+:root[data-theme="dark"] body.mj-new #view .mj-head p,
+:root[data-theme="dark"] body.mj-new #view .ph p,
+:root[data-theme="dark"] body.mj-new #view .ph .pmeta,
+:root[data-theme="dark"] body.mj-new #view .mj-panel p,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile p,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile small,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot span,
+:root[data-theme="dark"] body.mj-new #view .mj-tile p,
+:root[data-theme="dark"] body.mj-new #view .cos>.co small,
+:root[data-theme="dark"] body.mj-new #view .strip>.k small,
+:root[data-theme="dark"] body.mj-new #view .mj-sectionhead p,
+:root[data-theme="dark"] body.mj-new #view .mj-zone-heading span{
+  color:#aaaaaa!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-tag,
+:root[data-theme="dark"] body.mj-new #view .mj-sectionhead a,
+:root[data-theme="dark"] body.mj-new #view .backbtn,
+:root[data-theme="dark"] body.mj-new #view .mj-show-rows,
+:root[data-theme="dark"] body.mj-new #view .mj-record-count{
+  color:#eeeeee!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-ico,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-ico,
+:root[data-theme="dark"] body.mj-new #view .mj-mini-count,
+:root[data-theme="dark"] body.mj-new #view .ph .catno{
+  color:#f5f5f5!important;background:#1a1a1a!important;
+  box-shadow:inset 0 0 0 1px #353535!important;border-color:#353535!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot,
+:root[data-theme="dark"] body.mj-new #view .mj-tilefoot{border-top-color:#303030!important}
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot a,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot button,
+:root[data-theme="dark"] body.mj-new #view .mj-tilefoot a,
+:root[data-theme="dark"] body.mj-new #view .mj-tilefoot button,
+:root[data-theme="dark"] body.mj-new #view .ph .backbtn,
+:root[data-theme="dark"] body.mj-new #view .ph .dvnav button,
+:root[data-theme="dark"] body.mj-new #view .ph .seg,
+:root[data-theme="dark"] body.mj-new #view .ph .chip,
+:root[data-theme="dark"] body.mj-new #view .mj-show-rows,
+:root[data-theme="dark"] body.mj-new #view .mj-duo .mj-panel .mj-btn,
+:root[data-theme="dark"] body.mj-new #view .mj-shortcuts a,
+:root[data-theme="dark"] body.mj-new #view .mj-duo .mj-panel .mj-mini-count{
+  background:#121212!important;color:#f0f0f0!important;
+  border-color:#363636!important;box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-shortcuts .i,
+:root[data-theme="dark"] body.mj-new #view .mj-shortcuts a:nth-child(n) .i,
+:root[data-theme="dark"] body.mj-new #view .ph .seg button,
+:root[data-theme="dark"] body.mj-new #view .ph .seg button[aria-pressed="true"]{
+  color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-btn.primary,
+:root[data-theme="dark"] body.mj-new #view .mj-intro .mj-btn.primary,
+:root[data-theme="dark"] body.mj-new #view .mj-detail-buttons .mj-btn.primary{
+  background:#f5f5f5!important;color:#080808!important;border-color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav,
+:root[data-theme="dark"] body.mj-new #view .mj-preview,
+:root[data-theme="dark"] body.mj-new #view .acc2,
+:root[data-theme="dark"] body.mj-new #view .acc2>summary,
+:root[data-theme="dark"] body.mj-new #view .kc,
+:root[data-theme="dark"] body.mj-new #view .tools2,
+:root[data-theme="dark"] body.mj-new #view .mj-record-control,
+:root[data-theme="dark"] body.mj-new #view .mj-input,
+:root[data-theme="dark"] body.mj-new #view .mj-show-rows,
+:root[data-theme="dark"] body.mj-new #view .tbl,
+:root[data-theme="dark"] body.mj-new #view .scroll,
+:root[data-theme="dark"] body.mj-new #view .mj-tablewrap,
+:root[data-theme="dark"] body.mj-new #view .tbl table thead,
+:root[data-theme="dark"] body.mj-new #view .tbl table thead th,
+:root[data-theme="dark"] body.mj-new #view .scroll table thead th,
+:root[data-theme="dark"] body.mj-new #view table thead,
+:root[data-theme="dark"] body.mj-new #view .mj-data-table th,
+:root[data-theme="dark"] body.mj-new #view .tools2 .fin{
+  background:#0b0b0b!important;color:#f5f5f5!important;border-color:#303030!important;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav a{
+  background:#0b0b0b!important;color:#c5c5c5!important;border-color:#383838!important;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav a:hover{background:#242424!important;color:#ffffff!important}
+:root[data-theme="dark"] body.mj-new #view .secnav a.on,
+:root[data-theme="dark"] body.mj-new #view .secnav a[aria-current="page"],
+:root[data-theme="dark"] body.mj-new #view .mj-tabs button[aria-selected="true"],
+:root[data-theme="dark"] body.mj-new #view .mj-settings-tabs a.on{
+  background:#242424!important;color:#ffffff!important;border-color:#606060!important;
+  box-shadow:inset 0 -2px #ffffff!important;font-weight:800!important;
+}
+:root[data-theme="dark"] body.mj-new #view .tbl table tbody tr:hover,
+:root[data-theme="dark"] body.mj-new #view .scroll table tbody tr:hover,
+:root[data-theme="dark"] body.mj-new #view table tbody tr:hover,
+:root[data-theme="dark"] body.mj-new #view .rk li:hover{background:#151515!important}
+:root[data-theme="dark"] body.mj-new #view .rk li .rkb i{background:#dddddd!important}
+:root[data-theme="dark"] body.mj-new #view .mj-preview,
+:root[data-theme="dark"] body.mj-new #view .g12>.card.mj-data-surface,
+:root[data-theme="dark"] body.mj-new #view .acc2{border-left-color:#303030!important}
+:root[data-theme="dark"] body.mj-new .mj-modal,
+:root[data-theme="dark"] body.mj-new .sheet{
+  background:#0b0b0b!important;color:#f5f5f5!important;border-color:#333333!important;
+}
+:root[data-theme="dark"] body.mj-new .mj-modal::before{background:#f5f5f5!important}
+
+/* WHITE navigation in dark mode. Use stronger specificity than old rose styling. */
+:root[data-theme="dark"] body.mj-new #side{
+  --rail-ink:#111111;--rail-muted:#555555;--rail-stroke:rgba(0,0,0,.14);
+  --rail-hover:#f0f0f0;--rail-selected:#e9e9e9;
+  --rail-focus:#111111;--rail-accent:#111111;
+  background:#ffffff!important;background-image:none!important;
+  color:#111111!important;border-color:#e1e1e1!important;
+  box-shadow:0 13px 29px rgba(0,0,0,.24)!important;
+}
+:root[data-theme="dark"] body.mj-new #side::after{
+  background:#3d3d3d!important;box-shadow:14px 0 0 #929292,28px 0 0 #cecece!important;
+}
+:root[data-theme="dark"] body.mj-new .app.mini #side::after{
+  box-shadow:11px 0 0 #929292,22px 0 0 #cecece!important;
+}
+:root[data-theme="dark"] body.mj-new #side .brand{
+  background:#f6f6f6!important;border-color:#dddddd!important;
+}
+:root[data-theme="dark"] body.mj-new #side .brand span,
+:root[data-theme="dark"] body.mj-new #side #sfoot.mj-side-status b,
+:root[data-theme="dark"] body.mj-new #side #sfoot.mj-side-status small{color:#111111!important}
+:root[data-theme="dark"] body.mj-new #side .brand .logo{
+  background:#eeeeee!important;border-color:#d3d3d3!important;
+}
+:root[data-theme="dark"] body.mj-new #side .brand .logo img{
+  filter:brightness(0)!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-heading,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-section-toggle small{color:#666666!important}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-divider{background:#dadada!important}
+:root[data-theme="dark"] body.mj-new #side #nav a,
+:root[data-theme="dark"] body.mj-new #side #mj-sidebar-actions a,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-section-toggle,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-expand{
+  color:#555555!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav a:hover,
+:root[data-theme="dark"] body.mj-new #side #mj-sidebar-actions a:hover,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-section-toggle:hover,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-expand:hover{
+  background:#f0f0f0!important;color:#111111!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav a.on,
+:root[data-theme="dark"] body.mj-new #side #mj-sidebar-actions a.on,
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-group.current>a{
+  color:#111111!important;background:#e9e9e9!important;
+  box-shadow:inset 3px 0 #111111!important;border-color:#dcdcdc!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-submenu a.on{
+  color:#111111!important;background:#eeeeee!important;
+  box-shadow:inset 3px 0 #111111!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-section-toggle.expanded{
+  color:#111111!important;background:#eeeeee!important;border-color:#dedede!important;
+}
+:root[data-theme="dark"] body.mj-new #side #nav .mj-pink-dot{background:#666666!important}
+:root[data-theme="dark"] body.mj-new #side #sfoot.mj-side-status{
+  background:#f7f7f7!important;border-color:#dddddd!important;
+}
+:root[data-theme="dark"] body.mj-new #side #sfoot .mj-status-dot{
+  background:#111111!important;box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new .app.mini #side #nav a .i,
+:root[data-theme="dark"] body.mj-new .app.mini #side #mj-sidebar-actions a .i,
+:root[data-theme="dark"] body.mj-new .app.mini #side #nav .mj-rail-section-icon{
+  color:currentColor!important;
+}
+:root[data-theme="dark"] body.mj-new #mj-sidebar-collapse{
+  background:#ffffff!important;color:#111111!important;
+  border-color:#d7d7d7!important;box-shadow:0 5px 16px rgba(0,0,0,.22)!important;
+}
+:root[data-theme="dark"] body.mj-new #mj-sidebar-collapse:hover{background:#ededed!important}
+:root[data-theme="dark"] body.mj-new #mj-rail-flyout{
+  --fly-ink:#111111;--fly-muted:#666666;
+  background:#ffffff!important;color:#111111!important;border-color:#dddddd!important;
+}
+:root[data-theme="dark"] body.mj-new #mj-rail-flyout .mj-fly-title{border-bottom-color:#dddddd!important}
+:root[data-theme="dark"] body.mj-new #mj-rail-flyout a:hover{background:#efefef!important}
+:root[data-theme="dark"] body.mj-new #mj-rail-flyout a[aria-current="page"]{
+  background:#e9e9e9!important;box-shadow:inset 3px 0 #111111!important;
+}
+:root[data-theme="dark"] body.mj-new #mj-rail-flyout a .mj-pink-dot{background:#666666!important}
+
+/* Accessible monochrome focus and restrained transitions. */
+body.mj-new #view :is(a,button,input,select,textarea):focus-visible{
+  outline:2px solid currentColor!important;outline-offset:2px!important;
+}
+@media(prefers-reduced-motion:reduce){
+  body.mj-new #view .mj-metric,body.mj-new #view .mj-grid>.mj-tile{
+    transition:none!important;transform:none!important;
+  }
+}
