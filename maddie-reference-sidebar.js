@@ -74,13 +74,13 @@
     fly.style.top=Math.max(12,Math.min(rect.top-10,innerHeight-fly.offsetHeight-12))+'px';
   }
   nav.addEventListener('pointerover',e=>{
-    const trigger=e.target.closest('.mj-pink-group>a,[data-pink-section]');
+    const trigger=e.target.closest('.mj-pink-group>.mj-pink-workspace-toggle,[data-pink-section]');
     if(trigger)show(trigger);
     else if(!e.target.closest('.mj-pink-group'))deferClose();
   });
   nav.addEventListener('pointerleave',deferClose);
   nav.addEventListener('focusin',e=>{
-    const trigger=e.target.closest('.mj-pink-group>a,[data-pink-section]');
+    const trigger=e.target.closest('.mj-pink-group>.mj-pink-workspace-toggle,[data-pink-section]');
     if(trigger)show(trigger);
     else deferClose();
   });
