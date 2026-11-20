@@ -1,0 +1,219 @@
+/* Maddie Journey — screen-level, data-specific dashboard summaries.
+ * Reference: Employee Masterlist header. Light/dark remain monochrome.
+ * Division colors are small functional accents, never full card fills.
+ */
+body.mj-new #view .ph.mj-summary-header,
+body.mj-new #view .mj-head.mj-summary-header {
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  column-gap:clamp(16px,2.7vw,38px)!important;
+  row-gap:15px!important;
+  padding:clamp(23px,2.5vw,34px)!important;
+  background:#fff!important;background-image:none!important;
+  border:1px solid #e5e5e5!important;
+  border-radius:22px!important;
+  box-shadow:0 7px 20px rgba(0,0,0,.045)!important;
+  color:#141414!important;
+  overflow:hidden;
+  --mj-division-accent:#777;
+}
+body.mj-new #view .ph.mj-summary-header::before,
+body.mj-new #view .mj-head.mj-summary-header::before,
+body.mj-new #view .ph.mj-summary-header::after,
+body.mj-new #view .mj-head.mj-summary-header::after{
+  display:none!important;content:none!important;
+}
+body.mj-new #view .ph.mj-summary-header > div:first-child,
+body.mj-new #view .mj-head.mj-summary-header > div:first-child{
+  flex:1 1 440px;min-width:0;
+}
+body.mj-new #view .ph.mj-summary-header h1,
+body.mj-new #view .mj-head.mj-summary-header h1{
+  color:#121212!important;
+  font-size:clamp(26px,3.2vw,43px)!important;
+  letter-spacing:-.05em!important;font-weight:850!important;
+  line-height:1.1!important;
+}
+body.mj-new #view .ph.mj-summary-header p,
+body.mj-new #view .mj-head.mj-summary-header p{
+  color:#666!important;line-height:1.55!important;
+}
+body.mj-new #view .ph.mj-summary-header .pmeta{
+  color:#777!important;display:flex;flex-wrap:wrap;
+  gap:8px 16px;align-items:center;margin-top:10px!important;
+}
+body.mj-new #view .ph.mj-summary-header .seg,
+body.mj-new #view .ph.mj-summary-header .dvnav{
+  flex:0 1 auto;align-self:flex-end;max-width:100%;
+}
+body.mj-new #view .mj-screen-insights{
+  display:grid;grid-template-columns:minmax(180px,1fr) minmax(0,1.45fr);
+  flex:1 0 100%!important;min-width:0;
+  gap:15px 22px;
+  padding:18px 0 1px!important;margin:3px 0 0!important;
+  border:0!important;border-top:1px solid #e7e7e7!important;
+  border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;color:#1b1b1b!important;
+  position:relative;
+}
+body.mj-new #view .mj-screen-intro{min-width:0;align-self:center}
+body.mj-new #view .mj-screen-kicker{
+  display:flex;gap:9px;align-items:center;
+  font-size:10px;letter-spacing:.105em;
+  font-weight:850;color:#454545!important;
+  line-height:1.25;text-transform:uppercase;
+}
+body.mj-new #view .mj-screen-intro p{
+  color:#737373!important;font-size:11.5px!important;
+  line-height:1.5!important;max-width:58ch!important;
+  margin:6px 0 0!important;
+}
+body.mj-new #view .mj-screen-figures{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  align-items:stretch;min-width:0;
+}
+body.mj-new #view .mj-screen-figure{
+  display:flex;flex-direction:column;justify-content:center;
+  min-width:0;gap:6px;
+  padding:3px clamp(10px,1.4vw,19px)!important;
+  border-left:1px solid #e4e4e4!important;
+  background:transparent!important;box-shadow:none!important;
+}
+body.mj-new #view .mj-screen-figure strong{
+  color:#101010!important;font-size:clamp(16px,2.1vw,27px)!important;
+  font-weight:850!important;line-height:1.12!important;
+  letter-spacing:-.055em!important;
+  font-variant-numeric:tabular-nums;
+  white-space:normal;overflow-wrap:anywhere;
+}
+body.mj-new #view .mj-screen-figure span{
+  color:#747474!important;
+  font-size:10.5px!important;font-weight:620!important;
+  line-height:1.4!important;
+}
+body.mj-new #view .mj-head.mj-summary-header .mj-tag{
+  color:#555!important;font-weight:800!important;
+}
+/* The associated division page uses its existing legend color.
+   Neutral cards and black/white typography are deliberately preserved. */
+body.mj-new #view[data-mj-division-color] .ph.mj-summary-header{
+  border-top:4px solid var(--mj-division-accent)!important;
+}
+body.mj-new #view .mj-screen-insights.mj-summary-division .mj-screen-kicker::before{
+  content:"";display:inline-block;flex:0 0 9px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--mj-division-accent);
+}
+body.mj-new #view .mj-screen-insights.mj-summary-division .mj-screen-figure:first-child{
+  border-left-color:var(--mj-division-accent)!important;
+}
+body.mj-new #view .mj-division-table-cell{
+  white-space:normal;line-height:1.4;
+}
+body.mj-new #view .mj-division-key{
+  display:inline-block!important;width:8px;height:8px;
+  margin:0 7px 0 0;vertical-align:middle;
+  border-radius:50%;background:var(--mj-division-accent,#858585)!important;
+  box-shadow:0 0 0 1px rgba(0,0,0,.06);
+}
+body.mj-new #view .dvc.mj-division-surface{
+  background:#fff!important;background-image:none!important;
+  border:1px solid #e6e6e6!important;
+  border-top:3px solid var(--mj-division-accent)!important;
+  box-shadow:0 5px 15px rgba(0,0,0,.04)!important;
+}
+body.mj-new #view .dvc.mj-division-surface:hover{
+  border-color:#d6d6d6!important;
+  border-top-color:var(--mj-division-accent)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.075)!important;
+}
+body.mj-new #view .mj-division-chart-row .bt i{
+  background:var(--mj-division-accent,#858585)!important;
+}
+body.mj-new #view[data-mj-division-color] .card:not(.strip){
+  border-color:#e7e7e7!important;
+}
+body.mj-new #view[data-mj-division-color] .g12>.card>h2:first-child::before{
+  background:var(--mj-division-accent)!important;
+}
+body.mj-new #view[data-mj-division-color] .rg .rf{
+  stroke:var(--mj-division-accent)!important;
+}
+
+/* True black dashboard / near-black panels remain intact in dark appearance. */
+:root[data-theme="dark"] body.mj-new #view .ph.mj-summary-header,
+:root[data-theme="dark"] body.mj-new #view .mj-head.mj-summary-header{
+  background:#0b0b0b!important;border-color:#333!important;
+  color:#f5f5f5!important;box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new #view[data-mj-division-color] .ph.mj-summary-header{
+  border-top-color:var(--mj-division-accent)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .ph.mj-summary-header h1,
+:root[data-theme="dark"] body.mj-new #view .mj-head.mj-summary-header h1{
+  color:#f5f5f5!important;-webkit-text-fill-color:#f5f5f5!important;
+}
+:root[data-theme="dark"] body.mj-new #view .ph.mj-summary-header p,
+:root[data-theme="dark"] body.mj-new #view .mj-head.mj-summary-header p,
+:root[data-theme="dark"] body.mj-new #view .mj-screen-intro p{
+  color:#b8b8b8!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-screen-insights{
+  color:#f5f5f5!important;border-top-color:#353535!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-screen-kicker{
+  color:#d6d6d6!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-screen-figure{
+  border-left-color:#383838!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-screen-figure strong{
+  color:#f7f7f7!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-screen-figure span{
+  color:#b0b0b0!important;
+}
+:root[data-theme="dark"] body.mj-new #view .dvc.mj-division-surface{
+  background:#111!important;color:#f5f5f5!important;
+  border-color:#333!important;
+  border-top-color:var(--mj-division-accent)!important;
+  box-shadow:none!important;
+}
+:root[data-theme="dark"] body.mj-new #view .dvc.mj-division-surface:hover{
+  border-color:#555!important;border-top-color:var(--mj-division-accent)!important;
+}
+:root[data-theme="dark"] body.mj-new #view[data-mj-division-color] .card:not(.strip){
+  border-color:#333!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-division-key{
+  box-shadow:0 0 0 1px rgba(255,255,255,.06)!important;
+}
+/* Summary is readable even at minimum mobile width. */
+@media(max-width:950px){
+ body.mj-new #view .mj-screen-insights{
+  grid-template-columns:1fr;gap:13px;
+ }
+ body.mj-new #view .mj-screen-figures{width:100%}
+}
+@media(max-width:570px){
+ body.mj-new #view .ph.mj-summary-header,
+ body.mj-new #view .mj-head.mj-summary-header{
+   padding:18px!important;border-radius:17px!important;gap:12px!important;
+ }
+ body.mj-new #view .mj-screen-insights{
+   padding-top:13px!important;gap:11px;
+ }
+ body.mj-new #view .mj-screen-figure{
+   padding:2px 8px!important;
+ }
+ body.mj-new #view .mj-screen-figure strong{font-size:18px!important}
+ body.mj-new #view .mj-screen-figure span{font-size:10px!important}
+}
+@media(max-width:360px){
+ body.mj-new #view .mj-screen-figures{
+   grid-template-columns:repeat(2,minmax(0,1fr));
+   gap:11px 0;
+ }
+}
