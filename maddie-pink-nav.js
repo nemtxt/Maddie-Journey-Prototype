@@ -91,15 +91,12 @@ function areaHtml([id,name,ico]){
  const expanded=expandedWorkspace===id;
  const count=sections(id).length;
  // One full-width accordion control: clicking the icon, label, count or chevron toggles.
- // The category summary route remains accessible as the submenu's first link.
  const header='<button class="mj-pink-workspace-toggle" type="button" data-pink-expand="'+id+'" aria-expanded="'+expanded+'" aria-controls="pink-'+id+'" aria-label="'+(expanded?'Collapse ':'Expand ')+esc(name)+' subcategories">'+
   icon(ico)+'<span class="nl">'+esc(name)+'</span><small class="mj-pink-group-count" aria-label="'+count+' section dashboards">'+count+'</small>'+
   '<span class="mj-pink-workspace-chevron" aria-hidden="true">'+icon('arrow')+'</span></button>';
- const overview='<a class="mj-group-summary-link" href="#'+id+'" data-id="'+id+'" data-mj-href="'+id+'">'+
-  icon('grid')+'<span class="nl">Summary dashboard</span></a>';
  return '<div class="mj-pink-group'+(expanded?' expanded':'')+'" data-pink-group="'+id+'">'+header+'</div>'+
  '<div class="mj-pink-submenu" id="pink-'+id+'"'+(expanded?'':' hidden')+'>'+
- overview+(id==='people'?divisionItems():'')+
+ (id==='people'?divisionItems():'')+
  sections(id).map(s=>'<a href="#'+id+':'+s.id+'" data-id="'+id+':'+s.id+'" data-mj-href="'+id+':'+s.id+'" title="'+esc(s.label)+'"><i class="mj-pink-dot" aria-hidden="true"></i><span class="nl">'+esc(s.label)+'</span></a>').join('')+'</div>';
 }
 function toggle(id,label,expanded,count){
