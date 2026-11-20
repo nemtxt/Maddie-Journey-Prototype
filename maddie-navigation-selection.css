@@ -1,0 +1,131 @@
+/* Maddie Journey — theme-independent sidebar + click-only selected state.
+ * The black rail never follows dashboard appearance. Only the control that
+ * the user explicitly clicked has a white pill and dark foreground.
+ * Data-driven division markers retain their assigned colors.
+ */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side{
+  background:#080a09!important;
+  background-image:none!important;
+  color:#f5f5f5!important;
+  border-right-color:#292f2a!important;
+  color-scheme:dark!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #mj-sidebar-actions{
+  background:transparent!important;
+  color:#e5eae5!important;
+}
+
+/* Keep all ordinary navigation rows neutral, including hover, expanded group
+ * states and aria-current routes that have not been clicked most recently. */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a.on:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a:hover:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #mj-sidebar-actions a:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #mj-sidebar-actions a.on:not(.mj-nav-selected){
+  background:transparent!important;
+  background-image:none!important;
+  color:#e5eae5!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group.current,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group.expanded{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group>button:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle:not(.mj-nav-selected),
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle.expanded:not(.mj-nav-selected){
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  color:#e5eae5!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a:not(.mj-nav-selected)>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a.on:not(.mj-nav-selected)>.i{
+  color:#e5eae5!important;
+}
+
+/* Selected item: one white highlight, regardless of light/dark dashboard. */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a.mj-nav-selected.on,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav a.mj-nav-selected:hover,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group>button.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group.current>button.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle.mj-nav-selected,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #mj-sidebar-actions a.mj-nav-selected{
+  background:#ffffff!important;
+  background-image:none!important;
+  color:#151a16!important;
+  border:1px solid #ffffff!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+  font-weight:780!important;
+}
+
+/* The icon and count stay legible on the white surface. */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #mj-sidebar-actions .mj-nav-selected .i{
+  color:#151a16!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group>.mj-nav-selected>.i,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle.mj-nav-selected>.mj-rail-section-icon{
+  background:#e9ece9!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .nl,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle.mj-nav-selected>span,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-group>.mj-nav-selected .nl{
+  color:#151a16!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .mj-overview-count,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .mj-pink-group-count,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-section-toggle.mj-nav-selected>small,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-division-item.mj-nav-selected .mj-division-count{
+  background:transparent!important;
+  color:#3d483f!important;
+  font-weight:800!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .mj-pink-workspace-chevron,
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-nav-selected .mj-section-chevron{
+  color:#485249!important;
+}
+
+/* Subcategory and division markers are never recolored just because a row is selected. */
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-division-links .mj-division-item.mj-nav-selected{
+  background:#fff!important;
+  color:#151a16!important;
+  border:1px solid #fff!important;
+  box-shadow:none!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-division-links .mj-division-item.mj-nav-selected .nl{
+  color:#151a16!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-division-links .mj-division-item.mj-nav-selected .mj-division-dot{
+  background:var(--division-color,#8a8a8a)!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-submenu a.mj-nav-selected{
+  color:#151a16!important;
+  border:1px solid #fff!important;
+  box-shadow:none!important;
+  background:#fff!important;
+}
+:root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new #side #nav .mj-pink-submenu a.mj-nav-selected .mj-pink-dot{
+  background:#2c352e!important;
+}
+
+/* Small compact rail and mobile drawer use exactly the same selected state. */
+@media(min-width:821px){
+  :root:is([data-theme="dark"],:not([data-theme="dark"])) body.mj-new .app.mini #side #nav .mj-nav-selected{
+    border-radius:12px!important;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  :root body.mj-new #side #nav .mj-nav-selected{
+    transition:none!important;
+  }
+}
