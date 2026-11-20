@@ -405,7 +405,8 @@
   }
   const firstGrid=$('.g12');
   if(h==='view/division'){
-   const pick=$('.divpick')?.closest('.card');
+   const selector=$('.divpick');
+   const pick=selector?.closest?.('.card')||selector?.parentNode;
    if(pick){pick.after(panel);return}
   }
   if(firstGrid){firstGrid.before(panel);return}
