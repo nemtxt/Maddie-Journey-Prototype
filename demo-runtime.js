@@ -28,7 +28,7 @@
   // The office scene is prepared behind the gate. Reopen/reaffirm it
   // synchronously after unlocking, even when the hash was already #office.
   // Do not clear app.inert AFTER HUB.open(): the 3D viewer owns that flag.
-  if(app)app.inert=false;
+  if(app&&!document.body.classList.contains('hxon'))app.inert=false;
   if(location.hash!=='#office')location.hash='#office';
   try{
    if(window.HUB?.open){window.HUB.open();}
