@@ -101,6 +101,8 @@
   sorted.forEach(({group,label},index)=>{
    grid.appendChild(group);
    group.dataset.mjV43Group=label;
+   const kind=groupPriority(label);
+   group.classList.add('mj-v43-group-'+(['employment','attendance','documents','contact','government','compensation','cases','other'][kind]));
    group.style.setProperty('--mj-v43-order',String(index));
    const heading=group.querySelector('h3');
    if(!heading||heading.querySelector('[data-mj-v43-group-toggle]'))return;
