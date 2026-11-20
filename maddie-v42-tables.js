@@ -161,7 +161,7 @@
   bodies.forEach((body,i)=>{
    const heading=one('tr.gh',body);
    const rows=Array.from(body.rows).filter(r=>r!==heading);
-   const label=textOf(heading);
+   const label=body.dataset.v42GroupLabel||textOf(heading);
    const matchHeader=label.toLocaleLowerCase().includes(q);
    const selected=rows.filter(r=>matchHeader||r.textContent.toLocaleLowerCase().includes(q));
    total+=rows.length;matched+=selected.length;
@@ -223,7 +223,10 @@
    Array.from(table.tBodies).forEach((body,i)=>{
     const head=one('tr.gh th',body);if(!head)return;
     const caption=textOf(head);
+    body.dataset.v42GroupLabel=caption;
+    body.id='mj-v42-group-'+i;
     const trigger=button('mj-v42-group-toggle','Collapse group','group');
+    trigger.setAttribute('aria-controls',body.id);
     trigger.dataset.v42Group=String(i);
     trigger.setAttribute('aria-expanded',String(!state.closed.has(i)));
     if(state.closed.has(i))trigger.textContent='Expand group';
@@ -279,6 +282,8 @@
     if(!heading||!body)return;
     section.classList.add('mj-v42-section');
     const toggle=button('mj-v42-section-toggle','Collapse','section-toggle');
+    body.id='mj-v42-section-content-'+i;
+    toggle.setAttribute('aria-controls',body.id);
     toggle.setAttribute('aria-expanded','true');
     toggle.setAttribute('aria-label','Collapse report section '+textOf(one('h2',heading)));
     heading.append(toggle);
