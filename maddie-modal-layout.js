@@ -47,6 +47,8 @@
   queueMicrotask(enhance);
  }
  const observer=new MutationObserver(schedule);
- observer.observe(layer,{childList:true,subtree:true});
+ // Modal hosts are appended directly to #layer. Reflowing fields inside a
+ // sheet should not queue another query for every moved DOM node.
+ observer.observe(layer,{childList:true});
  schedule();
 })();
