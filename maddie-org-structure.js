@@ -322,7 +322,7 @@ function enhance(){
   return;
  }
  if(h.startsWith('division/')){
-  const label=h.slice(9),existing=$('.mj-org-division');
+  const label=h.slice(9),existing=$('.mj-one-division-chart,.mj-org-division');
   if(existing?.dataset.mjOrgRoute===h)return;
   const ph=$('.ph'),grid=$('.g12');
   if(!ph||!grid||!grid.isConnected)return;
