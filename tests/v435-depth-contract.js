@@ -9,6 +9,8 @@ class Node {
   this.tagName=tag;this.className=classes;this.textContent=text;this.parentNode=null;
   this.children=[];this.dataset={};this.attrs={};this._event={};this._set=new Set(classes.split(' ').filter(Boolean));
  }
+ get className(){return this._classes||''}
+ set className(v){this._classes=String(v);this._set=new Set(String(v).split(' ').filter(Boolean))}
  get classList(){const node=this;return{
   contains:name=>node._set.has(name),
   add:name=>{node._set.add(name);node.className=[...node._set].join(' ')},
