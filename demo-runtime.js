@@ -45,7 +45,11 @@
    if(gate){gate.hidden=true;gate.setAttribute('aria-hidden','true')}
    document.body.classList.remove('mc-demo-revealing');
    transitioning=false;
-   try{document.getElementById('view')?.focus({preventScroll:true})}catch(_){}
+   try{
+    var officeButton=document.querySelector('#hub.on .mc-office-workspaces-btn');
+    if(officeButton)officeButton.focus({preventScroll:true});
+    else document.getElementById('view')?.focus({preventScroll:true});
+   }catch(_){}
   };
   var reduce=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches||document.body.classList.contains('mj-reduced');
   if(reduce)finish();else setTimeout(finish,850);
