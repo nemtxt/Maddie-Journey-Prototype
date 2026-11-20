@@ -81,3 +81,13 @@
     transition:none!important;animation:none!important;transform:none!important;
   }
 }
+
+/* The scene is prepared behind the gate, but cannot receive input until unlock. */
+body.mc-demo-locked #hub,
+body.mc-demo-locked #dvd{
+  visibility:hidden!important;
+  pointer-events:none!important;
+}
+body.mc-demo-revealing #hub.on{
+  visibility:visible!important;
+}
