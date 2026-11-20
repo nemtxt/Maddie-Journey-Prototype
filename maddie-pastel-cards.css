@@ -268,3 +268,31 @@ body.mj-new #view .secnav a:focus-visible{
   body.mj-new #view .mj-metric,
   body.mj-new #view .mj-grid>.mj-tile{transition:none!important;transform:none!important}
 }
+
+
+/* Correct inherited light-mode CTA and headline overrides on dark cards. */
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child h2,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child p,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-alerts button,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-btn,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child h2,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child p{
+  color:#f2f3f7!important;opacity:1!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-mini-count,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-btn,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child .mj-shortcuts a{
+  background:rgba(255,255,255,.09)!important;color:#f2f3f7!important;
+  border-color:rgba(255,255,255,.2)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .ph .catno,
+:root[data-theme="dark"] body.mj-new #view .ph .backbtn,
+:root[data-theme="dark"] body.mj-new #view .ph .dvnav button,
+:root[data-theme="dark"] body.mj-new #view .ph .seg,
+:root[data-theme="dark"] body.mj-new #view .ph .chip,
+:root[data-theme="dark"] body.mj-new #view .ph .seg button,
+:root[data-theme="dark"] body.mj-new #view .ph .seg button[aria-pressed="true"],
+:root[data-theme="dark"] body.mj-new #view .mj-intro .mj-btn:not(.primary){
+  background:rgba(255,255,255,.09)!important;color:#f2f3f7!important;
+  border-color:rgba(255,255,255,.22)!important;
+}
