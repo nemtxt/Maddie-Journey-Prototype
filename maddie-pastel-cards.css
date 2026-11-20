@@ -1,0 +1,270 @@
+/* Maddie Journey — quiet pastel dashboard surfaces (2026-11-20).
+ * Visual-only layer. Existing navigation colors, routes, data and layout are untouched.
+ * Loaded last to override the earlier saturated showcase treatments. */
+body.mj-new #view{
+  --mj-card-ink:#25384c;
+  --mj-card-muted:#465c6f;
+  --mj-card-line:rgba(48,72,94,.12);
+  --mj-card-shadow:0 11px 26px rgba(36,55,79,.09),0 2px 7px rgba(36,55,79,.035);
+  --mj-pastel-blue:#dceafa;--mj-pastel-mint:#daf2e6;
+  --mj-pastel-rose:#f7deea;--mj-pastel-yellow:#fff2c7;
+  --mj-pastel-peach:#fde5da;--mj-pastel-lavender:#ece3f9;
+  --mj-pastel-aqua:#d9f1f1;--mj-pastel-periwinkle:#e1e6fb;
+}
+
+/* Palette assignment is limited to dashboard/report blocks, not the sidebar. */
+body.mj-new #view .mj-metric,
+body.mj-new #view .mj-grid>.mj-tile,
+body.mj-new #view .cos>.co,
+body.mj-new #view .strip>.k{
+  --pastel-from:var(--mj-pastel-blue);
+  --pastel-to:#cbdff4;
+  --pastel-accent:#3f658f;
+  --pastel-ink:var(--mj-card-ink);
+  --pastel-secondary:var(--mj-card-muted);
+}
+body.mj-new #view .mj-metric:nth-child(4n+1){--pastel-from:var(--mj-pastel-blue);--pastel-to:#c9e0f5;--pastel-accent:#416c99}
+body.mj-new #view .mj-metric:nth-child(4n+2){--pastel-from:var(--mj-pastel-mint);--pastel-to:#c7e9dc;--pastel-accent:#287662}
+body.mj-new #view .mj-metric:nth-child(4n+3){--pastel-from:var(--mj-pastel-rose);--pastel-to:#eed0e0;--pastel-accent:#965271}
+body.mj-new #view .mj-metric:nth-child(4n+4){--pastel-from:var(--mj-pastel-yellow);--pastel-to:#fce7ad;--pastel-accent:#83621d}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+1){--pastel-from:var(--mj-pastel-mint);--pastel-to:#c7e9dc;--pastel-accent:#287662}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+2){--pastel-from:var(--mj-pastel-blue);--pastel-to:#c9def5;--pastel-accent:#416c99}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+3){--pastel-from:var(--mj-pastel-peach);--pastel-to:#f9d5c4;--pastel-accent:#a15f45}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+4){--pastel-from:var(--mj-pastel-rose);--pastel-to:#efcfde;--pastel-accent:#965271}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+5){--pastel-from:var(--mj-pastel-yellow);--pastel-to:#fbe8b5;--pastel-accent:#83621d}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+6){--pastel-from:var(--mj-pastel-aqua);--pastel-to:#c4e8e9;--pastel-accent:#307888}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+7){--pastel-from:var(--mj-pastel-lavender);--pastel-to:#ddd2f3;--pastel-accent:#6b5ca0}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+8){--pastel-from:var(--mj-pastel-periwinkle);--pastel-to:#cdd7f4;--pastel-accent:#536ba0}
+body.mj-new #view .mj-grid>.mj-tile:nth-child(9n+9){--pastel-from:var(--mj-pastel-rose);--pastel-to:#f3d5df;--pastel-accent:#915672}
+body.mj-new #view .cos>.co:nth-child(4n+1),
+body.mj-new #view .strip>.k:nth-child(4n+1){--pastel-from:var(--mj-pastel-lavender);--pastel-to:#ded5f4;--pastel-accent:#665894}
+body.mj-new #view .cos>.co:nth-child(4n+2),
+body.mj-new #view .strip>.k:nth-child(4n+2){--pastel-from:var(--mj-pastel-mint);--pastel-to:#cae9dd;--pastel-accent:#287662}
+body.mj-new #view .cos>.co:nth-child(4n+3),
+body.mj-new #view .strip>.k:nth-child(4n+3){--pastel-from:var(--mj-pastel-blue);--pastel-to:#cfdef3;--pastel-accent:#416c99}
+body.mj-new #view .cos>.co:nth-child(4n+4),
+body.mj-new #view .strip>.k:nth-child(4n+4){--pastel-from:var(--mj-pastel-yellow);--pastel-to:#fceab9;--pastel-accent:#83621d}
+
+/* Subtle gradients and restrained elevation keep the original card geometry. */
+body.mj-new #view .mj-metric,
+body.mj-new #view .mj-metric:nth-child(n),
+body.mj-new #view .mj-grid>.mj-tile,
+body.mj-new #view .cos>.co,
+body.mj-new #view .strip>.k{
+  background:linear-gradient(122deg,var(--pastel-from) 0%,var(--pastel-to) 100%)!important;
+  color:var(--pastel-ink)!important;
+  border:1px solid var(--mj-card-line)!important;
+  box-shadow:var(--mj-card-shadow)!important;
+}
+body.mj-new #view .mj-metric span,
+body.mj-new #view .mj-metric strong,
+body.mj-new #view .mj-grid>.mj-tile h3,
+body.mj-new #view .cos>.co b,
+body.mj-new #view .cos>.co span,
+body.mj-new #view .strip>.k b,
+body.mj-new #view .strip>.k span{
+  color:var(--pastel-ink)!important;opacity:1!important;text-shadow:none!important;
+}
+body.mj-new #view .mj-metric small,
+body.mj-new #view .mj-grid>.mj-tile p,
+body.mj-new #view .mj-grid>.mj-tile small,
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot span,
+body.mj-new #view .cos>.co small,
+body.mj-new #view .strip>.k small{
+  color:var(--pastel-secondary)!important;opacity:1!important;text-shadow:none!important;
+}
+body.mj-new #view .mj-metric:before,
+body.mj-new #view .mj-grid>.mj-tile:before,
+body.mj-new #view .cos>.co:after{
+  border-color:rgba(53,83,113,.15)!important;
+  box-shadow:0 0 0 32px rgba(255,255,255,.12),0 0 0 68px rgba(255,255,255,.08)!important;
+}
+body.mj-new #view .mj-metric:after{background:rgba(45,70,94,.22)!important}
+body.mj-new #view .mj-grid>.mj-tile:after{background:linear-gradient(135deg,transparent,rgba(255,255,255,.10))!important}
+body.mj-new #view .mj-grid>.mj-tile .mj-ico{
+  color:var(--pastel-accent)!important;background:rgba(255,255,255,.43)!important;
+  box-shadow:inset 0 0 0 1px rgba(55,77,102,.11)!important;
+}
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot{
+  border-top-color:rgba(47,72,97,.19)!important;
+}
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot a,
+body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot button{
+  color:var(--pastel-ink)!important;
+  background:rgba(255,255,255,.35)!important;
+  border:1px solid rgba(47,72,97,.18)!important;
+}
+body.mj-new #view .mj-metric:hover,
+body.mj-new #view .mj-grid>.mj-tile:hover{
+  box-shadow:0 15px 29px rgba(36,55,79,.13),0 3px 8px rgba(36,55,79,.04)!important;
+  border-color:rgba(48,72,94,.24)!important;
+}
+
+/* Overview, category banners and supplementary insights use the same calm system. */
+body.mj-new #view .mj-intro{
+  background:linear-gradient(113deg,#dceafa 0%,#e8e3f6 56%,#f7e0ed 100%)!important;
+  border-color:var(--mj-card-line)!important;box-shadow:var(--mj-card-shadow)!important;
+}
+body.mj-new #view .mj-head,
+body.mj-new #view .ph{
+  background:linear-gradient(115deg,var(--mj-zone-pale) 0%,color-mix(in srgb,var(--mj-zone-pale) 75%,#dceafa) 100%)!important;
+  border:1px solid var(--mj-card-line)!important;box-shadow:var(--mj-card-shadow)!important;
+}
+body.mj-new[data-mj-layout="settings"] #view .mj-head,
+body.mj-new[data-mj-layout="data-system"] #view .mj-head{
+  background:linear-gradient(115deg,#dceafa,#e6e8fa)!important;
+}
+body.mj-new #view .mj-intro h1,
+body.mj-new #view .mj-head h1,
+body.mj-new #view .ph h1,
+body.mj-new #view .mj-intro h1 em{
+  color:var(--mj-card-ink)!important;
+}
+body.mj-new #view .mj-intro h1 em{
+  background:none!important;-webkit-text-fill-color:currentColor!important;
+}
+body.mj-new #view .mj-intro p,
+body.mj-new #view .mj-head p,
+body.mj-new #view .ph p,
+body.mj-new #view .ph .pmeta,
+body.mj-new #view .mj-intro .mj-tag,
+body.mj-new #view .mj-head .mj-tag{
+  color:var(--mj-card-muted)!important;opacity:1!important;
+}
+body.mj-new #view .ph .catno,
+body.mj-new #view .ph .backbtn,
+body.mj-new #view .ph .dvnav button,
+body.mj-new #view .ph .seg,
+body.mj-new #view .ph .chip,
+body.mj-new #view .mj-intro .mj-btn:not(.primary){
+  color:var(--mj-card-ink)!important;background:rgba(255,255,255,.48)!important;
+  border-color:rgba(54,76,100,.15)!important;
+}
+body.mj-new #view .ph .seg button,
+body.mj-new #view .ph .seg button[aria-pressed="true"]{color:var(--mj-card-ink)!important}
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child{
+  background:linear-gradient(120deg,#f7dfeb,#f1d6e6)!important;box-shadow:var(--mj-card-shadow)!important;
+}
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child{
+  background:linear-gradient(120deg,#fff3cc,#fceab8)!important;box-shadow:var(--mj-card-shadow)!important;
+}
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child h2,
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child p,
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-alerts button,
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-btn{
+  color:var(--mj-card-ink)!important;opacity:1!important;
+}
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-mini-count,
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-btn{
+  color:var(--mj-card-ink)!important;background:rgba(255,255,255,.45)!important;
+  border-color:rgba(52,76,100,.17)!important;
+}
+body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child .mj-alerts li{
+  border-color:rgba(52,76,100,.16)!important;
+}
+
+/* The existing horizontal report navigation stays in place but becomes orderly,
+   keyboard-discernible and discoverably scrollable at narrow widths. */
+body.mj-new #view .secnav{
+  display:flex;align-items:center;gap:7px;max-width:100%;min-width:0;
+  overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;
+  scroll-snap-type:x proximity;scrollbar-width:thin;
+  scrollbar-color:#d7dce5 transparent;
+  padding:8px 10px 9px!important;margin-bottom:16px!important;
+  background:#fff!important;border:1px solid #e9ebef!important;
+  box-shadow:0 3px 11px rgba(35,55,78,.04)!important;
+}
+body.mj-new #view .secnav::-webkit-scrollbar{height:4px}
+body.mj-new #view .secnav::-webkit-scrollbar-thumb{background:#d7dce5;border-radius:9px}
+body.mj-new #view .secnav a{
+  display:inline-flex;align-items:center;flex:0 0 auto;
+  scroll-snap-align:start;min-height:34px;
+  padding:7px 12px;border:1px solid #e8ebf0;
+  border-radius:999px;background:#f9fafc!important;
+  box-shadow:none!important;color:#526176!important;
+  font-size:11.5px;line-height:1.4;font-weight:600;white-space:nowrap;
+}
+body.mj-new #view .secnav a:hover{background:#f2f5f9!important;color:#293c53!important}
+body.mj-new #view .secnav a.on,
+body.mj-new #view .secnav a[aria-current="page"]{
+  background:#fff0f6!important;border-color:#ecb8d0!important;
+  color:#87446a!important;box-shadow:inset 0 -2px #bb6790!important;
+}
+body.mj-new #view .secnav a:focus-visible{
+  outline:2px solid #935676;outline-offset:2px;
+}
+
+/* True-black appearance retains the same sidebar, replacing only content fills. */
+:root[data-theme="dark"] body.mj-new #view{
+  --mj-card-ink:#f2f3f7;--mj-card-muted:#c6cbd7;
+  --mj-card-line:rgba(218,224,239,.14);
+  --mj-card-shadow:0 10px 26px rgba(0,0,0,.22);
+}
+:root[data-theme="dark"] body.mj-new #view .mj-metric,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile,
+:root[data-theme="dark"] body.mj-new #view .cos>.co,
+:root[data-theme="dark"] body.mj-new #view .strip>.k{
+  --pastel-ink:#f2f3f7;--pastel-secondary:#c7cfda;
+  background:linear-gradient(125deg,color-mix(in srgb,var(--pastel-from) 19%,#101015),color-mix(in srgb,var(--pastel-to) 12%,#0b0b0e))!important;
+  border-color:var(--mj-card-line)!important;
+  box-shadow:var(--mj-card-shadow)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-ico{
+  background:rgba(255,255,255,.10)!important;color:#f2f3f7!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot a,
+:root[data-theme="dark"] body.mj-new #view .mj-grid>.mj-tile .mj-tilefoot button{
+  color:#f2f3f7!important;background:rgba(255,255,255,.08)!important;
+  border-color:rgba(255,255,255,.18)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-intro,
+:root[data-theme="dark"] body.mj-new #view .mj-head,
+:root[data-theme="dark"] body.mj-new #view .ph,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="settings"] #view .mj-head,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="data-system"] #view .mj-head{
+  background:linear-gradient(120deg,#181a23,#221c29)!important;
+  border-color:var(--mj-card-line)!important;box-shadow:var(--mj-card-shadow)!important;
+}
+:root[data-theme="dark"] body.mj-new #view .mj-intro h1,
+:root[data-theme="dark"] body.mj-new #view .mj-head h1,
+:root[data-theme="dark"] body.mj-new #view .ph h1,
+:root[data-theme="dark"] body.mj-new #view .mj-intro h1 em{color:#f4f4f7!important}
+:root[data-theme="dark"] body.mj-new #view .mj-intro p,
+:root[data-theme="dark"] body.mj-new #view .mj-head p,
+:root[data-theme="dark"] body.mj-new #view .ph p,
+:root[data-theme="dark"] body.mj-new #view .ph .pmeta,
+:root[data-theme="dark"] body.mj-new #view .mj-intro .mj-tag,
+:root[data-theme="dark"] body.mj-new #view .mj-head .mj-tag{color:#c6cbd7!important}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:first-child{
+  background:linear-gradient(120deg,#2b1e29,#211820)!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel:last-child{
+  background:linear-gradient(120deg,#2a261b,#201e1a)!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel h2,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel p,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel .mj-alerts button,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-duo .mj-panel .mj-btn{
+  color:#f2f3f7!important;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav{
+  background:#0b0b0d!important;border-color:#2a2a31!important;
+  scrollbar-color:#474750 transparent;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav a{
+  background:#17171b!important;border-color:#303038!important;color:#c8c9d2!important;
+}
+:root[data-theme="dark"] body.mj-new #view .secnav a:hover{background:#222128!important;color:#f3f3f7!important}
+:root[data-theme="dark"] body.mj-new #view .secnav a.on,
+:root[data-theme="dark"] body.mj-new #view .secnav a[aria-current="page"]{
+  background:#30212b!important;color:#f6b9d5!important;border-color:#6c4056!important;
+  box-shadow:inset 0 -2px #ca86a8!important;
+}
+@media(max-width:540px){
+  body.mj-new #view .secnav{padding:7px 9px 9px!important;gap:6px}
+  body.mj-new #view .secnav a{padding:7px 10px;min-height:36px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  body.mj-new #view .mj-metric,
+  body.mj-new #view .mj-grid>.mj-tile{transition:none!important;transform:none!important}
+}
