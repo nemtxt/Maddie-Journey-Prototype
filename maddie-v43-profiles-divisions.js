@@ -263,7 +263,22 @@
   if(jump){
    const sheet=jump.closest('.mj-v43-profile');
    const group=sheet?.querySelector('[data-mj-profile-detail="'+jump.dataset.mjProfileJump+'"]');
-   if(group)setGroupOpen(group,true);
+   if(group){
+    setGroupOpen(group,true);
+    // V4.3 identity and section tabs wrap naturally rather than remaining
+    // fixed. Scroll to the actual group, not the prior sticky-header offset.
+    if(typeof sheet.scrollTo==='function'&&typeof group.getBoundingClientRect==='function'){
+     const top=sheet.scrollTop+group.getBoundingClientRect().top-sheet.getBoundingClientRect().top-14;
+     const reduced=document.documentElement.classList.contains('mj-reduced')||
+      (typeof matchMedia==='function'&&matchMedia('(prefers-reduced-motion:reduce)').matches);
+     sheet.scrollTo({top:Math.max(0,top),behavior:reduced?'auto':'smooth'});
+    }
+    sheet.querySelectorAll('.mj-profile-jump').forEach(item=>{
+     if(item===jump)item.setAttribute('aria-current','location');
+     else item.removeAttribute('aria-current');
+    });
+    event.preventDefault();event.stopPropagation();
+   }
    return;
   }
   const toggle=event.target.closest?.('[data-mj-v43-group-toggle]');
