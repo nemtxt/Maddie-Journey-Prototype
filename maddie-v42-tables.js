@@ -7,6 +7,7 @@
  const root=document.getElementById('view');
  if(!root)return;
  const states=new WeakMap();
+ let uniqueId=0;
  const create=(tag,cls,txt)=>{
   const node=document.createElement(tag);
   if(cls)node.className=cls;
@@ -217,6 +218,7 @@
    label.append(select);controls.append(label);
   }
   if(grouped){
+   const groupIdPrefix='mj-v42-group-'+(++uniqueId)+'-';
    // First two groups open initially; the other groups are still fully
    // accessible via their individual button or the Expand all control.
    Array.from(table.tBodies).forEach((_,i)=>{if(i>=2)state.closed.add(i)});
@@ -224,7 +226,7 @@
     const head=one('tr.gh th',body);if(!head)return;
     const caption=textOf(head);
     body.dataset.v42GroupLabel=caption;
-    body.id='mj-v42-group-'+i;
+    body.id=groupIdPrefix+i;
     const trigger=button('mj-v42-group-toggle','Collapse group','group');
     trigger.setAttribute('aria-controls',body.id);
     trigger.dataset.v42Group=String(i);
@@ -271,6 +273,7 @@
   });
   groups.forEach((sections,container)=>{
    if(sections.length<4||one('.mj-v42-section-actions',container))return;
+   const sectionIdPrefix='mj-v42-section-'+(++uniqueId)+'-';
    const bar=create('div','mj-v42-section-actions');
    bar.append(create('strong','','Report sections'));
    bar.append(create('span','',sections.length+' sections'));
@@ -282,7 +285,7 @@
     if(!heading||!body)return;
     section.classList.add('mj-v42-section');
     const toggle=button('mj-v42-section-toggle','Collapse','section-toggle');
-    body.id='mj-v42-section-content-'+i;
+    body.id=sectionIdPrefix+i;
     toggle.setAttribute('aria-controls',body.id);
     toggle.setAttribute('aria-expanded','true');
     toggle.setAttribute('aria-label','Collapse report section '+textOf(one('h2',heading)));
