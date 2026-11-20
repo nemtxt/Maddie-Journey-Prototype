@@ -82,6 +82,8 @@
  };
  function setGroupOpen(group,open){
   group.classList.toggle('mj-v43-group-closed',!open);
+  const content=group.querySelector('.mj-v43-group-body');
+  if(content)content.hidden=!open;
   const toggle=group.querySelector('[data-mj-v43-group-toggle]');
   if(!toggle)return;
   toggle.setAttribute('aria-expanded',String(open));
@@ -89,7 +91,7 @@
   const label=group.dataset.mjV43Group||'profile section';
   toggle.setAttribute('aria-label',(open?'Hide':'Show')+' details for '+label);
  }
- function decorateGroups(sheet){
+ function decorateGroups(sheet,employeeId){
   const grid=sheet.querySelector('.mj-profile-grid');
   if(!grid)return;
   const sections=Array.from(grid.querySelectorAll(':scope > .mj-profile-group'));
@@ -107,10 +109,14 @@
    const heading=group.querySelector('h3');
    if(!heading||heading.querySelector('[data-mj-v43-group-toggle]'))return;
    heading.classList.add('mj-v43-group-title');
+   const body=make('div','mj-v43-group-body');
+   body.id='mj-v43-profile-content-'+employeeId+'-'+index;
+   Array.from(group.children).filter(n=>n!==heading).forEach(n=>body.appendChild(n));
+   group.appendChild(body);
    const toggle=make('button','mj-v43-group-toggle');
    toggle.type='button';
    toggle.dataset.mjV43GroupToggle='1';
-   if(group.id)toggle.setAttribute('aria-controls',group.id);
+   toggle.setAttribute('aria-controls',body.id);
    heading.appendChild(toggle);
    setGroupOpen(group,groupPriority(label)<=2);
   });
@@ -190,7 +196,7 @@
   grid.before(summary);
   const events=timeline(model);
   if(events)grid.before(events);
-  decorateGroups(sheet);
+  decorateGroups(sheet,model.id);
   const controls=make('div','mj-v43-profile-controls');
   add(controls,'span','mj-v43-profile-note','Full details remain available below.');
   for(const [action,label] of [['expand','Expand all details'],['collapse','Collapse details']]){
