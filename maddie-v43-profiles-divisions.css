@@ -395,6 +395,12 @@ body.mj-new #layer .mj-v43-profile .mj-profile-group.mj-v43-group-closed>.mj-v43
 body.mj-new #layer .mj-v43-profile .mj-profile-group.mj-v43-group-closed> :not(h3){
  display:none!important;
 }
+body.mj-new #layer .mj-v43-profile .mj-v43-group-body{
+ min-width:0!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-v43-group-body[hidden]{
+ display:none!important;
+}
 body.mj-new #layer .mj-v43-profile .mj-profile-group .dl{
  display:grid!important;
  grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr)!important;
