@@ -70,3 +70,7 @@ The single Settings & Data sidebar link now covers **Accessibility & Display** a
 ## Layered Dashboard Design v5.9
 
 Adds the non-destructive presentation files `maddie-layered.css` and `maddie-layered.js` to the fictional preview. Includes a fully coloured overview KPI band (navy, mint, plum and lemon), an elevated editorial hero, asymmetric full-colour workspace cards, a plum priority panel, a lemon quick-action panel, workspace-specific report heroes, richly coloured callouts, and nested quiet table surfaces. All nine workspaces and 86 report routes remain mapped to the original fixtures and actions. The existing plum-pink sidebar, accessibility controls, source architecture and true-black/white modes are untouched. Purely presentational DOM zoning labels add structure without changing data or navigation.
+
+## Focused report presentation (v6.0)
+
+Removed the repeated Data Snapshot fictional panels and redundant View full report / Quick preview buttons on all 86 individual reports. The original report itself displays directly below existing KPI callouts. Long searchable tables initially show eight records, with a Show all records control; searching and sorting remain active. Employee-detail popups remain unchanged. The fictional CSV export is available on People Directory → Employee Masterlist. Workspace directories link directly to reports. Added maddie-report-focus.css and maddie-report-focus.js, including in the standalone offline preview. No changes to fictional data, sources, or navigation.
