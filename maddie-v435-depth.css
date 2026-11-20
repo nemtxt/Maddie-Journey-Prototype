@@ -1,0 +1,536 @@
+/* MADDIE JOURNEY V4.3.5 — Premium Visual Depth & Interaction System
+ *
+ * An editorial, restrained presentation upgrade. Keeps all values, reports,
+ * navigation, organization-chart sizing, black sidebar and 3D controls intact.
+ * Uses only white / near-black surfaces plus existing meaningful data accents.
+ */
+body.mj-new #view{
+ --v435-page:#f8f9f8;
+ --v435-paper:#fff;
+ --v435-layer:#f3f5f3;
+ --v435-ink:#111713;
+ --v435-secondary:#465149;
+ --v435-muted:#657069;
+ --v435-border:#e1e5e1;
+ --v435-strong-border:#c8d0c9;
+ --v435-elevation:0 2px 4px rgba(17,26,19,.022),0 12px 29px rgba(17,26,19,.055);
+ --v435-elevation-hover:0 3px 9px rgba(17,26,19,.035),0 17px 36px rgba(17,26,19,.09);
+ --v435-focus:#202c24;
+ --v435-radius:17px;
+ background:var(--v435-page)!important;
+ color:var(--v435-ink)!important;
+}
+:root[data-theme="dark"] body.mj-new #view{
+ --v435-page:#050505;
+ --v435-paper:#111111;
+ --v435-layer:#1b1b1b;
+ --v435-ink:#f5f5f5;
+ --v435-secondary:#d8d8d8;
+ --v435-muted:#b7b7b7;
+ --v435-border:#343434;
+ --v435-strong-border:#545454;
+ --v435-elevation:0 5px 20px rgba(0,0,0,.16),0 14px 32px rgba(0,0,0,.21);
+ --v435-elevation-hover:0 8px 24px rgba(0,0,0,.24),0 18px 38px rgba(0,0,0,.3);
+ --v435-focus:#f4f4f4;
+ background:var(--v435-page)!important;
+ color:var(--v435-ink)!important;
+}
+/* Editorial hierarchy. Whitespace is intentional; avoid duplicating page
+ * headings, summary dashboards or another row of KPI cards. */
+body.mj-new #view :is(.ph.mj-v4-header,.mj-head.mj-v4-header){
+ background:var(--v435-paper)!important;
+ border:1px solid var(--v435-border)!important;
+ border-radius:20px!important;
+ padding:clamp(21px,2.25vw,34px)!important;
+ box-shadow:var(--v435-elevation)!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .ph.mj-v4-header h1,
+body.mj-new #view .mj-head.mj-v4-header h1{
+ color:var(--v435-ink)!important;
+ font-size:clamp(29px,3.15vw,44px)!important;
+ line-height:1.06!important;
+ letter-spacing:-.053em!important;
+ font-weight:850!important;
+ text-wrap:balance!important;
+ margin-bottom:11px!important;
+}
+body.mj-new #view :is(.ph.mj-v4-header,.mj-head.mj-v4-header) p{
+ color:var(--v435-muted)!important;
+ max-width:74ch!important;
+ font-size:clamp(11.3px,.98vw,12.5px)!important;
+ line-height:1.58!important;
+}
+body.mj-new #view .ph.mj-v4-header .pmeta{
+ padding-top:5px!important;
+ font-weight:630!important;
+ color:var(--v435-muted)!important;
+}
+body.mj-new #view .mj-v4-page{
+ gap:clamp(17px,1.9vw,25px)!important;
+}
+/* Section headings take on a more editorial feel, without adding ornament. */
+body.mj-new #view :is(.mj-v4-section-title,.mj-v4-report-divider){
+ position:relative;
+ gap:7px 19px!important;
+ padding:6px 0 8px!important;
+}
+body.mj-new #view .mj-v4-section-title h2{
+ font-size:clamp(18px,1.8vw,24px)!important;
+ font-weight:840!important;
+ letter-spacing:-.04em!important;
+ line-height:1.18!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v4-report-divider strong{
+ font-size:clamp(14px,1.35vw,17px)!important;
+ letter-spacing:-.025em!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view :is(.mj-v4-section-title,.mj-v4-report-divider) p,
+body.mj-new #view .mj-v4-report-divider span{
+ color:var(--v435-muted)!important;
+}
+/* Premium report zoning: separate the content types by their hierarchy,
+ * not by assigning every report a colored fill. */
+body.mj-new #view .g12>.card.mj-v4-surface,
+body.mj-new #view .mj-v4-surface.mj-panel,
+body.mj-new #view .mj-v4-tile.mj-tile{
+ background:var(--v435-paper)!important;
+ background-image:none!important;
+ color:var(--v435-ink)!important;
+ border:1px solid var(--v435-border)!important;
+ border-radius:var(--v435-radius)!important;
+ box-shadow:var(--v435-elevation)!important;
+ transition:border-color .18s ease,box-shadow .18s ease!important;
+ transform:none!important;
+}
+body.mj-new #view .g12>.card.mj-v4-surface{
+ padding:clamp(19px,1.8vw,29px)!important;
+}
+body.mj-new #view .g12>.card.mj-v4-surface:hover,
+body.mj-new #view .mj-v4-tile.mj-tile:hover{
+ border-color:var(--v435-strong-border)!important;
+ box-shadow:var(--v435-elevation-hover)!important;
+ transform:none!important;
+}
+body.mj-new #view .g12>.card.mj-v4-surface>h2{
+ color:var(--v435-ink)!important;
+ font-size:clamp(15.2px,1.25vw,18px)!important;
+ font-weight:835!important;
+ line-height:1.29!important;
+ letter-spacing:-.032em!important;
+ margin:0 0 15px!important;
+}
+body.mj-new #view .g12>.card.mj-v4-surface .mu{
+ color:var(--v435-muted)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="priority"]{
+ position:relative;
+ border-top:3px solid var(--v435-ink)!important;
+ box-shadow:var(--v435-elevation-hover)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="priority"]>h2{
+ font-size:clamp(18px,1.6vw,23px)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="priority"] .exl{
+ display:flex;flex-direction:column;
+ gap:4px!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="priority"] .ex{
+ border-radius:10px!important;
+ transition:background-color .16s ease!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="priority"] .ex:hover{
+ background:var(--v435-layer)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="workforce"]{
+ background:var(--v435-paper)!important;
+ border-top:3px solid var(--v435-strong-border)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="workforce"] .big b{
+ font-size:clamp(32px,3.65vw,57px)!important;
+ line-height:1!important;
+ font-weight:850!important;
+ letter-spacing:-.063em!important;
+ color:var(--v435-ink)!important;
+ font-variant-numeric:tabular-nums;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="workforce"] .trend{
+ padding-top:14px!important;
+ margin-top:16px!important;
+ border-top:1px solid var(--v435-border)!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="division-summary"]{
+ border-top:3px solid var(--mj-v43-division,var(--v435-strong-border))!important;
+}
+body.mj-new #view .g12>.card[data-mj-v435-card="calendar"] .tl li a:hover,
+body.mj-new #view .g12>.card[data-mj-v435-card="hiring"] .mi:hover{
+ background:var(--v435-layer)!important;
+}
+body.mj-new #view .mj-v4-content.g12{
+ gap:clamp(13px,1.7vw,22px)!important;
+}
+/* A single featured dashboard card gives the KPI row rhythm rather than
+ * full-card gradients or colorful fill boxes. */
+body.mj-new #view .mj-v4-kpis.mj-metrics{
+ gap:clamp(11px,1.35vw,18px)!important;
+}
+body.mj-new #view .mj-v4-kpis.mj-metrics>.mj-v4-kpi.mj-metric{
+ min-height:142px!important;
+ border:1px solid var(--v435-border)!important;
+ border-radius:16px!important;
+ box-shadow:var(--v435-elevation)!important;
+ background:var(--v435-paper)!important;
+ color:var(--v435-ink)!important;
+ transition:box-shadow .16s ease,border-color .16s ease!important;
+}
+body.mj-new #view .mj-v4-kpis.mj-metrics>.mj-v4-kpi.mj-metric:hover{
+ border-color:var(--v435-strong-border)!important;
+ box-shadow:var(--v435-elevation-hover)!important;
+}
+body.mj-new #view .mj-v4-kpis.mj-metrics>.mj-v4-kpi.mj-metric strong{
+ font-size:clamp(31px,2.9vw,44px)!important;
+ font-weight:860!important;
+ letter-spacing:-.06em!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v4-kpis.mj-metrics>.mj-v4-kpi.mj-metric span{
+ font-size:11.3px!important;
+ color:var(--v435-secondary)!important;
+}
+body.mj-new #view .mj-v4-kpis:is(.cos,.strip)>.mj-v4-kpi{
+ box-shadow:0 3px 11px rgba(17,26,19,.025)!important;
+ border-color:var(--v435-border)!important;
+ border-radius:13px!important;
+}
+body.mj-new #view .mj-v4-kpis:is(.cos,.strip)>.mj-v4-kpi:hover{
+ box-shadow:var(--v435-elevation)!important;
+ border-color:var(--v435-strong-border)!important;
+}
+/* Alternate proportions avoid two interchangeable charts, yet retain a
+ * single-column reading order at tablet/mobile sizes. */
+body.mj-new #view .mj-v41{
+ margin:6px 0 24px!important;
+ padding:0!important;
+}
+body.mj-new #view .mj-v41-heading{
+ align-items:flex-end!important;
+ padding:0 2px 3px!important;
+ margin:0 0 15px!important;
+}
+body.mj-new #view .mj-v41-heading h2{
+ font-size:clamp(19px,1.9vw,27px)!important;
+ font-weight:850!important;
+ line-height:1.15!important;
+ letter-spacing:-.044em!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v41-eyebrow{
+ color:var(--v435-secondary)!important;
+ font-weight:800!important;
+}
+body.mj-new #view .mj-v41-heading p{
+ font-size:11.5px!important;
+ max-width:82ch!important;
+ color:var(--v435-muted)!important;
+}
+@media(min-width:1050px){
+ body.mj-new #view .mj-v41-grid{
+  grid-template-columns:minmax(0,1.28fr) minmax(0,.92fr)!important;
+  gap:clamp(14px,1.7vw,24px)!important;
+ }
+ body.mj-new #view .mj-v41-grid:has(>:only-child){
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+}
+body.mj-new #view .mj-v41-card.mj-v435-chart{
+ --v41-paper:var(--v435-paper);
+ --v41-soft:var(--v435-layer);
+ --v41-ink:var(--v435-ink);
+ --v41-muted:var(--v435-muted);
+ --v41-border:var(--v435-border);
+ min-height:284px!important;
+ border:1px solid var(--v435-border)!important;
+ border-radius:18px!important;
+ padding:clamp(19px,1.9vw,29px)!important;
+ background:var(--v435-paper)!important;
+ box-shadow:var(--v435-elevation)!important;
+ overflow:hidden!important;
+ transition:box-shadow .16s ease,border-color .16s ease!important;
+}
+body.mj-new #view .mj-v41-card.mj-v435-chart:hover{
+ box-shadow:var(--v435-elevation-hover)!important;
+ border-color:var(--v435-strong-border)!important;
+}
+body.mj-new #view .mj-v41-card.mj-v435-primary-chart{
+ border-top:3px solid var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v41-card.mj-v435-companion-chart{
+ border-top:3px solid var(--v435-strong-border)!important;
+}
+body.mj-new #view .mj-v41-card-head{
+ margin:0 0 21px!important;
+}
+body.mj-new #view .mj-v41-card-head h3{
+ font-size:clamp(14px,1.25vw,18px)!important;
+ font-weight:830!important;
+ letter-spacing:-.025em!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v41-card-head p{
+ color:var(--v435-muted)!important;
+ font-size:11.1px!important;
+ max-width:60ch!important;
+}
+body.mj-new #view .mj-v41-line{
+ min-height:116px!important;
+ max-height:185px!important;
+ overflow:visible!important;
+}
+body.mj-new #view .mj-v41-line-path{
+ stroke-width:3.3px!important;
+}
+body.mj-new #view .mj-v41-point{
+ r:3.8px;
+ cursor:default;
+ transition:r .16s ease,stroke-width .16s ease,fill .16s ease!important;
+}
+body.mj-new #view .mj-v41-point.is-highlighted,
+body.mj-new #view .mj-v41-point:focus-visible{
+ r:6px;
+ stroke-width:3!important;
+ outline:none!important;
+}
+body.mj-new #view .mj-v41-bar-row{
+ padding:5px 7px!important;
+ margin:-5px -7px!important;
+ border-radius:9px!important;
+ transition:background-color .13s ease!important;
+}
+body.mj-new #view .mj-v41-bar-row:hover,
+body.mj-new #view .mj-v41-bar-row.is-highlighted,
+body.mj-new #view .mj-v41-bar-row:focus-visible{
+ background:var(--v435-layer)!important;
+ outline:none!important;
+}
+body.mj-new #view .mj-v41-track{
+ height:7px!important;
+ background:var(--v435-border)!important;
+}
+body.mj-new #view .mj-v41-bar-fill{
+ border-radius:99px!important;
+}
+body.mj-new #view .mj-v41-legend-item{
+ padding:5px 7px!important;
+ margin:-4px -7px!important;
+ border-radius:9px!important;
+ transition:background-color .13s ease!important;
+}
+body.mj-new #view .mj-v41-legend-item:hover,
+body.mj-new #view .mj-v41-legend-item.is-highlighted,
+body.mj-new #view .mj-v41-legend-item:focus-visible{
+ background:var(--v435-layer)!important;
+ outline:none!important;
+}
+body.mj-new #view .mj-v41-legend-item:focus-visible,
+body.mj-new #view .mj-v41-bar-row:focus-visible{
+ box-shadow:0 0 0 2px var(--v435-focus)!important;
+}
+body.mj-new #view .mj-v41-card-footer{
+ margin-top:auto!important;
+ padding-top:17px!important;
+ border-color:var(--v435-border)!important;
+}
+body.mj-new #view .mj-v435-readout{
+ display:flex!important;
+ flex-wrap:wrap;
+ align-items:baseline;
+ justify-content:space-between;
+ gap:5px 12px;
+ box-sizing:border-box;
+ width:100%;
+ max-height:0;
+ opacity:0;
+ padding:0 11px!important;
+ margin:0!important;
+ background:var(--v435-layer)!important;
+ border:0 solid var(--v435-border)!important;
+ border-radius:9px!important;
+ overflow:hidden;
+ pointer-events:none;
+ transition:opacity .14s ease,max-height .14s ease,padding .14s ease,margin .14s ease!important;
+}
+body.mj-new #view .mj-v435-readout.is-visible{
+ max-height:70px!important;
+ opacity:1!important;
+ margin:9px 0!important;
+ padding:10px 11px!important;
+}
+body.mj-new #view .mj-v435-readout-caption{
+ color:var(--v435-muted)!important;
+ font-size:10px!important;
+ font-weight:690!important;
+}
+body.mj-new #view .mj-v435-readout-value{
+ color:var(--v435-ink)!important;
+ font-size:11.3px!important;
+ font-weight:830!important;
+ letter-spacing:-.015em!important;
+}
+/* Priority and executive takeaways should read like concise observations,
+ * not a fourth KPI grid. */
+body.mj-new #view .mj-v41-observation{
+ margin:0 0 16px!important;
+ padding:clamp(13px,1.3vw,19px) clamp(15px,1.6vw,22px)!important;
+ border:1px solid var(--v435-border)!important;
+ border-left:3px solid var(--v435-ink)!important;
+ border-radius:12px!important;
+ background:var(--v435-paper)!important;
+ color:var(--v435-ink)!important;
+ box-shadow:0 3px 12px rgba(14,24,17,.035)!important;
+}
+body.mj-new #view .mj-v41-observation strong{
+ font-size:10px!important;
+ font-weight:820!important;
+ color:var(--v435-ink)!important;
+}
+body.mj-new #view .mj-v41-observation p{
+ font-size:11.6px!important;
+ line-height:1.57!important;
+ color:var(--v435-secondary)!important;
+}
+body.mj-new #view .mj-v41-source-note{
+ color:var(--v435-muted)!important;
+ margin-top:11px!important;
+}
+/* Workspaces: varied whitespace and layered icon surfaces without gradients
+ * or high-saturation card colors. */
+body.mj-new #view .mj-v4-directory.mj-grid{
+ gap:clamp(14px,1.6vw,23px)!important;
+}
+body.mj-new #view .mj-v4-tile.mj-tile{
+ min-height:194px!important;
+ padding:clamp(20px,1.9vw,28px)!important;
+ border-radius:18px!important;
+}
+body.mj-new #view .mj-v4-tile .mj-ico{
+ display:grid!important;
+ place-items:center!important;
+ width:46px!important;
+ height:46px!important;
+ background:var(--v435-layer)!important;
+ color:var(--v435-ink)!important;
+ border:1px solid var(--v435-border)!important;
+ border-radius:12px!important;
+ box-shadow:0 2px 0 var(--v435-paper),0 4px 0 var(--v435-border)!important;
+}
+body.mj-new #view .mj-v4-tile h3{
+ font-size:clamp(15px,1.3vw,19px)!important;
+ margin:19px 0 8px!important;
+ line-height:1.23!important;
+ letter-spacing:-.03em!important;
+}
+body.mj-new #view .mj-v4-tile .mj-tilefoot{
+ padding-top:14px!important;
+ margin-top:auto!important;
+ border-top:1px solid var(--v435-border)!important;
+}
+/* Focus states and profiles should be polished, not repeatedly animated. */
+body.mj-new #view .mj-v42-table,
+body.mj-new #view .mj-v42-analysis{
+ box-shadow:0 5px 19px rgba(12,20,13,.035)!important;
+ border-radius:14px!important;
+}
+body.mj-new #view .mj-v42-table :is(tbody tr,thead th),
+body.mj-new #view .mj-v42-analysis :is(tbody tr,thead th){
+ transition:background-color .12s ease!important;
+}
+body.mj-new #view .mj-v42-table tbody tr:hover,
+body.mj-new #view .mj-v42-analysis tbody tr:hover{
+ background:var(--v435-layer)!important;
+}
+body.mj-new #view .mj-v42-bottom,
+body.mj-new #view .mj-v42-analysis-tools{
+ background:var(--v435-paper)!important;
+}
+body.mj-new #view .mj-one-chart{
+ box-shadow:var(--v435-elevation)!important;
+ border-color:var(--v435-border)!important;
+}
+body.mj-new #view .mj-one-person:hover,
+body.mj-new #view .mj-one-person:focus-visible{
+ box-shadow:0 4px 13px rgba(15,24,18,.13)!important;
+ transform:translateY(-1px)!important;
+}
+body.mj-new #layer .sheet.mj-v43-profile{
+ box-shadow:0 25px 67px rgba(0,0,0,.25)!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-v43-profile-snapshot .mj-v43-stat{
+ box-shadow:0 5px 18px rgba(17,24,18,.037)!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-v43-timeline{
+ border-radius:14px!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-profile-grid>.mj-profile-group{
+ box-shadow:0 5px 18px rgba(17,24,18,.027)!important;
+ transition:border-color .16s ease,box-shadow .16s ease!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-profile-grid>.mj-profile-group:hover{
+ border-color:var(--v43-strong)!important;
+ box-shadow:0 9px 26px rgba(17,24,18,.059)!important;
+}
+body.mj-new #layer .mj-v43-profile .mj-v43-timeline-event:hover{
+ background:transparent!important;
+}
+:root[data-theme="dark"] body.mj-new #layer .mj-v43-profile .mj-profile-grid>.mj-profile-group:hover,
+:root[data-theme="dark"] body.mj-new #layer .mj-v43-profile .mj-v43-profile-snapshot .mj-v43-stat{
+ box-shadow:none!important;
+}
+/* Stop shadow/elevation on very narrow layouts from feeling oversized. */
+@media(max-width:1049px){
+ body.mj-new #view .mj-v41-grid{
+  grid-template-columns:minmax(0,1fr)!important;
+ }
+ body.mj-new #view .mj-v41-card.mj-v435-chart{
+  min-height:230px!important;
+ }
+}
+@media(max-width:690px){
+ body.mj-new #view .ph.mj-v4-header h1,
+ body.mj-new #view .mj-head.mj-v4-header h1{
+  font-size:clamp(27px,7vw,34px)!important;
+ }
+ body.mj-new #view :is(.ph.mj-v4-header,.mj-head.mj-v4-header){
+  padding:19px!important;
+  border-radius:16px!important;
+ }
+ body.mj-new #view .g12>.card.mj-v4-surface{
+  padding:17px!important;
+ }
+ body.mj-new #view .mj-v41-card.mj-v435-chart{
+  padding:17px!important;
+  min-height:0!important;
+ }
+ body.mj-new #view .mj-v4-tile.mj-tile{
+  min-height:164px!important;
+  padding:18px!important;
+ }
+ body.mj-new #view .mj-v41-heading h2{font-size:19px!important}
+ body.mj-new #view .mj-v41-card-head h3{font-size:15px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ body.mj-new #view :is(.mj-v41-card,.mj-v41-point,.mj-v41-bar-row,.mj-v41-legend-item,.mj-v435-readout,.mj-v4-tile,.mj-v4-kpi,.g12>.card),
+ body.mj-new #layer .mj-v43-profile .mj-profile-grid>.mj-profile-group{
+  transition:none!important;
+  transform:none!important;
+ }
+ body.mj-new #view .mj-one-person:hover{
+  transform:none!important;
+ }
+}
+:root.mj-reduced body.mj-new #view :is(.mj-v41-card,.mj-v41-point,.mj-v41-bar-row,.mj-v41-legend-item,.mj-v435-readout,.mj-v4-tile,.mj-v4-kpi,.g12>.card),
+:root.mj-reduced body.mj-new #layer .mj-v43-profile .mj-profile-grid>.mj-profile-group{
+ transition:none!important;
+ transform:none!important;
+}
