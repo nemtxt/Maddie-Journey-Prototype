@@ -316,3 +316,110 @@ body.mj-new .app.mini #side #sfoot{display:none!important}
     transition:none!important;animation:none!important;
   }
 }
+
+
+/* Light-mode specificity repair.
+ * Older reference-sidebar rules use :root:not([data-theme="dark"]); override
+ * them at equal specificity so the full navigation is solid black, never beige.
+ */
+:root:not([data-theme="dark"]) body.mj-new #side{
+  --rail-ink:#fff!important;
+  --rail-muted:#c9c9c9!important;
+  --rail-stroke:#343434!important;
+  --rail-hover:#222!important;
+  --rail-selected:#fff!important;
+  --rail-focus:#fff!important;
+  --rail-accent:#fff!important;
+  background:#090909!important;background-image:none!important;
+  color:#fff!important;border-color:#2c2c2c!important;
+  box-shadow:none!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side .brand{
+  background:#171717!important;border-color:#363636!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side .brand span,
+:root:not([data-theme="dark"]) body.mj-new #side #sfoot.mj-side-status b{
+  color:#fff!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side .brand .logo{
+  background:#252525!important;border-color:#424242!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side .brand .logo img,
+:root:not([data-theme="dark"]) body.mj-new .app.mini #side .brand .logo img{
+  filter:brightness(0) invert(1)!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-heading,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions::before{
+  color:#b0b0b0!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-expand,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-section-toggle{
+  color:#e1e1e1!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a .i,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a .i{
+  color:currentColor!important;opacity:1!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a:hover,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a:hover,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-expand:hover,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-section-toggle:hover{
+  background:#252525!important;color:#fff!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a.on,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a.on,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-group.current>a,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-submenu a.on{
+  background:#fff!important;color:#111!important;
+  border-color:#fff!important;box-shadow:none!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a.on .i,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a.on .i,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-group.current>a .i{
+  color:#111!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav a.on::after,
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions a.on::after{
+  background:#111!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-divider{
+  background:#383838!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-submenu,
+:root:not([data-theme="dark"]) body.mj-new #side #nav .mj-pink-section-body{
+  border-left-color:#424242!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #mj-sidebar-actions{
+  border-top-color:#383838!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #sfoot.mj-side-status{
+  background:#171717!important;border-color:#393939!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #side #sfoot.mj-side-status small{
+  color:#c9c9c9!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #mj-sidebar-collapse{
+  background:#171717!important;color:#fff!important;border-color:#484848!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #mj-sidebar-collapse:hover{
+  background:#303030!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #mj-rail-flyout{
+  --fly-ink:#fff;--fly-muted:#bbb;
+  background:#151515!important;color:#fff!important;border-color:#424242!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #mj-rail-flyout a:hover,
+:root:not([data-theme="dark"]) body.mj-new #mj-rail-flyout a:focus-visible{
+  background:#2a2a2a!important;
+}
+:root:not([data-theme="dark"]) body.mj-new #mj-rail-flyout a[aria-current="page"]{
+  background:#fff!important;color:#111!important;box-shadow:none!important;
+}
+/* Collapsed rail icons keep their intended white/gray contrast. */
+:root:not([data-theme="dark"]) body.mj-new .app.mini #side #nav a .i,
+:root:not([data-theme="dark"]) body.mj-new .app.mini #side #mj-sidebar-actions a .i,
+:root:not([data-theme="dark"]) body.mj-new .app.mini #side #nav .mj-rail-section-icon{
+  color:currentColor!important;
+}
