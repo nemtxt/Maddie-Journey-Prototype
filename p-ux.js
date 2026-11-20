@@ -41,8 +41,20 @@ function org(rootEl){const sec=$1("#hxorg",rootEl),oc=sec&&$1(".hxoc",sec),ot=oc
  oc.before(bar);oc.insertAdjacentHTML("afterend",'<p class="uxh2">Drag to move. Pinch, or hold Ctrl and scroll, to zoom. Keys: + &minus; 0 and arrow keys.</p>');
  oc.tabIndex=0;oc.setAttribute("role","group");oc.setAttribute("aria-label","Organization chart. Press plus or minus to zoom, zero to fit, arrow keys to move.");
  const out=$1(".uxz",bar),dim=()=>[ot.offsetWidth,ot.offsetHeight];
- const paint=()=>{if(!wide.matches){oc.classList.remove("uxpz");oc.style.height="";ot.style.transform="";return}
-  oc.classList.add("uxpz");const[w,h]=dim(),cw=oc.clientWidth;oc.style.height=Math.ceil(h*k+8)+"px";oc.scrollLeft=0;x=w*k<=cw?(cw-w*k)/2:clamp(x,cw-w*k,0);ot.style.transform=`translate(${x}px,0) scale(${k})`;out.textContent=Math.round(k*100)+"%"};
+ // Drag and pinch can dispatch far more events than the display refresh rate.
+ // Paint only once per frame to avoid repeated offsetWidth/layout reads.
+ let paintQueued=false;
+ const paintNow=()=>{if(!oc.isConnected)return;
+  if(!wide.matches){oc.classList.remove("uxpz");oc.style.height="";ot.style.transform="";return}
+  oc.classList.add("uxpz");const[w,h]=dim(),cw=oc.clientWidth;
+  const height=Math.ceil(h*k+8)+"px";
+  if(oc.style.height!==height)oc.style.height=height;
+  if(oc.scrollLeft!==0)oc.scrollLeft=0;
+  x=w*k<=cw?(cw-w*k)/2:clamp(x,cw-w*k,0);
+  ot.style.transform=`translate(${x}px,0) scale(${k})`;
+  out.textContent=Math.round(k*100)+"%";
+ };
+ const paint=()=>{if(paintQueued)return;paintQueued=true;requestAnimationFrame(()=>{paintQueued=false;paintNow()})};
  const fit=()=>{const[w]=dim();k=clamp(oc.clientWidth/w,.3,1);x=0;fitM=true;paint()},re=()=>fitM?fit():paint();
  const zoom=(f,cx)=>{const nk=clamp(k*f,.3,2.5);x=cx-(cx-x)*nk/k;k=nk;fitM=false;paint()};
  bar.addEventListener("click",e=>{const b=e.target.closest("button"),a=b&&b.dataset.o;if(!a)return;if(a==="col"||a==="exp"){divs.forEach(li=>setCol(li,a==="col"));re()}else if(a==="fit")fit();else zoom(a==="in"?1.25:.8,oc.clientWidth/2)});
