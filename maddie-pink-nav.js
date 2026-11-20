@@ -83,7 +83,7 @@ function syncRoute(){
   lastBase=base;
   expandedWorkspace=isArea(base)?base:(h.startsWith('division/')?'people':null);
   if(h.startsWith('view/')&&!manualExecutive)executiveExpanded=true;
-  if((h==='office'||h==='divisions'||h.startsWith('division/'))&&!manualOrganization)organizationExpanded=true;
+  // Division reports remain accessible within People Directory; no duplicate All Divisions nav.
  }
  return h;
 }
@@ -109,14 +109,12 @@ function render(){
  const nav=q('#nav');
  if(!nav||!document.body.classList.contains('mj-new'))return;
  syncRoute();
- nav.innerHTML='<div class="mj-pink-heading">MAIN WORKSPACE</div>'+link('overview','Overview','grid')+link('workspaces','All workspaces','office')+
+ nav.innerHTML='<div class="mj-pink-heading">MAIN WORKSPACE</div>'+link('overview','Overview','grid')+link('workspaces','All workspaces','office')+link('office','3D Office','office')+
  '<div class="mj-pink-divider"></div><div class="mj-pink-heading">P&C WORKSPACES</div>'+areas.map(areaHtml).join('')+
  '<div class="mj-pink-divider"></div>'+toggle('executive','EXECUTIVE VIEWS',executiveExpanded,6)+
  '<div class="mj-pink-section-body" id="pink-section-executive"'+(executiveExpanded?'':' hidden')+'>'+
  leaders.map(x=>link('view/'+x[0],x[1],'bars')).join('')+'</div>'+
- toggle('organization','ORGANIZATION',organizationExpanded,2)+
- '<div class="mj-pink-section-body" id="pink-section-organization"'+(organizationExpanded?'':' hidden')+'>'+
- link('divisions','All divisions','user')+link('office','3D Office','office')+'</div>';
+ '';
  const side=q('#side'),foot=q('#sfoot');
  if(side){
   let bar=q('#mj-sidebar-actions',side);
