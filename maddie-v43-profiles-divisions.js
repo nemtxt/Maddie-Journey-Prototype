@@ -214,7 +214,9 @@
   const name=h.slice('division/'.length);
   const model=divisionModel(name);
   const header=view.querySelector('.ph');
-  if(!model||!header)return;
+  // The main router fades between screens. Do not decorate a previous
+  // division's header while the new route is still rendering.
+  if(!model||!header||header.querySelector('h1')?.textContent?.trim()!==name)return;
   header.classList.add('mj-v43-division-header');
   header.style.setProperty('--mj-v43-division',model.color);
   if(header.dataset.mjV43Division!==name){
