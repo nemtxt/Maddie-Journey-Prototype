@@ -49,6 +49,34 @@ const divisionItems=()=>{
 const baseRoute=()=>location.hash.slice(1)||'overview';
 let expandedWorkspace=null,lastBase='',executiveExpanded=false,organizationExpanded=false;
 let manualExecutive=false,manualOrganization=false;
+const panelAnimations=new WeakMap();
+function syncDropdown(panel,expanded){
+ if(!panel)return;
+ const isOpen=panel.dataset.mjAccordionOpen===undefined?!panel.hidden:panel.dataset.mjAccordionOpen==='true';
+ if(isOpen===expanded)return;
+ const current=panelAnimations.get(panel);
+ if(current){current.cancel();panelAnimations.delete(panel)}
+ panel.dataset.mjAccordionOpen=String(expanded);
+ const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches||
+               document.body.classList.contains('mj-reduced')||!panel.animate;
+ if(reduced){panel.hidden=!expanded;return}
+ if(expanded){
+  panel.hidden=false;
+  const anim=panel.animate([{opacity:0,transform:'translateY(-7px)'},{opacity:1,transform:'translateY(0)'}],
+   {duration:190,easing:'cubic-bezier(.22,1,.36,1)'});
+  panelAnimations.set(panel,anim);
+  anim.onfinish=()=>{if(panelAnimations.get(panel)===anim)panelAnimations.delete(panel)};
+ }else{
+  const anim=panel.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-7px)'}],
+   {duration:150,easing:'ease-in'});
+  panelAnimations.set(panel,anim);
+  anim.onfinish=()=>{
+   if(panelAnimations.get(panel)===anim&&panel.dataset.mjAccordionOpen==='false'){
+    panel.hidden=true;panelAnimations.delete(panel);
+   }
+  };
+ }
+}
 function syncRoute(){
  const h=baseRoute(),base=h.split(':')[0];
  if(base!==lastBase){
@@ -124,14 +152,14 @@ function active(){
   const id=g.dataset.pinkGroup,expanded=expandedWorkspace===id;
   g.classList.toggle('expanded',expanded);g.classList.toggle('current',id===base||(id==='people'&&h.startsWith('division/')));
   const sub=q('#pink-'+id),btn=g.querySelector('.mj-pink-workspace-toggle');
-  if(sub)sub.hidden=!expanded;
+  syncDropdown(sub,expanded);
   if(btn){btn.setAttribute('aria-expanded',String(expanded));btn.setAttribute('aria-label',(expanded?'Collapse ':'Expand ')+areas.find(x=>x[0]===id)[1]+' subcategories')}
  });
  for(const id of ['executive','organization']){
   const expanded=id==='executive'?executiveExpanded:organizationExpanded;
   const btn=q('[data-pink-section="'+id+'"]',side),panel=q('#pink-section-'+id,side);
   if(btn){btn.setAttribute('aria-expanded',String(expanded));btn.classList.toggle('expanded',expanded)}
-  if(panel)panel.hidden=!expanded;
+  syncDropdown(panel,expanded);
  }
 }
 document.addEventListener('click',event=>{
