@@ -52,6 +52,9 @@ const divisionItems=()=>{
 const baseRoute=()=>location.hash.slice(1)||'overview';
 let expandedWorkspace=null,lastBase='',executiveExpanded=false,organizationExpanded=false;
 let manualExecutive=false,manualOrganization=false;
+ // Visual selection follows the last clicked navigation control. The route's
+ // aria-current remains independent, so opening a menu never changes pages.
+ let selectedNav=null,lastSelectedRoute=null;
 const panelAnimations=new WeakMap();
 function syncDropdown(panel,expanded){
  if(!panel)return;
@@ -141,11 +144,19 @@ function render(){
 function active(){
  const side=q('#side');if(!side)return;
  const h=syncRoute(),base=h.split(':')[0];
+ if(h!==lastSelectedRoute){
+  selectedNav={kind:'route',value:h};
+  lastSelectedRoute=h;
+ }
+ if(!selectedNav)selectedNav={kind:'route',value:h};
  all('[data-mj-href]',side).forEach(a=>{
   const d=a.dataset.mjHref;
   const on=d===h||(d==='settings'&&h==='data-system')||
    (d==='people'&&h.startsWith('people:'));
   a.classList.toggle('on',on);
+  const selected=selectedNav.kind==='route'&&
+   (selectedNav.value===d||(selectedNav.value==='data-system'&&d==='settings'));
+  a.classList.toggle('mj-nav-selected',selected);
   if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');
  });
  all('[data-pink-group]',side).forEach(g=>{
@@ -153,25 +164,41 @@ function active(){
   g.classList.toggle('expanded',expanded);g.classList.toggle('current',id===base||(id==='people'&&h.startsWith('division/')));
   const sub=q('#pink-'+id),btn=g.querySelector('.mj-pink-workspace-toggle');
   syncDropdown(sub,expanded);
-  if(btn){btn.setAttribute('aria-expanded',String(expanded));btn.setAttribute('aria-label',(expanded?'Collapse ':'Expand ')+areas.find(x=>x[0]===id)[1]+' subcategories')}
+  if(btn){
+   btn.setAttribute('aria-expanded',String(expanded));
+   btn.setAttribute('aria-label',(expanded?'Collapse ':'Expand ')+areas.find(x=>x[0]===id)[1]+' subcategories');
+   btn.classList.toggle('mj-nav-selected',selectedNav.kind==='group'&&selectedNav.value===id);
+  }
  });
  for(const id of ['executive','organization']){
   const expanded=id==='executive'?executiveExpanded:organizationExpanded;
   const btn=q('[data-pink-section="'+id+'"]',side),panel=q('#pink-section-'+id,side);
-  if(btn){btn.setAttribute('aria-expanded',String(expanded));btn.classList.toggle('expanded',expanded)}
+  if(btn){
+   btn.setAttribute('aria-expanded',String(expanded));
+   btn.classList.toggle('expanded',expanded);
+   btn.classList.toggle('mj-nav-selected',selectedNav.kind==='section'&&selectedNav.value===id);
+  }
   syncDropdown(panel,expanded);
  }
 }
 document.addEventListener('click',event=>{
+ const clickedLink=event.target.closest?.('[data-mj-href]');
+ if(clickedLink&&q('#side')?.contains(clickedLink)){
+  selectedNav={kind:'route',value:clickedLink.dataset.mjHref};
+  // A click on the already-active route emits no hashchange.
+  if(location.hash==='#'+clickedLink.dataset.mjHref)queueMicrotask(active);
+ }
  const item=event.target.closest?.('[data-pink-expand]');
  if(item){
   event.preventDefault();event.stopPropagation();
   expandedWorkspace=expandedWorkspace===item.dataset.pinkExpand?null:item.dataset.pinkExpand;
+  selectedNav={kind:'group',value:item.dataset.pinkExpand};
   active();return;
  }
  const section=event.target.closest?.('[data-pink-section]');
  if(section){
   event.preventDefault();event.stopPropagation();
+  selectedNav={kind:'section',value:section.dataset.pinkSection};
   if(section.dataset.pinkSection==='executive'){executiveExpanded=!executiveExpanded;manualExecutive=true}
   else{organizationExpanded=!organizationExpanded;manualOrganization=true}
   active();
