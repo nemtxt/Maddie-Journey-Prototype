@@ -106,7 +106,7 @@
    (heading?.getBoundingClientRect().height||0)-(nav?.getBoundingClientRect().height||0)-12;
   const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches||
    document.documentElement.classList.contains('mj-reduced');
-  sheet.scrollTo({top:Math.max(0,desired),behavior:reduced?'instant':'smooth'});
+  sheet.scrollTo({top:Math.max(0,desired),behavior:reduced?'auto':'smooth'});
   nav?.querySelectorAll('[data-mj-profile-jump]').forEach(item=>{
    if(item===button)item.setAttribute('aria-current','location');
    else item.removeAttribute('aria-current');
