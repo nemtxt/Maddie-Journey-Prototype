@@ -370,3 +370,26 @@ body.mj-new #mj-rail-flyout .mj-division-count{margin-left:auto;opacity:.75}
 :root[data-theme="dark"] body.mj-new #side #nav .mj-pink-submenu>a.on .mj-pink-dot{
   background:#333!important;
 }
+
+
+/* Photo remains visible in dark mode despite earlier high-specificity monochrome
+   hero overrides. The content surface remains black outside the photo hero. */
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro{
+  background:linear-gradient(90deg,rgba(7,11,9,.98) 0%,rgba(7,11,9,.93) 37%,rgba(7,11,9,.49) 68%,rgba(7,11,9,.29) 100%),url("madhalloween.jpg") center 42%/cover no-repeat!important;
+  background-image:linear-gradient(90deg,rgba(7,11,9,.98) 0%,rgba(7,11,9,.93) 37%,rgba(7,11,9,.49) 68%,rgba(7,11,9,.29) 100%),url("madhalloween.jpg")!important;
+  color:#fff!important;border-color:#202820!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro h1{
+  color:#fff!important;-webkit-text-fill-color:#fff!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro h1 em{
+  color:#ffcf3a!important;-webkit-text-fill-color:#ffcf3a!important;
+  background:none!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro .mj-tag,
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro p{
+  color:#ededed!important;
+}
+:root[data-theme="dark"] body.mj-new[data-mj-layout="home"] #view .mj-intro .mj-btn.primary{
+  background:#fff!important;color:#111!important;border-color:#fff!important;
+}
