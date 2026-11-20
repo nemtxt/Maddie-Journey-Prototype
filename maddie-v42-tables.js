@@ -170,7 +170,11 @@
    if(heading)setHidden(heading,!groupVisible);
    rows.forEach(row=>setHidden(row,!groupVisible||closed||!selected.includes(row)));
    const toggle=heading?.querySelector('[data-v42-group]');
-   if(toggle)toggle.setAttribute('aria-expanded',String(!closed));
+   if(toggle){
+    toggle.setAttribute('aria-expanded',String(!closed));
+    toggle.textContent=closed?'Expand group':'Collapse group';
+    toggle.setAttribute('aria-label',(closed?'Expand ':'Collapse ')+label);
+   }
   });
   state.count.textContent=escaped(matched)+' matching of '+escaped(total);
   state.empty.hidden=matched>0;
@@ -213,12 +217,16 @@
    label.append(select);controls.append(label);
   }
   if(grouped){
+   // First two groups open initially; the other groups are still fully
+   // accessible via their individual button or the Expand all control.
+   Array.from(table.tBodies).forEach((_,i)=>{if(i>=2)state.closed.add(i)});
    Array.from(table.tBodies).forEach((body,i)=>{
     const head=one('tr.gh th',body);if(!head)return;
     const caption=textOf(head);
     const trigger=button('mj-v42-group-toggle','Collapse group','group');
     trigger.dataset.v42Group=String(i);
-    trigger.setAttribute('aria-expanded','true');
+    trigger.setAttribute('aria-expanded',String(!state.closed.has(i)));
+    if(state.closed.has(i))trigger.textContent='Expand group';
     trigger.setAttribute('aria-label','Collapse '+caption);
     head.append(trigger);
    });
