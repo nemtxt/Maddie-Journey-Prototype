@@ -138,6 +138,15 @@ function companyChart(){
  const departmentStaff=P.filter(e=>e.orgTier==='division'||!e.orgTier);
  D.forEach(([name])=>tree.append(divisionUnit(name,departmentStaff,{inline:true,allLevels:true})));
  const board=make('div','mj-org-chart-board');
+ // Shared row heights are computed from the densest division at each level.
+ // This avoids clipping long lists (e.g. seven Corporate Operations members)
+ // and keeps the level labels perfectly aligned across all columns.
+ const divisionTeams=D.map(([name])=>departmentStaff.filter(e=>e.dept===name));
+ [6,5,4,3,2,1].forEach(n=>{
+  const most=Math.max(0,...divisionTeams.map(team=>count(team,n)));
+  const height=Math.max(96,most*30+22);
+  board.style.setProperty('--mj-org-h'+n,height+'px');
+ });
  const rail=make('div','mj-org-level-rail');
  rail.append(make('span','mj-org-level-rail-title','LEVEL'));
  [6,5,4,3,2,1].forEach(n=>rail.append(make('span','mj-org-level-rail-row','Level '+n)));
