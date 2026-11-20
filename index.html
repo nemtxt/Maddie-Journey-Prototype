@@ -1,6 +1,6 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Maddie Journey 2027 — Fictional P&C Prototype</title>
-<meta name="description" content="Standalone fictional Maddie Journey People & Culture monitoring prototype. No Claude login, connector, or passcode needed.">
+<meta name="description" content="Standalone fictional Maddie Journey People & Culture monitoring prototype with demo-only passcode and no live connectors.">
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta content="#ffffff" id="tc" name="theme-color"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="maddie-media-sidebar.css">
 <link rel="stylesheet" href="maddie-journey-reference.css">
 <link rel="stylesheet" href="maddie-unified-dropdowns.css">
+<link rel="stylesheet" href="maddie-entry-modal-polish.css">
 
 <svg aria-hidden="true" height="0" style="position:absolute" width="0"><defs>
 <symbol id="i-grid" viewbox="0 0 24 24"><rect height="10" rx="2" width="8" x="3" y="3"></rect><rect height="6" rx="2" width="8" x="13" y="3"></rect><rect height="10" rx="2" width="8" x="13" y="11"></rect><rect height="6" rx="2" width="8" x="3" y="15"></rect></symbol>
@@ -50,13 +51,13 @@
 <button aria-label="Switch light or dark mode" class="gth" id="gth" type="button"><svg aria-hidden="true" class="i"><use href="#i-theme"></use></svg></button>
 <form autocomplete="off" class="gc" id="gform">
 <h2>Maddie Journey 2027</h2>
-<p>People &amp; Culture monitoring for Madhouse leadership. Enter the passcode shared with you by P&amp;C.</p>
+<p>Preview the fictional People &amp; Culture monitoring dashboard. Enter the demo passcode to continue to Overview.</p>
 <label for="pc">Passcode</label>
 <input autocomplete="current-password" id="pc" spellcheck="false" type="password" required/>
 <div id="pc2wrap" hidden><label for="pc2" style="margin-top:12px">Confirm passcode</label><input autocomplete="new-password" id="pc2" spellcheck="false" type="password"/></div>
 <button class="btn" id="unl" type="submit">Unlock</button>
 <div class="gs" id="gs" role="status" aria-live="polite">Loading…</div>
-<small id="gnote">Read-only. Data is decrypted in this browser only and is never edited here.</small>
+<small id="gnote">Demo passcode: DEMO2027. This public prototype does not secure real employee records.</small>
 </form>
 </div>
 <div class="app" id="app">
@@ -102,5 +103,6 @@
 <script src="maddie-report-focus.js"></script>
 <script src="maddie-reference-sidebar.js"></script>
 <script src="maddie-route-summaries.js"></script>
+<script src="maddie-modal-layout.js"></script>
 
 </body></html>
