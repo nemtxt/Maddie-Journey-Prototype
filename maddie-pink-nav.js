@@ -61,7 +61,9 @@ function syncRoute(){
 }
 function areaHtml([id,name,ico]){
  const expanded=expandedWorkspace===id;
- return '<div class="mj-pink-group'+(expanded?' expanded':'')+'" data-pink-group="'+id+'">'+link(id,name,ico)+
+ const count=sections(id).length;
+ const groupLink=link(id,name,ico).replace('</a>','<small class="mj-pink-group-count" aria-label="'+count+' section dashboards">'+count+'</small></a>');
+ return '<div class="mj-pink-group'+(expanded?' expanded':'')+'" data-pink-group="'+id+'">'+groupLink+
  '<button class="mj-pink-expand" type="button" data-pink-expand="'+id+'" aria-expanded="'+expanded+'" aria-controls="pink-'+id+'" aria-label="'+(expanded?'Collapse ':'Expand ')+esc(name)+' subcategories">'+icon('arrow')+'</button></div>'+
  '<div class="mj-pink-submenu" id="pink-'+id+'"'+(expanded?'':' hidden')+'>'+
  (id==='people'?divisionItems():'')+sections(id).map(s=>'<a href="#'+id+':'+s.id+'" data-id="'+id+':'+s.id+'" data-mj-href="'+id+':'+s.id+'" title="'+esc(s.label)+'"><i class="mj-pink-dot" aria-hidden="true"></i><span class="nl">'+esc(s.label)+'</span></a>').join('')+'</div>';
