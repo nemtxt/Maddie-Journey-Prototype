@@ -35,8 +35,9 @@ function levelTitle(n){
  return n===1?'Division leadership':n===2?'Senior & supervisory roles':n===3?'Team roles':'Level '+n;
 }
 function levels(list,{compact=false}={}){
- const wrap=make('div','mj-org-levels'+(compact?' compact':''));
- const levels=[...new Set(list.map(level))].sort((a,b)=>a-b);
+ const wrap=make('div','mj-org-levels mj-org-level-bands'+(compact?' compact':''));
+ // Match the supplied level-band chart: highest recorded level at the top.
+ const levels=[...new Set(list.map(level))].sort((a,b)=>b-a);
  if(!levels.length){wrap.append(make('p','mj-org-empty','No employees are recorded in this division.'));return wrap}
  for(const n of levels){
   const group=make('section','mj-org-level-group');
