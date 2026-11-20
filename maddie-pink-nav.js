@@ -22,6 +22,9 @@ const isArea=id=>areas.some(x=>x[0]===id);
 
 /* Division colors match the supplied visual reference; counts come from the demo roster. */
 const departmentColor=name=>{
+ // Reuse the same division legend as the report screens when available.
+ const shared=window.MJ_DIVISION_COLOR?.(name);
+ if(shared)return shared;
  const n=String(name||'').toLowerCase();
  if(/leadership|executive|ceo|top operations/.test(n))return '#A9F562';
  if(/revenue|rmd/.test(n))return '#9964ED';
