@@ -12,20 +12,8 @@
   fly.setAttribute('role','navigation');
   fly.setAttribute('aria-label','Sidebar subcategories');
   document.body.appendChild(fly);
-  const collapse=document.createElement('button');
-  collapse.id='mj-sidebar-collapse';
-  collapse.setAttribute('type','button');
-  collapse.setAttribute('aria-controls','side');
-  collapse.innerHTML='<svg class="i" aria-hidden="true"><use href="#i-arrow"></use></svg>';
-  app.insertAdjacentElement('afterend',collapse);
-  function syncCollapse(){
-    const isMini=app.classList.contains('mini');
-    collapse.setAttribute('aria-expanded',String(!isMini));
-    collapse.setAttribute('aria-label',isMini?'Expand navigation sidebar':'Collapse navigation sidebar');
-    collapse.title=isMini?'Expand sidebar':'Collapse sidebar';
-    if(!compact())hide();
-  }
-  collapse.addEventListener('click',function(){toggle.click();syncCollapse()});
+  // The existing header #sbtn controls sidebar expansion; do not create a duplicate.
+  function syncCompact(){if(!compact())hide()}
   function ensureIcons(){
     nav.querySelectorAll('.mj-pink-section-toggle').forEach(btn=>{
       if(btn.querySelector('.mj-rail-section-icon'))return;
@@ -127,8 +115,8 @@
     }
   },true);
   addEventListener('hashchange',hide);
-  addEventListener('resize',()=>{syncCollapse();hide()});
+  addEventListener('resize',()=>{syncCompact();hide()});
   new MutationObserver(()=>{ensureIcons();if(currentTrigger&&!nav.contains(currentTrigger))hide()}).observe(nav,{childList:true,subtree:true});
-  new MutationObserver(syncCollapse).observe(app,{attributes:true,attributeFilter:['class']});
-  ensureIcons();syncCollapse();
+  new MutationObserver(syncCompact).observe(app,{attributes:true,attributeFilter:['class']});
+  ensureIcons();syncCompact();
 })();
