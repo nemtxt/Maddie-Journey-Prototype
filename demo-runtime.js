@@ -21,13 +21,15 @@
  function successfulUnlock(){
   if(unlocked||transitioning)return;
   unlocked=true;transitioning=true;
-  if(unlock){unlock.disabled=true;unlock.textContent='Opening overview…'}
-  if(status)status.textContent='Accessing fictional dashboard';
+  if(unlock){unlock.disabled=true;unlock.textContent='Opening 3D Office…'}
+  if(status)status.textContent='Entering the fictional 3D Office';
   if(input){input.value='';input.removeAttribute('aria-invalid')}
   if(form)form.classList.remove('bad');
-  location.hash='#overview';
-  try{window.MC_APP?.route?.()}catch(_){}
+  // Release the application before navigation; the 3D viewer intentionally
+  // makes the underlying dashboard inert while its full-screen scene is open.
   if(app)app.inert=false;
+  location.hash='#office';
+  try{window.MC_APP?.route?.()}catch(error){console.error('3D Office navigation failed',error)}
   document.body.classList.remove('mc-demo-locked');
   document.body.classList.add('mc-demo-revealing');
   gate?.classList.add('mc-demo-leaving');
