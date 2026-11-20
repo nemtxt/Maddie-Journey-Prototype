@@ -18,6 +18,7 @@ const MC_TASKS=MCD.TASKS;
 const mcDayDiff=(a,b)=>Math.round((Date.parse(a+"T12:00:00Z")-Date.parse(b+"T12:00:00Z"))/86400000);
 let mcSelectedDay=mcDate(mcBase),mcSelectedPerson=null,mcRoom=null,mcActors=[];
 let mcLayer="overview",mcPanelCollapsed=false,mcViewPreset="iso",mcSearchTerm="",mcRoomMapOpen=false,mcViewsOpen=false;
+let mcInspectorOpen=true,mcTeamExpanded=false,mcEntryTransitionUntil=0;
 const MC_LAYERS=[["overview","Overview"],["people","People"],["deadlines","Deadlines"],["documents","201 Files"],["attendance","Attendance"]];
 const mcPeople=d=>d==="HQ"?EMP:EMP.filter(e=>e.dept===d);
 const mcCounters=d=>{const o=MCD.OPS[d==="HQ"?"HQ":d],ht=o?o.tasks.filter(x=>!x.done&&x.due):[],t=(d==="HQ"?MC_TASKS:MC_TASKS.filter(x=>x.dept===d)).filter(x=>x.due).concat(ht);return {late:t.filter(x=>mcDayDiff(x.due,mcSelectedDay)<0).length,due:t.filter(x=>mcDayDiff(x.due,mcSelectedDay)===0).length,soon:t.filter(x=>{const q=mcDayDiff(x.due,mcSelectedDay);return q>0&&q<=2}).length}};
@@ -46,23 +47,70 @@ function mcLayerContent(d){const people=mcPeople(d),tasks=d==="HQ"?MC_TASKS:MC_T
  return `<div class="mc-section-label">Team schedule <span>${mcFormatted(mcSelectedDay)}</span></div><div class="mc-team-list">${mcAgenda(d).map(mcScheduleRow).join("")}</div>`}
 /* Focused rooms intentionally use an uncluttered 3D scene. The full reports,
    employee profiles and org charts remain available in dashboard routes. */
+
+function mcRoomFlavor(d){
+ const k=d.toLowerCase();
+ if(d==="HQ")return ["Central reception","Shared lobby, globe centerpiece and collaboration lounge."];
+ if(k.includes("media"))return ["Production studio","Editing displays, camera equipment, lighting and media workstations."];
+ if(k.includes("design"))return ["Creative studio","Mood boards, design workstations and collaborative concept tables."];
+ if(k.includes("corporate"))return ["Operations workspace","Workflow boards, records cabinets and team meeting spaces."];
+ if(k.includes("revenue"))return ["Analytics floor","Performance charts, review screens and analytics desks."];
+ if(k.includes("gencon"))return ["Coordination hub","Project boards, shared desks and meeting tables."];
+ if(k.includes("business"))return ["Business meetings","Presentation screens, client discussion and planning tables."];
+ if(k.includes("ceo")||k.includes("coo"))return ["Executive office","Leadership desks, meetings and a coffee lounge."];
+ return ["Team workspace","Desks, meeting areas and shared office facilities."];
+}
+function mcHasPersonCamera(){return !!(ready&&focus&&mcActors.some(a=>a.emp.i===mcSelectedPerson&&a.room===focus.idx))}
+function mcInspectorHtml(d){
+ const all=mcPeople(d),flavor=mcRoomFlavor(d);
+ const ordered=[...all].sort((a,b)=>Number(b.i===mcSelectedPerson)-Number(a.i===mcSelectedPerson)||Number(!!b.head)-Number(!!a.head)||a.name.localeCompare(b.name));
+ const visible=mcTeamExpanded?ordered:ordered.slice(0,4),selected=all.find(e=>e.i===mcSelectedPerson);
+ const presets=[["iso","Room"],["top","Top"],["front","Front"]].map(([view,title])=>`<button type="button" data-hx="preset" data-view="${view}" aria-pressed="${mcViewPreset===view}" title="${title} camera view">${title}</button>`).join("");
+ const list=visible.map(e=>{
+  const initials=e.name.split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0]).join("").toUpperCase();
+  return `<button type="button" class="mc-explorer-person" data-hx="person" data-emp="${e.i}" aria-pressed="${e.i===mcSelectedPerson}" aria-label="Inspect ${mcSafe(e.name)}"><span class="mc-explorer-avatar">${mcSafe(initials)}</span><span class="mc-explorer-name"><strong>${mcSafe(e.name)}</strong><small>${mcSafe(e.role)}</small></span></button>`;
+ }).join("");
+ const preview=selected?`<div class="mc-explorer-profile" role="group" aria-label="Employee preview: ${mcSafe(selected.name)}">
+   <div class="mc-explorer-profile-head"><b>${mcSafe(selected.name)}</b><span>${mcSafe(selected.status||"Employee")}</span></div>
+   <div class="mc-explorer-stats"><div><strong>${Number(selected.f)||0}%</strong><small>201-file completion</small></div><div><strong>${Number(selected.l90)||0}</strong><small>Recorded lates · 90 days</small></div></div>
+   <div class="mc-explorer-actions">
+    ${mcHasPersonCamera()?`<button type="button" data-hx="focus-person" data-emp="${selected.i}" aria-pressed="${mcViewPreset==="person"}">Inspect avatar</button>`:""}
+    <button type="button" class="mc-explorer-primary" data-hx="profile" data-emp="${selected.i}">Full profile</button>
+   </div></div>`:`<p class="mc-explorer-desc">Select a team member for a read-only preview.</p>`;
+ return `<section class="mc-room-inspector" data-open="${mcInspectorOpen}" aria-label="${mcSafe(d==="HQ"?"Headquarters":d)} room inspector">
+  <button type="button" class="mc-explorer-toggle" data-hx="inspector" aria-expanded="${mcInspectorOpen}" aria-controls="mc-explorer-content">
+   <span><strong>${mcSafe(d==="HQ"?"Headquarters":d)}</strong><small>${all.length} people · ${flavor[0]} · Explore room</small></span>${ic("compass")}
+  </button>
+  <div class="mc-explorer-content" id="mc-explorer-content" ${mcInspectorOpen?"":"hidden"}>
+   <p class="mc-explorer-desc">${mcSafe(flavor[1])}</p>
+   <div class="mc-explorer-heading"><b>Camera</b><small>Drag to rotate</small></div>
+   <div class="mc-explorer-presets" role="group" aria-label="Room camera angles">${presets}</div>
+   <div class="mc-explorer-heading"><b>Team</b><small>${all.length} people</small></div>
+   <div class="mc-explorer-list">${list}</div>
+   ${all.length>4?`<button type="button" class="mc-explorer-more" data-hx="team-more" aria-expanded="${mcTeamExpanded}">${mcTeamExpanded?"Show fewer":"Show all "+all.length+" people"}</button>`:""}
+   ${preview}
+   <div class="mc-explorer-actions"><button type="button" data-hx="metrics">Open ${d==="HQ"?"company":"division"} dashboard</button></div>
+   <p class="mc-explorer-note">Fictional activity. Employee records are separate from animated avatars.</p>
+  </div>
+ </section>`;
+}
 function mcPanel(d){
- const i=D.findIndex(x=>x[0]===d),hx=i<0?LOB:HX[i],
- idx=mcOfficeNames.indexOf(d),
+ const i=D.findIndex(x=>x[0]===d),hx=i<0?LOB:HX[i],idx=mcOfficeNames.indexOf(d),
  prev=mcOfficeNames[(idx-1+mcOfficeNames.length)%mcOfficeNames.length],
  next=mcOfficeNames[(idx+1)%mcOfficeNames.length];
  return `<div class="mc-scene mc-scene-minimal" style="--room-accent:${hx}">
    <div class="mc-scene-top">
-     <div class="mc-scene-left">
-       <button class="mc-scene-back" data-hx="leave">${ic("left")} All divisions</button>
-       <button class="mc-scene-back mc-mini-btn" data-hx="prev" aria-label="Previous division" title="${mcSafe(prev)}">${ic("left")}</button>
-       <button class="mc-scene-back mc-mini-btn" data-hx="next" aria-label="Next division" title="${mcSafe(next)}">${ic("arrow")}</button>
-     </div>
-     <div class="mc-scene-actions">
-       <button type="button" class="mc-scene-back mc-mini-btn mc-office-theme-btn" data-hx="scene-theme" aria-label="Switch light or dark mode" aria-pressed="${isDark()}" title="Toggle appearance"><svg aria-hidden="true" class="i"><use href="#i-theme"></use></svg></button>
-       <button class="mc-scene-back mc-mini-btn" data-hx="office-settings" aria-label="Office settings" title="Office settings">${ic("compass")}</button>
-     </div>
+    <div class="mc-scene-left">
+     <button class="mc-scene-back" data-hx="leave">${ic("left")} All divisions</button>
+     <button class="mc-scene-back mc-mini-btn" data-hx="prev" aria-label="Previous division" title="${mcSafe(prev)}">${ic("left")}</button>
+     <button class="mc-scene-back mc-mini-btn" data-hx="next" aria-label="Next division" title="${mcSafe(next)}">${ic("arrow")}</button>
+    </div>
+    <div class="mc-scene-actions">
+     <button type="button" class="mc-scene-back mc-mini-btn mc-office-theme-btn" data-hx="scene-theme" aria-label="Switch light or dark mode" aria-pressed="${isDark()}" title="Toggle appearance"><svg aria-hidden="true" class="i"><use href="#i-theme"></use></svg></button>
+     <button class="mc-scene-back mc-mini-btn" data-hx="office-settings" aria-label="Office settings" title="Office settings">${ic("compass")}</button>
+    </div>
    </div>
+   ${mcInspectorHtml(d)}
  </div>`;
 }
 function mcBuildEmotes(){let root=$("#mc-emotes",hub);if(root)root.remove();if(!ready||!mcRoom||!focus)return;
@@ -70,37 +118,55 @@ function mcBuildEmotes(){let root=$("#mc-emotes",hub);if(root)root.remove();if(!
  const candidates=mcActors.filter(a=>a.room===focus.idx).sort((a,b)=>(a.emp.i===mcSelectedPerson?-100:0)-(b.emp.i===mcSelectedPerson?-100:0)||mcDayDiff(a.task.due,mcSelectedDay)-mcDayDiff(b.task.due,mcSelectedDay));
  root.innerHTML=candidates.slice(0,hub.clientWidth<730?2:4).map(a=>{const m=mcMood(a.task);return`<div class="mc-emote ${m.code}${a.emp.i===mcSelectedPerson?" selected":""}" data-actor="${a.emp.i}" style="--emote-color:#${m.color.toString(16).padStart(6,"0")}"><span class="mc-emote-face">${m.symbol}</span><span class="mc-emote-meta"><b>${mcSafe(a.emp.name.split(" ")[0])}</b><small>${m.label}</small></span></div>`}).join("")}
 function mcPaintPanel(){if(!hub||!mcRoom)return;let el=$("#mc-scene",hub);if(!el){el=document.createElement("div");el.id="mc-scene";hub.append(el)}
- const panelScroll=$(".mc-scene-panel",el)?.scrollTop||0;
+ const panelScroll=$(".mc-explorer-content",el)?.scrollTop||0;
  el.innerHTML=mcPanel(mcRoom);
- const activePanel=$(".mc-scene-panel",el);if(activePanel&&panelScroll)activePanel.scrollTop=panelScroll;
+ const activePanel=$(".mc-explorer-content",el);if(activePanel&&panelScroll)activePanel.scrollTop=panelScroll;
  mcSyncQualityUI();hub.classList.add("mc-focused");hub.classList.toggle("mc-css-fallback",!ready);if(!ready){mcBuildDirectory();mcFallbackRoom(mcRoom)}mcBuildEmotes()}
 function mcFallbackRoom(d){let v=$("#mc-fallback",hub);if(!v){v=document.createElement("div");v.id="mc-fallback";hub.append(v)}
  const people=mcPeople(d).slice(0,8);
  v.innerHTML=`<div class="mc-fallback-office" style="--room-accent:${d==="HQ"?LOB:HX[D.findIndex(x=>x[0]===d)]}"><div class="mc-fb-wall"><div class="mc-fb-window"></div><div class="mc-fb-window"></div><div class="mc-fb-sign">${mcSafe(d)}</div></div><div class="mc-fb-floor">${people.map((e,k)=>{const m=mcMood(mcTask(e));return `<button type="button" class="mc-fb-desk" data-hx="person" data-emp="${e.i}" aria-label="Select ${mcSafe(e.name)}" style="--n:${k}"><span class="mc-fb-screen"></span><span class="mc-fb-person"></span><span class="mc-fb-chair"></span><span class="mc-fb-emote" style="--emo:#${m.color.toString(16).padStart(6,"0")}">${m.symbol}</span></button>`}).join("")}</div></div>`}
-function mcCloseFocus(){mcCloseFloating();if(ready)$("#mc-office-directory",hub)?.remove();mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcRoom=null;mcSelectedPerson=null;focus=null;mcApplyRoomLOD();hub.classList.remove("mc-focused","mc-css-fallback","hxz");mcWake();const el=$("#mc-scene",hub);if(el)el.remove();const v=$("#mc-fallback",hub);if(v)v.remove();const bubbles=$("#mc-emotes",hub);if(bubbles)bubbles.remove();Vt.r=homeR();Vt.ph=.95;Vt.tx=Vt.tz=0;base=.75;rest=0;const hint=$(".hxk",hub);if(hint)hint.hidden=false}
+function mcCloseFocus(){mcCloseFloating();mcTeamExpanded=false;mcEntryTransitionUntil=0;if(ready)$("#mc-office-directory",hub)?.remove();mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcRoom=null;mcSelectedPerson=null;focus=null;mcApplyRoomLOD();hub.classList.remove("mc-focused","mc-css-fallback","hxz");mcWake();const el=$("#mc-scene",hub);if(el)el.remove();const v=$("#mc-fallback",hub);if(v)v.remove();const bubbles=$("#mc-emotes",hub);if(bubbles)bubbles.remove();Vt.r=homeR();Vt.ph=.95;Vt.tx=Vt.tz=0;base=.75;rest=0;const hint=$(".hxk",hub);if(hint)hint.hidden=false}
 function mcPreview(d){if(!hub||!isOpen){window.MC_PENDING_DIVISION=d;H.open();if(!hub||!isOpen)return}if(dvd)dvd.classList.remove("on");if(d!=="HQ"&&!D.some(x=>x[0]===d))return;
- mcCloseFloating();mcRoom=d;mcSelectedPerson=null;mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcViewPreset="iso";rest=0;const ri=d==="HQ"?"L":D.findIndex(x=>x[0]===d),r=rooms.find(x=>x.idx==ri);
- if(ready&&r){focus=r;Vt.r=clamp(3.8/(.3443*hub.clientWidth/hub.clientHeight),7.5,13);Vt.ph=.95;Vt.tx=r.x+(hub.clientWidth>860?.9:0);Vt.tz=r.z;hub.classList.add("hxz")}else{focus=null}
+ const firstEntry=!mcRoom;mcCloseFloating();if(firstEntry)mcInspectorOpen=hub.clientWidth>730;mcTeamExpanded=false;mcRoom=d;mcSelectedPerson=null;mcPanelCollapsed=false;mcRoomMapOpen=false;mcViewsOpen=false;mcViewPreset="iso";rest=0;const ri=d==="HQ"?"L":D.findIndex(x=>x[0]===d),r=rooms.find(x=>x.idx==ri);
+ if(ready&&r){focus=r;mcEntryTransitionUntil=performance.now()+(RM.matches?0:750);Vt.r=clamp(3.8/(.3443*hub.clientWidth/hub.clientHeight),7.5,13);Vt.ph=.95;Vt.tx=r.x+(hub.clientWidth>860?.9:0);Vt.tz=r.z;hub.classList.add("hxz")}else{focus=null}
  mcApplyRoomLOD();mcAnimateFocusedPeople(Math.max(0,performance.now()/1000-t0),mcLifeEnabled());mcWake();
- mcSelectedPerson=(d==="HQ"?EMP:EMP.filter(e=>e.dept===d)).filter(e=>mcTask(e).due).sort((a,b)=>Math.abs(mcDayDiff(mcTask(a).due,mcSelectedDay))-Math.abs(mcDayDiff(mcTask(b).due,mcSelectedDay)))[0]?.i??null;
+ mcSelectedPerson=(d==="HQ"?EMP:EMP.filter(e=>e.dept===d)).filter(e=>mcTask(e).due).sort((a,b)=>Math.abs(mcDayDiff(mcTask(a).due,mcSelectedDay))-Math.abs(mcDayDiff(mcTask(b).due,mcSelectedDay)))[0]?.i??mcPeople(d)[0]?.i??null;
  mcPaintPanel();if(ready&&r)mcFocusCamera("iso");const hint=$(".hxk",hub);if(hint)hint.hidden=true;
  requestAnimationFrame(()=>{$(".mc-scene-back",hub)?.focus({preventScroll:true})});}
 
 function mcFocusCamera(view="iso"){
- if(!hub)return;mcViewsOpen=false;$(".mc-scene-controls",hub)?.classList.remove("is-open");$(".mc-views-toggle",hub)?.setAttribute("aria-expanded","false");mcWake();mcViewPreset=view;const fb=$("#mc-fallback",hub);if(fb)fb.dataset.view=view;if(!focus){$$('[data-hx="preset"]',hub).forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===view));return;}
+ if(!hub)return;
+ if(!["iso","top","front","person"].includes(view))view="iso";
+ if(view==="person"&&!mcHasPersonCamera())view="iso";
+ mcViewsOpen=false;$(".mc-scene-controls",hub)?.classList.remove("is-open");
+ $(".mc-views-toggle",hub)?.setAttribute("aria-expanded","false");
+ mcWake();mcViewPreset=view;
+ const fb=$("#mc-fallback",hub);if(fb)fb.dataset.view=view;
+ if(!focus){$$('[data-hx="preset"]',hub).forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===view));return;}
  const r=clamp(3.8/(.3443*hub.clientWidth/hub.clientHeight),7.5,13);
  if(view==="top"){base=0;Vt.ph=.18;Vt.r=r*.93}
  else if(view==="front"){base=Math.PI;Vt.ph=1.23;Vt.r=r*1.02}
- else{base=.75;Vt.ph=.95;Vt.r=r}
- Vt.tx=focus.x+(hub.clientWidth>860?.9:0);Vt.tz=focus.z;
- $$('[data-hx="preset"]',hub).forEach(b=>b.setAttribute("aria-pressed",b.dataset.view===view));
+ else if(view==="person"){
+  const actor=mcActors.find(a=>a.emp.i===mcSelectedPerson&&a.room===focus.idx);
+  base=.86;Vt.ph=1.05;Vt.r=clamp(r*.63,4.8,8.5);
+  Vt.tx=focus.x+actor.pf.position.x;Vt.tz=focus.z+actor.pf.position.z;
+ }else{base=.75;Vt.ph=.95;Vt.r=r}
+ if(view!=="person"){Vt.tx=focus.x+(hub.clientWidth>860?.9:0);Vt.tz=focus.z}
+ $$('[data-hx="preset"]',hub).forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.view===view)));
+ $$('[data-hx="focus-person"]',hub).forEach(b=>b.setAttribute("aria-pressed",String(view==="person")));
 }
 function mcCloseFloating(){if(!hub)return;$("#mc-search",hub)?.remove();$("#mc-guide",hub)?.remove();$("#mc-settings",hub)?.remove()}
-function mcSelectPerson(id){const e=EMP.find(e=>e.i===id);if(!e)return;if(mcRoom!=="HQ"&&mcRoom!==e.dept)mcPreview(e.dept);mcSelectedPerson=id;mcPanelCollapsed=false;mcPaintPanel()}
+function mcSelectPerson(id){
+ const e=EMP.find(e=>e.i===id);if(!e)return;
+ if(mcRoom!=="HQ"&&mcRoom!==e.dept)mcPreview(e.dept);
+ mcSelectedPerson=id;mcPanelCollapsed=false;mcInspectorOpen=true;mcPaintPanel();
+ if(mcHasPersonCamera())mcFocusCamera("person");else mcFocusCamera("iso");
+ requestAnimationFrame(()=>{$('#mc-explorer-content [data-hx="person"][data-emp="'+id+'"]',hub)?.focus({preventScroll:true})});
+}
 function mcFind(term){const q=term.toLocaleLowerCase().trim();const results=[...D.map(([n,c])=>({name:n,sub:`Division · ${c} people`,id:n,type:"room"})),{name:"Company HQ",sub:`Company · ${M.n} people`,id:"HQ",type:"room"},...EMP.map(e=>({name:e.name,sub:`${e.role} · ${e.dept}`,id:e.i,type:"person"}))];return (q?results.filter(x=>(x.name+" "+x.sub).toLowerCase().includes(q)):results.slice(0,9)).slice(0,12)}
 function mcSearchResults(){const p=$("#mc-search-results",hub);if(!p)return;const rows=mcFind(mcSearchTerm);p.innerHTML=rows.length?rows.map(o=>`<button class="mc-find-item" data-hx="find-item" data-kind="${o.type}" data-value="${mcSafe(o.id)}"><b>${mcSafe(o.name)}</b><small>${mcSafe(o.sub)}</small></button>`).join(""):`<p class="mc-empty-search">No matching employee or division.</p>`}
 function mcOpenSearch(){if(!hub)return;mcCloseFloating();mcSearchTerm="";const box=document.createElement("div");box.id="mc-search";box.className="mc-floating-backdrop";box.innerHTML=`<div class="mc-floating-dialog" role="dialog" aria-modal="true" aria-label="Find an employee or office"><div class="mc-dialog-head"><b>Find in the office</b><button data-hx="close-float" aria-label="Close search">${ic("x")}</button></div><input id="mc-search-input" type="search" placeholder="Search a person or division…" aria-label="Search people and divisions" autocomplete="off"><div id="mc-search-results" class="mc-search-results"></div><small>Choose a result to navigate directly.</small></div>`;hub.append(box);mcSearchResults();$("#mc-search-input",box).focus()}
-function mcOpenGuide(){if(!hub)return;mcCloseFloating();const box=document.createElement("div");box.id="mc-guide";box.className="mc-floating-backdrop";box.innerHTML=`<div class="mc-floating-dialog" role="dialog" aria-modal="true" aria-label="How to use the office"><div class="mc-dialog-head"><b>Navigate the virtual office</b><button data-hx="close-float" aria-label="Close help">${ic("x")}</button></div><div class="mc-help-step"><b>01 · Move through divisions</b><p>Pick a room on the office map, use the previous/next arrows, or search for a division.</p></div><div class="mc-help-step"><b>02 · Explore the scene</b><p>Drag to orbit, scroll or pinch to zoom, or Shift + drag to pan when WebGL is available. Lite mode offers fixed camera angles.</p></div><div class="mc-help-step"><b>03 · Inspect people and insights</b><p>Select an avatar or employee in the panel to open their read-only profile. Switch monitoring layers to see deadlines, 201 files, and attendance.</p></div><p class="mc-help-note">Keyboard: Esc returns to office; + and − zoom; 0 resets camera; / opens search.</p><button class="mc-dash-btn" data-hx="close-float">Understood</button></div>`;hub.append(box);$("[data-hx=close-float]",box).focus()}
+function mcOpenGuide(){if(!hub)return;mcCloseFloating();const box=document.createElement("div");box.id="mc-guide";box.className="mc-floating-backdrop";box.innerHTML=`<div class="mc-floating-dialog" role="dialog" aria-modal="true" aria-label="How to use the office"><div class="mc-dialog-head"><b>Navigate the virtual office</b><button data-hx="close-float" aria-label="Close help">${ic("x")}</button></div><div class="mc-help-step"><b>01 · Move through divisions</b><p>Pick a room on the office map, use the previous/next arrows, or search for a division.</p></div><div class="mc-help-step"><b>02 · Explore the scene</b><p>Drag to orbit, scroll or pinch to zoom. Use Explore room for Room, Top, Front and employee camera views. Lite mode offers fixed angles.</p></div><div class="mc-help-step"><b>03 · Inspect people and insights</b><p>Select an avatar or employee in the panel to open their read-only profile. Switch monitoring layers to see deadlines, 201 files, and attendance.</p></div><p class="mc-help-note">Keyboard: Esc returns to office; + and − zoom; 0 resets camera; / opens search.</p><button class="mc-dash-btn" data-hx="close-float">Understood</button></div>`;hub.append(box);$("[data-hx=close-float]",box).focus()}
 function mcNavigate(delta){const index=mcOfficeNames.indexOf(mcRoom||"HQ");mcPreview(mcOfficeNames[(index+delta+mcOfficeNames.length)%mcOfficeNames.length]);mcFocusCamera("iso")}
 
 let mdl,mo,hemi,sunL,grd,pedM,peM,lastR=0;
@@ -273,6 +339,9 @@ function mk(){
  else if(a==="jump")mcPreview(b.dataset.div);
  else if(a==="reset")mcFocusCamera("iso");
  else if(a==="preset")mcFocusCamera(b.dataset.view);
+  else if(a==="focus-person"){if(mcSelectedPerson!==+b.dataset.emp)mcSelectPerson(+b.dataset.emp);else mcFocusCamera("person")}
+  else if(a==="inspector"){mcInspectorOpen=!mcInspectorOpen;mcPaintPanel();requestAnimationFrame(()=>$('#mc-scene [data-hx="inspector"]',hub)?.focus({preventScroll:true}))}
+  else if(a==="team-more"){mcTeamExpanded=!mcTeamExpanded;mcPaintPanel();requestAnimationFrame(()=>$('#mc-scene [data-hx="team-more"]',hub)?.focus({preventScroll:true}))}
  else if(a==="search")mcOpenSearch();else if(a==="help")mcOpenGuide();
  else if(a==="office-settings")mcOfficeSettings();
  else if(a==="toggle-directory"){mcDirectoryClosed=!mcDirectoryClosed;store.set("officeMapClosed",mcDirectoryClosed?"1":"0");mcBuildDirectory()}
@@ -462,7 +531,7 @@ function frame(now){
  const W=cw,Hh=ch,updateLabels=now-mcLabelAt>(focus?160:110);
  if(updateLabels)mcLabelAt=now;
  rooms.forEach(r=>{
-  r.grp.visible=!focus||r===focus;
+  r.grp.visible=!focus||r===focus||now<mcEntryTransitionUntil;
   const p=clamp((el-.2-r.n*.09)/1.1,0,1),e=1-Math.pow(1-p,3);r.h+=((r===hov||r===focus?1:0)-r.h)*Math.min(1,dt*9);
   r.grp.position.y=-8*(1-e)+r.h*.55;r.fm.emissiveIntensity=.06+.4*r.h;
   if(updateLabels&&!focus){pv.set(r.x,2.2+r.h*.5,r.z).project(cam);const l=r.lab;l.style.opacity=pv.z>1?0:e;l.style.transform=`translate(${(pv.x*.5+.5)*W}px,${(-pv.y*.5+.5)*Hh}px) translate(-50%,-100%)`}
@@ -512,7 +581,7 @@ function hqChart(){const kids=D.map(([dn,c],i)=>{const hs=EMP.filter(e=>e.dept==
 function psSec(hq,d,st){const it=hq?[1,2,3].map(n=>["Level "+n,EMP.filter(e=>lvl(e)===n).length]):lv(d).flatMap(x=>x.g.map(([t,a])=>["L"+x.n+" "+t,a.length])),m=Math.max(...it.map(x=>x[1]));
  return`<section class="hxp" ${st}><h3 class="hxq">${hq?"People by level":"Positions"}</h3><ul class="hxbr">${it.map((q,j)=>`<li><span>${q[0]}</span><i><u style="--w:${q[1]/m*100}%;--j:${j}"></u></i><b>${q[1]}</b></li>`).join("")}</ul>${srcLine(["people"])}</section>`}
 function pfm(e,from){mo=from;const i=D.findIndex(x=>x[0]===e.dept),n=lvl(e);mdl.style.setProperty("--c",HX[i]);
- mdl.innerHTML=`<div class="hxmc" role="dialog" aria-modal="true" aria-label="${e.name}"><button class="hxbt hxmx" data-m="x" aria-label="Close">${ic("x")}</button><div class="hxmh">${av(e.name,68)}<div><div class="hxmn">${e.name}</div><div class="hxs" style="margin:2px 0 0">${e.role}</div><div class="hxpl"><span>${e.dept}</span><span>Level ${n}</span></div></div></div><dl class="hxdl hxmd"><dt>Employee ID</dt><dd>${eid(e)}</dd><dt>Reports to</dt><dd>${n===1?"Madhouse HQ":dvNames(e.dept)}</dd><dt>201 file</dt><dd><span class="hxmb"><u style="--w:${e.f}%"></u></span>${e.f}%</dd><dt>Lates, last 4 weeks</dt><dd>${e.l30}</dd><dt>Lates, last 90 days</dt><dd>${e.l90}</dd><dt>Development stage</dt><dd>${e.stage}</dd><dt>Tenure</dt><dd>${e.ten?e.ten+(e.ten===1?" year":" years"):"Under 1 year"}</dd></dl>${window.UX?UX.card(e):""}${window.MC_WORKFORCE?MC_WORKFORCE.profile(e):""}<p class="hxs" style="margin:14px 0 0">Live record. ${recLink("people",e.rid,"Open roster record in Airtable")}</p></div>`;
+ mdl.innerHTML=`<div class="hxmc" role="dialog" aria-modal="true" aria-label="${e.name}"><button class="hxbt hxmx" data-m="x" aria-label="Close">${ic("x")}</button><div class="hxmh">${av(e.name,68)}<div><div class="hxmn">${e.name}</div><div class="hxs" style="margin:2px 0 0">${e.role}</div><div class="hxpl"><span>${e.dept}</span><span>Level ${n}</span></div></div></div><dl class="hxdl hxmd"><dt>Employee ID</dt><dd>${eid(e)}</dd><dt>Reports to</dt><dd>${n===1?"Madhouse HQ":dvNames(e.dept)}</dd><dt>201 file</dt><dd><span class="hxmb"><u style="--w:${e.f}%"></u></span>${e.f}%</dd><dt>Lates, last 4 weeks</dt><dd>${e.l30}</dd><dt>Lates, last 90 days</dt><dd>${e.l90}</dd><dt>Development stage</dt><dd>${e.stage}</dd><dt>Tenure</dt><dd>${e.ten?e.ten+(e.ten===1?" year":" years"):"Under 1 year"}</dd></dl>${window.UX?UX.card(e):""}${window.MC_WORKFORCE?MC_WORKFORCE.profile(e):""}<p class="hxs" style="margin:14px 0 0">Read-only fictional sample. ${recLink("people",e.rid,"Open roster record in Airtable")}</p></div>`;
  mdl.classList.add("on");dvd.inert=true;setTimeout(()=>{const x=$(".hxmx",mdl);x&&x.focus()},40)}
 function closeM(){mdl.classList.remove("on");dvd.inert=false;if(mo&&mo.isConnected)mo.focus({preventScroll:true})}
 function fitOrg(){const o=$(".hxoc",dvd);if(!o)return;requestAnimationFrame(()=>{const over=o.scrollWidth>o.clientWidth+4;if(over){o.scrollLeft=(o.scrollWidth-o.clientWidth)/2;const h=$("#hxorg .hxq",dvd);if(h&&!h.querySelector(".hxhint"))h.insertAdjacentHTML("beforeend",'<small class="hxhint">Scroll sideways to see every division</small>')}})}
@@ -545,6 +614,9 @@ matchMedia("(prefers-color-scheme:dark)").addEventListener("change",skin);skin()
 addEventListener("keydown",e=>{if(!isOpen)return;const k=e.key.toLowerCase();if(e.target.closest&&e.target.closest("#mc-search"))return;
  if(((e.ctrlKey||e.metaKey)&&k==="k")||(k==="/"&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))){e.stopImmediatePropagation();e.preventDefault();mcOpenSearch();return}
  if(e.altKey&&k==="b"){e.stopImmediatePropagation();e.preventDefault();mcCloseFocus();return}
- if(mcRoom&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&!e.ctrlKey&&!e.metaKey){if(k==="0"){e.preventDefault();mcFocusCamera("iso")}else if(k==="+"||k==="="){e.preventDefault();Vt.r=clamp(Vt.r*.84,4.6,18)}else if(k==="-"||k==="_"){e.preventDefault();Vt.r=clamp(Vt.r*1.18,4.6,18)}}},true);
+ if(mcRoom&&!/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)&&!e.ctrlKey&&!e.metaKey&&!e.altKey){
+ if(k==="1"||k==="2"||k==="3"){e.preventDefault();mcFocusCamera(({"1":"iso","2":"top","3":"front"})[k])}
+ else if(k==="i"){e.preventDefault();mcInspectorOpen=!mcInspectorOpen;mcPaintPanel();$('#mc-scene [data-hx="inspector"]',hub)?.focus({preventScroll:true})}
+ else if(k==="0"){e.preventDefault();mcFocusCamera("iso")}else if(k==="+"||k==="="){e.preventDefault();Vt.r=clamp(Vt.r*.84,4.6,18)}else if(k==="-"||k==="_"){e.preventDefault();Vt.r=clamp(Vt.r*1.18,4.6,18)}}},true);
 addEventListener("keydown",e=>{if(e.key==="Escape"){if($("#mc-search",hub)||$("#mc-guide",hub)){mcCloseFloating();return}if(mdl&&mdl.classList.contains("on")){closeM();return}if(dvd&&dvd.classList.contains("on")&&!layer){back();return}if(mcRoom){mcCloseFocus();return}}});
 })();
