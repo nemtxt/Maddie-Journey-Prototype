@@ -101,6 +101,38 @@ let mdl,mo,hemi,sunL,grd,pedM,peM,lastR=0;
 const isDark=()=>{const t=document.documentElement.dataset.theme;return t?t==="dark":matchMedia("(prefers-color-scheme:dark)").matches};
 function skin(){const d=isDark(),tc=document.getElementById("tc");if(tc)tc.content=d?"#000000":"#ffffff";if(!ready||!scene)return;const bg=d?0x000000:0xffffff;scene.background.setHex(bg);scene.fog.color.setHex(bg);hemi.color.setHex(d?0xffd9ea:0xffffff);hemi.groundColor.setHex(d?0x1b1418:0xead9e2);hemi.intensity=d?.9:1.05;sunL.intensity=d?.6:.4;scene.remove(grd);grd.geometry.dispose();grd.material.dispose();grd=new THREE.GridHelper(80,40,d?0x2c2229:0xeadde4,d?0x16111a:0xf5eef2);grd.position.y=-.45;scene.add(grd);pedM.color.setHex(d?0x0d0a0c:0xfbf4f8);peM.color.setHex(d?0x40303a:0xe0cdd7);rooms.forEach(r=>r.fm.color.setHex(d?0x17121a:0xffffff).lerp(r.col,d?.2:.4));parts.visible=!!(d&&mcDecorative&&mcQuality==="quality"&&!mcLowCost());scan.material.color.setHex(d?0xff9ccb:0xe5367f);mcWake()}
 const mcRoomSets=[];
+ // A single transform object updates the overview's instanced avatar meshes;
+ // this preserves batching and avoids dozens of additional draw calls.
+ const mcOverviewTransform=new THREE.Object3D();
+ function mcAnimateOverviewPeople(el){
+  for(const entry of mcRoomSets){
+   const set=entry.peopleInstances;
+   if(!set||!entry.actors?.length)continue;
+   for(let i=0;i<entry.actors.length;i++){
+    const person=entry.actors[i];
+    const phase=el*(.52+(i%4)*.08)+person.phase+entry.idx*.41;
+    const walking=i%3===1;
+    const x=person.homeX+Math.sin(phase)*(walking?.35:.09);
+    const z=person.homeZ+Math.cos(phase*.86)*(walking?.28:.075);
+    const bob=Math.abs(Math.sin(phase*(walking?2.8:1.5)))*(walking?.038:.018);
+    const turn=walking?Math.cos(phase)*.40:Math.sin(phase*.7)*.10;
+    mcOverviewTransform.position.set(x,.45+bob,z);
+    mcOverviewTransform.rotation.set(0,turn,0);
+    mcOverviewTransform.scale.set(1,1,1);
+    mcOverviewTransform.updateMatrix();
+    set.body.setMatrixAt(i,mcOverviewTransform.matrix);
+    mcOverviewTransform.position.y=.79+bob;
+    mcOverviewTransform.updateMatrix();
+    set.head.setMatrixAt(i,mcOverviewTransform.matrix);
+    mcOverviewTransform.position.y=.84+bob;
+    mcOverviewTransform.updateMatrix();
+    set.hair.setMatrixAt(i,mcOverviewTransform.matrix);
+   }
+   set.body.instanceMatrix.needsUpdate=true;
+   set.head.instanceMatrix.needsUpdate=true;
+   set.hair.instanceMatrix.needsUpdate=true;
+  }
+ }
  function mcApplyRoomLOD(){for(const entry of mcRoomSets){const detailed=!!focus&&focus.idx===entry.idx;entry.proxy.visible=!focus;entry.staff.forEach(x=>x.visible=detailed);entry.desks.forEach(x=>x.visible=detailed)}}
  let zm=1,rest=0,cw=1,ch=1,fa=0,fn=0,dpr=1,hub,dvd,cv,ren,scene,cam,glow,ray,nd,pv,parts,pa,scan,rooms=[],desks=[],spins=[],raf=0,ready=0,fail=0,isOpen=0,hov=null,focus=null,dn=null,moved=0,base=.75,skip=0,t0=0,last=0,cur=null;
 const V={th:.75,ph:.95,r:46,tx:0,tz:0},Vt={ph:.95,r:21,tx:0,tz:0},clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -263,7 +295,9 @@ function build(){
     obj.position.y=.79;obj.updateMatrix();pHead.setMatrixAt(k,obj.matrix);
     obj.position.y=.84;obj.updateMatrix();pHair.setMatrixAt(k,obj.matrix)});
    [pDesk,pBody,pHead,pHair].forEach(m=>{m.instanceMatrix.needsUpdate=true;m.frustumCulled=false;proxy.add(m)});
-   g.add(proxy);mcRoomSets.push({idx:o,proxy,staff:roomActors,desks:roomDesks});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
+   g.add(proxy);mcRoomSets.push({idx:o,proxy,staff:roomActors,desks:roomDesks,
+    actors:mcActors.slice(-roomActors.length),
+    peopleInstances:{body:pBody,head:pHead,hair:pHair}});roomActors.forEach(a=>a.visible=false);roomDesks.forEach(a=>a.visible=false)}
   // Static architecture is batched per room. Staff and desks remain individually selectable.
   const temp=new THREE.Object3D();
   staticBatches.forEach(batch=>{
@@ -308,9 +342,13 @@ function back(){dvd.classList.remove("on");mcCloseFocus()}
 function frame(now){
   raf=0;
   if(rest||!isOpen||document.hidden){last=now;return}
-  if(!focus&&!dn&&!mcDecorative&&now-mcLastActivity>2800&&now-t0*1000>4400)return;
+  // Keep the overview alive so employees move even without a selected division.
+  // Do not render the locked demo behind the passcode, or when reduced motion
+  // is requested and the user has stopped interacting with the scene.
+  if(document.body.classList.contains("mc-demo-locked"))return;
+  if(!focus&&(RM.matches||document.documentElement.classList.contains("mj-reduced"))&&!dn&&!mcDecorative&&now-mcLastActivity>2800&&now-t0*1000>4400)return;
   raf=requestAnimationFrame(frame);
- const gap=now-lastR,targetGap=1000/mcFrameLimit();
+ const gap=now-lastR,targetGap=1000/(focus?mcFrameLimit():Math.min(mcFrameLimit(),mcLowCost()?14:TC?18:24));
  if(gap<targetGap)return;
  lastR=now;
  const dt=Math.min(.05,(now-last)/1000||.016),el=now/1000-t0;last=now;
@@ -327,7 +365,12 @@ function frame(now){
   if(updateLabels&&!focus){pv.set(r.x,2.2+r.h*.5,r.z).project(cam);const l=r.lab;l.style.opacity=pv.z>1?0:e;l.style.transform=`translate(${(pv.x*.5+.5)*W}px,${(-pv.y*.5+.5)*Hh}px) translate(-50%,-100%)`}
  });
  if(el<4)desks.forEach(d=>{const p=clamp((el-d.userData.dl)/.5,0,1);d.scale.setScalar(Math.max(.001,1-Math.pow(1-p,3)))});
-  const animatePeople=!RM.matches&&now-mcActorAt>(focus?mcLowCost()?110:mcQuality==="balanced"?54:22:mcLowCost()?180:mcQuality==="balanced"?90:55);
+  const animatePeople=!RM.matches&&!document.documentElement.classList.contains("mj-reduced")&&
+    now-mcActorAt>(focus?mcLowCost()?110:mcQuality==="balanced"?54:22:mcLowCost()?125:TC?90:50);
+ if(!focus&&animatePeople){
+   mcActorAt=now;
+   mcAnimateOverviewPeople(el);
+ }
  if(focus&&animatePeople){mcActorAt=now;mcActors.forEach(a=>{
    if(a.room!==focus.idx)return;const m=a.mood||mcMood(a.task),p=a.phase,active=focus&&focus.idx===a.room,wander=active&&a.avatarIndex%3===1,fast=m.code==="late"?1.55:m.code==="due"?1.34:1;
    a.pf.position.x=a.homeX+(wander?Math.sin(el*.75*fast+p)*.15:Math.sin(el*.6+p)*.014);
@@ -396,7 +439,7 @@ function dash(d){
  requestAnimationFrame(()=>requestAnimationFrame(()=>dvd.classList.add("go")));fitOrg();cnt(dvd);window.UX&&UX.org(dvd);setTimeout(()=>{const b=$("[data-d=back]",dvd);b&&b.focus({preventScroll:true})},60)}
 window.MC_WF_PROFILE_BRIDGE=(e,from)=>pfm(e,from);
 const H=window.HUB={
- open(){document.body.classList.remove("mcws");if(isOpen)return true;let ok=ready;if(!ok&&!fail){try{ok=build()}catch(e){console.error(e);fail=1;ok=0}}if(!hub)mk();isOpen=1;document.body.classList.add("hxon");hub.classList.add("on");hub.classList.toggle("hxnogl",!ok);app.inert=true;if(!ok){mcBuildDirectory();mcFallbackRoom("HQ");return true}t0=performance.now()/1000;last=performance.now();lastR=0;mcFrameSamples=0;mcFrameClock=0;mcSyncQualityUI();
+ open(){document.body.classList.remove("mcws");if(isOpen){mcWake();return true;}let ok=ready;if(!ok&&!fail){try{ok=build()}catch(e){console.error(e);fail=1;ok=0}}if(!hub)mk();isOpen=1;document.body.classList.add("hxon");hub.classList.add("on");hub.classList.toggle("hxnogl",!ok);app.inert=true;if(!ok){mcBuildDirectory();mcFallbackRoom("HQ");return true}t0=performance.now()/1000;last=performance.now();lastR=0;mcFrameSamples=0;mcFrameClock=0;mcSyncQualityUI();
   V.r=46;V.th=base-1.1;V.ph=.7;size();Vt.r=homeR();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);return true},
  close(){isOpen=0;rest=0;document.body.classList.remove("hxon");if(hub){hub.classList.remove("on","hxz");dvd.classList.remove("on")}mcCloseFocus();focus=null;cancelAnimationFrame(raf);raf=0;app.inert=false;Vt.tx=Vt.tz=0;Vt.ph=.95},
  fit(){if(!ready||focus)return;zm=1;base=.75;Vt.ph=.95;Vt.tx=Vt.tz=0;Vt.r=homeR()},
