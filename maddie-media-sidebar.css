@@ -423,3 +423,6 @@ body.mj-new .app.mini #side #sfoot{display:none!important}
 :root:not([data-theme="dark"]) body.mj-new .app.mini #side #nav .mj-rail-section-icon{
   color:currentColor!important;
 }
+
+/* Single sidebar toggle: only the existing control in the top header is shown. */
+body.mj-new #mj-sidebar-collapse{display:none!important}
